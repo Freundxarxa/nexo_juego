@@ -1,0 +1,440 @@
+/* ============================================================
+   NEXO · Adaptación a móvil (hasta 640px de ancho)
+   ------------------------------------------------------------
+   La pantalla de partida está compuesta con posiciones absolutas
+   pensadas para escritorio. Por debajo de 640px esas coordenadas
+   dejan de tener sentido: los dos paneles se solapan, la cabecera
+   se sale por la derecha y las cartas ocupan más ancho del que hay.
+
+   Este archivo no modifica el diseño original. Solo devuelve los
+   elementos al flujo normal cuando la pantalla es estrecha, para
+   que se apilen en vertical en el mismo orden en que están en el
+   HTML: cabecera, núcleo, Humano, zona central e IA.
+
+   Se carga después de partida.css, por eso puede corregirlo.
+   ============================================================ */
+
+@media (max-width: 640px) {
+
+  /* ---- Contenedor general: que pueda crecer y desplazarse ---- */
+  #pantalla-juego {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  #pantalla-juego.activa {
+    padding: 0 !important;
+  }
+
+  /* El fondo del planeta cubre toda la altura, no solo la ventana. */
+  #pantalla-juego .escena-partida-capas {
+    position: fixed !important;
+    inset: 0 !important;
+  }
+
+  /* ---- Cabecera: ronda, crisis, impacto y barra del planeta ---- */
+  #pantalla-juego .cabecera-partida-cinematica {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 58px 10px 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    transform: none !important;
+  }
+
+  #pantalla-juego .hud-segmento {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* ---- Controles de arriba: ayuda, ajustes y abandonar ---- */
+  #pantalla-juego .controles-sistema-juego {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    left: auto !important;
+    width: auto !important;
+    z-index: 40 !important;
+  }
+
+  #pantalla-juego .logo-partida-estatico {
+    width: 96px !important;
+    top: 10px !important;
+    left: 10px !important;
+  }
+
+  /* ---- Núcleo NEXO: centrado y más pequeño ---- */
+  #pantalla-juego .nexo-nucleo-partida {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: 168px !important;
+    height: 168px !important;
+    margin: 4px auto 10px !important;
+  }
+
+  /* ---- Tablero: una sola columna, en el orden del HTML ---- */
+  #pantalla-juego .tablero-cinematico {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 10px 24px !important;
+    grid-template-columns: none !important;
+  }
+
+  /* ---- Paneles de Humano e IA: uno debajo del otro ---- */
+  #pantalla-juego .panel-personaje {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    transform: none !important;
+    align-self: stretch !important;
+  }
+
+  #pantalla-juego .retrato-personaje {
+    max-width: 112px !important;
+  }
+
+  /* ---- Zona central: apuesta, mano y resolución ---- */
+  #pantalla-juego .zona-central-cinematica {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    transform: none !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+
+  /* ---- La mano: las cartas caben o se desplazan de lado ---- */
+  #pantalla-juego .zona-mano {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  #pantalla-juego .mano-cartas,
+  #pantalla-juego .fila-cartas {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+  }
+
+  #pantalla-juego .carta-mano {
+    width: 64px !important;
+    height: 100px !important;
+    flex: 0 0 64px !important;
+    flex-basis: 64px !important;
+    min-width: 64px !important;
+  }
+
+  /* ---- Paneles emergentes: que no se salgan ---- */
+  #pantalla-juego .zona-velocidad,
+  #pantalla-juego #panel-precision,
+  #pantalla-juego .zona-resolucion,
+  #pantalla-juego .panel-evento {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+  }
+
+  /* ---- Botones grandes, cómodos para el dedo ---- */
+  #pantalla-juego button {
+    min-height: 44px !important;
+  }
+
+  /* ---- Barra del planeta: en vertical, si no mide 460px y se sale ---- */
+  #pantalla-juego .hud-planeta {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+  }
+
+  #pantalla-juego .estado-planeta-mini {
+    width: 100% !important;
+    margin: 0 !important;
+    text-align: center !important;
+  }
+
+  #pantalla-juego .bloque-barra-planeta,
+  #pantalla-juego .barra-planeta-logica,
+  #pantalla-juego .numeros-barra-planeta,
+  #pantalla-juego .barra-evolucion-nexo,
+  #pantalla-juego .numeros-barra {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* ---- Zona de decisión: apuesta, declaraciones y consecuencia ---- */
+  #pantalla-juego #zona-decision-activa,
+  #pantalla-juego #zona-declaraciones,
+  #pantalla-juego #consecuencia-apuesta,
+  #pantalla-juego #zona-apuesta,
+  #pantalla-juego #zona-resolucion {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #pantalla-juego #zona-declaraciones {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+
+  #pantalla-juego #declaracion-humano,
+  #pantalla-juego #declaracion-ia {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    flex: 1 1 40% !important;
+  }
+
+  /* ---- Botón de acción anclado abajo, siempre alcanzable ---- */
+  #pantalla-juego #acciones {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 10px 0 0 !important;
+    transform: none !important;
+    z-index: 30 !important;
+  }
+
+  #pantalla-juego #btn-confirmar-jugada {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  /* ---- La fila de cartas no reserva el alto de las cartas grandes ---- */
+  #pantalla-juego .mano-cartas {
+    min-height: 0 !important;
+  }
+
+  /* ---- Nada puede desbordar a lo ancho ---- */
+  #pantalla-juego * {
+    max-width: 100% !important;
+  }
+}
+
+/* ============================================================
+   Pantalla de configuración en móvil
+   Los paneles de identidad se quedaban en 98px de ancho dentro
+   de un contenedor de 358px, por eso los avatares aparecían
+   como columnas diminutas y los títulos se pisaban.
+   ============================================================ */
+
+@media (max-width: 640px) {
+
+  #pantalla-configuracion .contenido-configuracion {
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 16px !important;
+    padding: 18px 12px 28px !important;
+  }
+
+  #pantalla-configuracion .panel-identidad {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    float: none !important;
+    /* En escritorio los paneles se suben con desplazamientos propios;
+       en movil eso los monta encima del titulo. */
+    top: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    margin-top: 0 !important;
+    transform: none !important;
+  }
+
+  #pantalla-configuracion .opciones-avatar {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  #pantalla-configuracion .tarjeta-avatar {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #pantalla-configuracion .selector-rondas,
+  #pantalla-configuracion .campo-nombre,
+  #pantalla-configuracion input[type="text"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 640px) {
+
+  /* El titulo estaba colocado en absoluto sobre las tarjetas de avatar. */
+  #pantalla-configuracion .cabecera-configuracion {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+    margin: 0 0 4px !important;
+    text-align: center !important;
+  }
+}
+
+/* ============================================================
+   Pantalla de introducción en móvil
+   ============================================================ */
+
+@media (max-width: 640px) {
+
+  /* El boton de ajustes, que es fijo, tapaba el final del titulo. */
+  #pantalla-introduccion .sobrelinea-introduccion {
+    padding-right: 48px !important;
+  }
+
+  /* La fila "Como jugar / Saltar intro" estaba anclada en absoluto
+     y se montaba sobre el boton Continuar. La devolvemos al flujo. */
+  #pantalla-introduccion .acciones-secundarias-intro {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 14px auto 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+}
+
+/* ============================================================
+   Paneles emergentes en móvil: manual, ajustes y evento
+   ------------------------------------------------------------
+   El manual mide casi 4000px de alto y estaba dentro de una caja
+   fija de la altura de la pantalla, sin desplazamiento: en un
+   movil solo se veia la primera pantalla y el resto era
+   inalcanzable. Ahora se desplaza la capa completa.
+   ============================================================ */
+
+@media (max-width: 640px) {
+
+  #superposicion-manual,
+  #superposicion-ajustes,
+  #superposicion-evento {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding: 12px !important;
+  }
+
+  #superposicion-manual .panel-manual,
+  #superposicion-ajustes .panel-ajustes,
+  #superposicion-evento .panel-evento {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  /* La imagen del evento se salia del ancho de la pantalla. */
+  #superposicion-evento .marco-imagen-evento,
+  #superposicion-evento #imagen-evento,
+  #superposicion-evento .halo-evento {
+    width: 100% !important;
+    max-width: 100% !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+
+  /* La tarjeta del evento es una rejilla de dos columnas cuya primera
+     columna tiene un ancho minimo mayor que la pantalla. En movil va
+     en una sola columna: imagen arriba, texto debajo. */
+  #superposicion-evento .tarjeta-evento,
+  #superposicion-evento .tarjeta-evento-nexo {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: none !important;
+  }
+
+  #superposicion-evento .tarjeta-evento > *,
+  #superposicion-evento .tarjeta-evento-nexo > * {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #superposicion-evento .marco-imagen-evento {
+    border-radius: 13px 13px 0 0 !important;
+  }
+}
