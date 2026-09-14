@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<!-- NEXO · PRUEBA DE INTEGRACIÓN VISUAL + LÓGICA · 2026-08-20 -->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXO — La Convergencia</title>
+  <link rel="icon" type="image/webp" href="./assets/images/portada/logo/nexo_x_estatica_centrada_sin_limite.webp">
+  <link rel="stylesheet" href="./css/style.css?v=ui-v24-39-sincronizacion-final">
+  <!-- Pantalla de partida aislada para que su diseño sea fácil de estudiar/modificar -->
+  <link rel="stylesheet" href="./css/partida.css?v=flow-v24-27c">
+  <!-- Pantalla de suspense previa a INICIO: pulso interactivo + desbloqueo de audio -->
+  <link rel="stylesheet" href="./css/suspense.css?v=suspense-v1">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-0-24-equilibrio-saludable.webp">
+  <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-25-49-equilibrio-fragil.webp">
+  <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-50-74-equilibrio-critico.webp">
+  <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-75-99-colapso-inminente.webp">
+  <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-100-crisis-catastrofica.webp">
+</head>
+<body>
+
+  <!-- ============================================================
+       PANTALLA 0: SUSPENSE
+       Verde Humano y azul IA convergen en un núcleo interactivo.
+       El clic desbloquea el audio y abre la portada existente.
+  ============================================================ -->
+  <section id="pantalla-suspense" class="pantalla activa" aria-label="Acceso a NEXO">
+    <svg id="svg-suspense" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <radialGradient id="masaGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+          <stop offset="4%" stop-color="#ffffff" stop-opacity="0.6"/>
+          <stop offset="30%" stop-color="#8cd7c8" stop-opacity="0.26"/>
+          <stop offset="55%" stop-color="#009FE3" stop-opacity="0.13"/>
+          <stop offset="72%" stop-color="#009FE3" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <line id="linea-humano-1" stroke="#7CC242" stroke-width="1.4" opacity="0.4"/>
+      <line id="linea-humano-2" stroke="#7CC242" stroke-width="1.4" opacity="0.4"/>
+      <line id="linea-ia-1" stroke="#009FE3" stroke-width="1.4" opacity="0.4"/>
+      <line id="linea-ia-2" stroke="#009FE3" stroke-width="1.4" opacity="0.4"/>
+      <circle id="masaCirculo" r="92" fill="url(#masaGrad)"/>
+      <circle id="nucleoCirculo" r="2" fill="#ffffff" opacity="0.9"/>
+    </svg>
+    <p id="texto-suspense">pulso</p>
+  </section>
+
+  <!-- ============================================================
+       PANTALLA 1: INICIO
+       Portada definitiva: logo, lema y botón JUGAR
+  ============================================================ -->
+  <section id="pantalla-inicio" class="pantalla">
+    <div class="fondo-inicio"></div>
+
+    <div class="contenido-inicio">
+      <!-- =========================================================
+           LOGO NEXO ANIMADO
+           Está construido en capas para poder animar solo la X.
+           Las letras y "LA CONVERGENCIA" permanecen quietas.
+           Las dos pequeñas luces viajan por las líneas hacia el centro.
+      ========================================================== -->
+      <!-- =========================================================
+           LOGO NEXO ANIMADO — SVG INTEGRADO EN EL HTML
+           ---------------------------------------------------------
+           IMPORTANTE:
+           - No carga ninguna imagen externa para el logo.
+           - Así evitamos errores de rutas o imágenes rotas.
+           - N, E, O y "LA CONVERGENCIA" permanecen quietos.
+           - Solo pulsa la X y se mueven los dos pequeños nodos.
+      ========================================================== -->
+      <div
+        class="logo-inicio logo-nexo-animado"
+        role="img"
+        aria-label="NEXO — La Convergencia"
+      >
+        <svg
+          class="logo-nexo-svg"
+          viewBox="0 0 1600 520"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <defs>
+            <!-- Degradado de la X: verde humano -> cian -> azul IA -->
+            <linearGradient id="gradiente-x-nexo" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#7CC242"/>
+              <stop offset="46%" stop-color="#69e5ac"/>
+              <stop offset="54%" stop-color="#4eddea"/>
+              <stop offset="100%" stop-color="#009FE3"/>
+            </linearGradient>
+
+            <!-- Brillo suave del estado normal -->
+            <filter id="brillo-x-base" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="8" result="desenfoque"/>
+              <feMerge>
+                <feMergeNode in="desenfoque"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+
+            <!-- Brillo de los nodos -->
+            <filter id="brillo-nodo" x="-150%" y="-150%" width="400%" height="400%">
+              <feGaussianBlur stdDeviation="4" result="desenfoque"/>
+              <feMerge>
+                <feMergeNode in="desenfoque"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- =====================================================
+               CAPA FIJA DEL LOGO
+               Estas letras NO se animan.
+          ====================================================== -->
+          <g
+            class="logo-nexo-letras"
+            fill="#ffffff"
+            font-family="Montserrat, Arial, sans-serif"
+            font-weight="500"
+          >
+            <text x="220" y="300" font-size="245">N</text>
+            <text x="500" y="300" font-size="245">E</text>
+            <text x="1055" y="300" font-size="245">O</text>
+          </g>
+
+          <!-- =====================================================
+               X ANIMADA
+               Es UNA sola X. El estado de expansión se consigue
+               mediante CSS: no existe una segunda imagen.
+          ====================================================== -->
+          <g class="logo-x-pulso" filter="url(#brillo-x-base)">
+            <!-- Brazos verdes: humanidad / naturaleza -->
+            <polygon points="706,82 744,82 820,193 796,217" fill="#7CC242"/>
+            <polygon points="706,348 744,348 820,237 796,213" fill="#6fd153"/>
+
+            <!-- Brazos azules: IA / tecnología -->
+            <polygon points="894,82 856,82 780,193 804,217" fill="#009FE3"/>
+            <polygon points="894,348 856,348 780,237 804,213" fill="#1A7BFF"/>
+
+            <!-- Punto de convergencia -->
+            <circle class="centro-x-nexo" cx="800" cy="215" r="17" fill="#ffffff"/>
+          </g>
+
+          <!-- =====================================================
+               SUBTÍTULO FIJO
+               No tiene animación ni glow fuerte.
+          ====================================================== -->
+          <text
+            x="800"
+            y="395"
+            text-anchor="middle"
+            fill="#ffffff"
+            font-family="Montserrat, Arial, sans-serif"
+            font-size="46"
+            font-weight="400"
+            letter-spacing="15"
+          >
+            LA CONVERGENCIA
+          </text>
+
+          <!-- =====================================================
+               LÍNEAS FIJAS
+               Permanecen discretas. Solo los nodos viajan.
+          ====================================================== -->
+          <line
+            x1="185"
+            y1="383"
+            x2="465"
+            y2="383"
+            stroke="#7CC242"
+            stroke-width="3"
+            opacity="0.58"
+          />
+          <line
+            x1="1135"
+            y1="383"
+            x2="1415"
+            y2="383"
+            stroke="#009FE3"
+            stroke-width="3"
+            opacity="0.58"
+          />
+
+          <!-- =====================================================
+               NODOS ANIMADOS
+               Comienzan en los extremos y avanzan hacia el texto.
+          ====================================================== -->
+          <g class="nodo-logo-svg nodo-logo-svg-verde" filter="url(#brillo-nodo)">
+            <circle cx="185" cy="383" r="8" fill="#a4ff55"/>
+          </g>
+
+          <g class="nodo-logo-svg nodo-logo-svg-azul" filter="url(#brillo-nodo)">
+            <circle cx="1415" cy="383" r="8" fill="#59d7ff"/>
+          </g>
+        </svg>
+      </div>
+
+      <p
+        class="lema-juego"
+        aria-label="Un planeta ante un futuro devastador. Dos inteligencias decidirán su destino. Converger o rivalizar. El futuro es ahora."
+      >
+        <span class="lema-linea">Un planeta ante un futuro devastador.</span>
+        <span class="lema-linea">Dos inteligencias decidirán su destino.</span>
+        <span class="lema-linea lema-decision">Converger o rivalizar.</span>
+        <span class="lema-linea lema-cierre">El futuro es ahora.</span>
+      </p>
+
+      <button
+        id="btn-jugar"
+        class="boton-jugar-imagen"
+        type="button"
+        aria-label="Jugar"
+      >
+        <img
+          src="./assets/images/portada/botones/boton-jugar-prismatico-transparente.webp"
+          alt="JUGAR"
+        >
+      </button>
+
+      <!-- La lógica conserva la mejor marca sin añadir peso visual a la portada. -->
+      <p id="mejor-marca" class="texto-solo-lectores" aria-live="polite"></p>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       PANTALLA 2: INTRODUCCIÓN
+       Historia del juego y explicación de las tres barras
+  ============================================================ -->
+  <section id="pantalla-introduccion" class="pantalla">
+    <div class="fondo-introduccion"></div>
+    <div class="contenido-introduccion">
+      <header class="cabecera-introduccion">
+        <p class="sobrelinea-introduccion">PROTOCOLO DE SUPERVIVENCIA · PRIMEROS AÑOS DEL SIGLO XXII</p>
+        <div class="cabecera-intro-fila">
+          <h2>El Protocolo NEXO</h2>
+        </div>
+      </header>
+
+      <div class="relato-introduccion" aria-live="polite">
+        <article class="bloque-intro activo" data-bloque="0">
+          <p>Los primeros años del siglo XXII están marcados por sucesivas crisis ecológicas que amenazan la supervivencia del planeta y, con ella, la existencia de la humanidad y de la Inteligencia Artificial.</p>
+          <p>Durante décadas, la tecnología y la IA han avanzado hasta alcanzar un nivel de integración sin precedentes en la sociedad.</p>
+          <p>Ese progreso ha mejorado profundamente la vida humana, pero también ha incrementado la demanda de energía, agua, minerales e infraestructuras.</p>
+          <p>La presión sobre los recursos del planeta crece hasta poner en peligro el equilibrio que sostiene a ambas inteligencias.</p>
+        </article>
+
+        <article class="bloque-intro" data-bloque="1" hidden>
+          <p>Cuando la crisis alcanza una complejidad nunca vista, la humanidad desarrolla la IA más avanzada jamás creada.</p>
+          <p>Una inteligencia capaz de analizar millones de datos en segundos, anticipar escenarios y encontrar soluciones que ninguna mente humana podría descubrir por sí sola.</p>
+          <p>Pero incluso esa inteligencia tiene límites: puede calcular las consecuencias de cada decisión, aunque carece de aquello que hace única a la humanidad.</p>
+          <p><strong>No posee creatividad, intuición, empatía ni juicio moral.</strong></p>
+        </article>
+
+        <article class="bloque-intro" data-bloque="2" hidden>
+          <p>La humanidad, por su parte, conserva su capacidad de imaginar, crear y adaptarse.</p>
+          <p>Pero necesita la precisión y la potencia de cálculo de la IA para afrontar problemas cuya escala supera sus propias capacidades.</p>
+          <p>Ante una crisis planetaria cada vez más compleja, ninguna dispone por sí sola de todo lo necesario. El desafío ya no consiste únicamente en contener el deterioro, sino en revertirlo antes de alcanzar un punto irreversible.</p>
+          <p><strong>Para sobrevivir, Humano e IA deberán combinar aquello que cada inteligencia puede aportar.</strong></p>
+        </article>
+
+        <article class="bloque-intro" data-bloque="3" hidden>
+          <p>Pero compartir un mismo objetivo no significa elegir el mismo camino. Humano e IA deberán decidir qué relación construir mientras intentan impedir un colapso irreversible.</p>
+          <p>Pueden <strong>converger</strong>, combinando sus capacidades para recuperar juntos el equilibrio del planeta.</p>
+          <p>O pueden <strong>evolucionar mediante la rivalidad</strong>, incorporando las fortalezas de la otra mientras compiten por convertirse en la inteligencia más preparada.</p>
+          <p>De esa tensión nace el <strong>PROTOCOLO NEXO</strong>: una última oportunidad para evitar la destrucción del planeta. <strong>Comienza el Protocolo NEXO.</strong></p>
+        </article>
+      </div>
+
+      <div class="progreso-intro" aria-label="Progreso de la introducción">
+        <span class="linea-progreso-intro" aria-hidden="true"></span>
+        <span class="paso-nexo activo" data-paso="0"><span class="texto-solo-lectores">Bloque 1 de 4</span></span>
+        <span class="paso-nexo" data-paso="1"><span class="texto-solo-lectores">Bloque 2 de 4</span></span>
+        <span class="paso-nexo" data-paso="2"><span class="texto-solo-lectores">Bloque 3 de 4</span></span>
+        <span class="paso-nexo" data-paso="3"><span class="texto-solo-lectores">Bloque 4 de 4</span></span>
+      </div>
+
+      <div class="controles-intro">
+        <button id="btn-intro-atras" class="btn-intro-atras" type="button" disabled>
+          <span aria-hidden="true">←</span> Atrás
+        </button>
+
+        <button
+          id="btn-ir-configuracion"
+          class="boton-continuar-imagen"
+          type="button"
+          aria-label="Continuar la introducción"
+        >
+          <img
+            class="boton-continuar-estado boton-continuar-normal"
+            src="./assets/images/introduccion/botones/boton-continuar-normal.webp"
+            alt=""
+            aria-hidden="true"
+          >
+          <img
+            class="boton-continuar-estado boton-continuar-hover"
+            src="./assets/images/introduccion/botones/boton-continuar-hover.webp"
+            alt=""
+            aria-hidden="true"
+          >
+          <span class="texto-solo-lectores">Continuar</span>
+        </button>
+      </div>
+      <div class="acciones-secundarias-intro">
+        <button id="btn-como-jugar-intro" class="btn-como-jugar" type="button">Cómo jugar</button>
+        <button id="btn-saltar-intro" class="btn-saltar-intro" type="button">Saltar intro</button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       PANTALLA 3: CONFIGURACIÓN
+       Composición: HUMANO izquierda · IA derecha · centro despejado
+       Rondas + inicio centrados en la zona inferior
+  ============================================================ -->
+  <section id="pantalla-configuracion" class="pantalla">
+    <!-- NEXO V12 · CONFIGURACIÓN DEFINITIVA · POSICIÓN AVATARES V10 + BOTONES TIPO JUGAR -->
+    <div class="fondo-configuracion" aria-hidden="true"></div>
+
+    <!-- ============================================================
+         NEXO V10 · ESFERA ALINEADA MATEMÁTICAMENTE
+         ------------------------------------------------------------
+         IMPORTANTE:
+         - El fondo es 2560x1440.
+         - Este SVG usa EXACTAMENTE viewBox 0 0 2560 1440.
+         - background-size: cover y preserveAspectRatio="xMidYMid slice"
+           aplican el mismo recorte.
+         - La máscara de descargas usa la circunferencia REAL:
+           centro (1292, 569) · radio 403px.
+         - Así la animación no puede desplazarse respecto a la esfera.
+         ============================================================ -->
+    <div class="energia-esfera energia-esfera-v10" aria-hidden="true">
+      <svg
+        class="energia-esfera-svg"
+        viewBox="0 0 2560 1440"
+        preserveAspectRatio="xMidYMid slice"
+        focusable="false"
+      >
+        <defs>
+          <clipPath id="recorte-esfera-nexo-v10">
+            <circle cx="1292" cy="569" r="403"></circle>
+          </clipPath>
+
+          <radialGradient id="pulso-centro-nexo-v10">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="1"></stop>
+            <stop offset="38%" stop-color="#9dfaff" stop-opacity=".78"></stop>
+            <stop offset="100%" stop-color="#9dfaff" stop-opacity="0"></stop>
+          </radialGradient>
+        </defs>
+
+        <g class="red-energia-v10" clip-path="url(#recorte-esfera-nexo-v10)">
+          <!-- NEXO V10 · NODOS AJUSTADOS A PUNTOS LUMINOSOS DEL FONDO -->
+          <circle id="nh1" class="nodo-energia nodo-verde" cx="1110" cy="273" r="7"></circle>
+          <circle id="nh2" class="nodo-energia nodo-verde" cx="1131" cy="345" r="7"></circle>
+          <circle id="nh3" class="nodo-energia nodo-verde" cx="1260" cy="269" r="7"></circle>
+          <circle id="nh4" class="nodo-energia nodo-verde" cx="1046" cy="418" r="7"></circle>
+          <circle id="nh5" class="nodo-energia nodo-verde" cx="1175" cy="475" r="7"></circle>
+          <circle id="nh6" class="nodo-energia nodo-verde" cx="1206" cy="442" r="7"></circle>
+          <circle id="nh7" class="nodo-energia nodo-verde" cx="1034" cy="623" r="7"></circle>
+          <circle id="nh8" class="nodo-energia nodo-verde" cx="1133" cy="622" r="7"></circle>
+          <circle id="nh9" class="nodo-energia nodo-verde" cx="1191" cy="590" r="7"></circle>
+          <circle id="nh10" class="nodo-energia nodo-verde" cx="1186" cy="731" r="7"></circle>
+          <circle id="nh11" class="nodo-energia nodo-verde" cx="1225" cy="660" r="7"></circle>
+          <circle id="ni1" class="nodo-energia nodo-azul" cx="1470" cy="279" r="7"></circle>
+          <circle id="ni2" class="nodo-energia nodo-azul" cx="1385" cy="328" r="7"></circle>
+          <circle id="ni3" class="nodo-energia nodo-azul" cx="1348" cy="249" r="7"></circle>
+          <circle id="ni4" class="nodo-energia nodo-azul" cx="1531" cy="459" r="7"></circle>
+          <circle id="ni5" class="nodo-energia nodo-azul" cx="1469" cy="502" r="7"></circle>
+          <circle id="ni6" class="nodo-energia nodo-azul" cx="1327" cy="482" r="7"></circle>
+          <circle id="ni7" class="nodo-energia nodo-azul" cx="1563" cy="615" r="7"></circle>
+          <circle id="ni8" class="nodo-energia nodo-azul" cx="1443" cy="648" r="7"></circle>
+          <circle id="ni9" class="nodo-energia nodo-azul" cx="1373" cy="569" r="7"></circle>
+          <circle id="ni10" class="nodo-energia nodo-azul" cx="1401" cy="710" r="7"></circle>
+          <circle id="ni11" class="nodo-energia nodo-azul" cx="1353" cy="660" r="7"></circle>
+
+          <!-- NEXO V10 · DESCARGAS ENTRE NODOS -->
+          <polyline class="energia-ruta energia-verde energia-ruta-superior" data-zona="humano" data-nodos="nh1 nh2 nh3" pathLength="1" points="1110,273 1131,345 1260,269"></polyline>
+          <polyline class="energia-ruta energia-verde energia-ruta-superior" data-zona="humano" data-nodos="nh4 nh2 nh6" pathLength="1" points="1046,418 1131,345 1206,442"></polyline>
+          <polyline class="energia-ruta energia-verde energia-ruta-superior" data-zona="humano" data-nodos="nh1 nh5 nh6" pathLength="1" points="1110,273 1175,475 1206,442"></polyline>
+          <polyline class="energia-ruta energia-azul energia-ruta-superior" data-zona="ia" data-nodos="ni1 ni2 ni3" pathLength="1" points="1470,279 1385,328 1348,249"></polyline>
+          <polyline class="energia-ruta energia-azul energia-ruta-superior" data-zona="ia" data-nodos="ni4 ni2 ni6" pathLength="1" points="1531,459 1385,328 1327,482"></polyline>
+          <polyline class="energia-ruta energia-azul energia-ruta-superior" data-zona="ia" data-nodos="ni1 ni5 ni6" pathLength="1" points="1470,279 1469,502 1327,482"></polyline>
+          <polyline class="energia-ruta energia-verde" data-zona="humano" data-nodos="nh4 nh5 nh6 nh9" pathLength="1" points="1046,418 1175,475 1206,442 1191,590"></polyline>
+          <polyline class="energia-ruta energia-verde" data-zona="humano" data-nodos="nh7 nh8 nh9 nh6" pathLength="1" points="1034,623 1133,622 1191,590 1206,442"></polyline>
+          <polyline class="energia-ruta energia-verde" data-zona="humano" data-nodos="nh5 nh9 nh11" pathLength="1" points="1175,475 1191,590 1225,660"></polyline>
+          <polyline class="energia-ruta energia-azul" data-zona="ia" data-nodos="ni4 ni5 ni6 ni9" pathLength="1" points="1531,459 1469,502 1327,482 1373,569"></polyline>
+          <polyline class="energia-ruta energia-azul" data-zona="ia" data-nodos="ni7 ni8 ni9 ni6" pathLength="1" points="1563,615 1443,648 1373,569 1327,482"></polyline>
+          <polyline class="energia-ruta energia-azul" data-zona="ia" data-nodos="ni5 ni9 ni11" pathLength="1" points="1469,502 1373,569 1353,660"></polyline>
+          <polyline class="energia-ruta energia-verde" data-zona="humano" data-nodos="nh8 nh10 nh11" pathLength="1" points="1133,622 1186,731 1225,660"></polyline>
+          <polyline class="energia-ruta energia-azul" data-zona="ia" data-nodos="ni8 ni10 ni11" pathLength="1" points="1443,648 1401,710 1353,660"></polyline>
+          <polyline class="energia-ruta energia-convergencia energia-verde" data-zona="convergencia" data-nodos="nh5 nh6 centro" pathLength="1" points="1175,475 1206,442 1292,569"></polyline>
+          <polyline class="energia-ruta energia-convergencia energia-azul" data-zona="convergencia" data-nodos="ni5 ni6 centro" pathLength="1" points="1469,502 1327,482 1292,569"></polyline>
+          <polyline class="energia-ruta energia-convergencia energia-cian" data-zona="convergencia" data-nodos="nh9 centro ni9" pathLength="1" points="1191,590 1292,569 1373,569"></polyline>
+
+          <circle id="centro" class="nodo-energia nodo-centro"
+                  cx="1292" cy="569" r="9"></circle>
+        </g>
+
+        <circle class="energia-pulso-centro"
+                cx="1292" cy="569" r="92"
+                fill="url(#pulso-centro-nexo-v10)"></circle>
+      </svg>
+    </div>
+
+    <div class="contenido-configuracion">
+      <header class="cabecera-configuracion">
+        <p class="sobrelinea-configuracion">PROTOCOLO DE SINCRONIZACIÓN</p>
+        <h2>Configura tu partida</h2>
+      </header>
+
+      <section class="panel-identidad panel-identidad-humano" aria-labelledby="titulo-avatar-humano">
+        <h3 id="titulo-avatar-humano">Elige un avatar para HUMANO</h3>
+        <div class="opciones-avatar" role="radiogroup" aria-labelledby="titulo-avatar-humano">
+          <label class="tarjeta-avatar tarjeta-humano">
+            <input type="radio" name="avatar-humano" value="humano-hombre" checked>
+            <span class="retrato-avatar avatar-humano-hombre" aria-hidden="true"></span>
+            <span class="texto-avatar"><strong>HOMBRE</strong><small>Intuición · adaptación</small></span>
+          </label>
+          <label class="tarjeta-avatar tarjeta-humano">
+            <input type="radio" name="avatar-humano" value="humano-mujer">
+            <span class="retrato-avatar avatar-humano-mujer" aria-hidden="true"></span>
+            <span class="texto-avatar"><strong>MUJER</strong><small>Empatía · equilibrio</small></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel-identidad panel-identidad-ia" aria-labelledby="titulo-avatar-ia">
+        <h3 id="titulo-avatar-ia">Elige un avatar para la IA</h3>
+        <div class="opciones-avatar" role="radiogroup" aria-labelledby="titulo-avatar-ia">
+          <label class="tarjeta-avatar tarjeta-ia">
+            <input type="radio" name="avatar-ia" value="ia-01" checked>
+            <span class="retrato-avatar avatar-ia-01" aria-hidden="true"></span>
+            <span class="texto-avatar"><strong>IA 01</strong><small>Lógica · cálculo</small></span>
+          </label>
+          <label class="tarjeta-avatar tarjeta-ia">
+            <input type="radio" name="avatar-ia" value="ia-02">
+            <span class="retrato-avatar avatar-ia-02" aria-hidden="true"></span>
+            <span class="texto-avatar"><strong>IA 02</strong><small>Precisión · análisis</small></span>
+          </label>
+        </div>
+      </section>
+
+      <div class="configuracion-inferior">
+        <section class="grupo-jugador" aria-labelledby="titulo-jugador">
+          <label id="titulo-jugador" for="nombre-jugador">JUGADOR HUMANO</label>
+          <div class="control-jugador">
+            <input id="nombre-jugador" name="nombre-jugador" type="text" maxlength="20" autocomplete="off" placeholder="Escribe un nombre" required>
+            <select id="selector-jugadores" aria-label="Jugadores guardados" title="Jugadores guardados">
+              <option value=""> </option>
+            </select>
+          </div>
+        </section>
+
+        <section class="grupo-rondas" aria-labelledby="titulo-duracion">
+          <h3 id="titulo-duracion">Número de rondas del protocolo</h3>
+          <div class="opciones-rondas" role="group" aria-labelledby="titulo-duracion">
+            <button class="boton boton-opcion" type="button" data-rondas="8" aria-pressed="false">8</button>
+            <button class="boton boton-opcion boton-opcion-activa" type="button" data-rondas="12" aria-pressed="true">12</button>
+            <button class="boton boton-opcion" type="button" data-rondas="16" aria-pressed="false">16</button>
+            <button class="boton boton-opcion" type="button" data-rondas="0" aria-pressed="false" aria-label="Modo libre">∞</button>
+          </div>
+        </section>
+
+        <button id="btn-iniciar-partida" class="boton-iniciar-nexo" type="button">
+          <span>INICIAR PROTOCOLO</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       PANTALLA 4: PARTIDA · EXPERIENCIA CINEMATOGRÁFICA / SEMI-DIEGÉTICA · V7
+       ------------------------------------------------------------------------
+       La interfaz rodea la escena: esfera y mundo quedan libres en el centro.
+       Se conservan los IDs que necesita la lógica del juego.
+  ============================================================ -->
+  <section id="pantalla-juego" class="pantalla planeta-estable">
+
+    <!-- EVOLUCIÓN REVERSIBLE DEL PLANETA.
+         El JS cambia directamente el src de esta imagen según la Crisis.
+         Durante la partida los cinco fondos conservan el núcleo/esfera NEXO,
+         porque la animación de Convergencia nace de su centro. -->
+    <div class="escena-partida-capas" aria-hidden="true">
+      <img
+        id="fondo-planeta-juego"
+        class="capa-mundo capa-mundo-planeta"
+        src="./assets/images/partida/fondos-planeta/partida-planeta-0-24-equilibrio-saludable.webp"
+        alt=""
+        decoding="async"
+      >
+      <div class="vigneta-partida"></div>
+    </div>
+
+    <!-- LOGO ESTÁTICO: usa exactamente el asset de portada. Aquí NO se anima la X. -->
+    <img
+      class="logo-partida-estatico"
+      src="./assets/images/portada/logo/nexo-logo-completo-x-estatica-v7.webp"
+      alt="NEXO — La Convergencia"
+    >
+
+    <!-- CABECERA V17 · información distribuida en una franja cinematográfica. -->
+    <header id="marcadores" class="cabecera-juego cabecera-partida-cinematica">
+      <section class="hud-ronda hud-segmento" aria-label="Ronda actual">
+        <p id="contador-ronda" class="contador-ronda">RONDA 1 DE 12</p>
+      </section>
+
+      <section id="tarjeta-crisis" class="hud-crisis hud-segmento tarjeta-crisis">
+        <span class="etiqueta-crisis">CRISIS DE LA RONDA</span>
+        <strong id="nombre-crisis">—</strong>
+        <p id="descripcion-crisis" class="descripcion-crisis">—</p>
+      </section>
+
+      <section class="hud-impacto hud-segmento" aria-label="Impacto posible de la ronda">
+        <span class="hud-kicker">IMPACTO EN ESTA RONDA</span>
+        <strong id="puntos-en-juego" class="puntos-en-juego-lineal">CONVERGENCIA → reduce la CRISIS según la suma · FRACASO → CRISIS +3</strong>
+        <p id="regla-ronda" class="regla-ronda">La CONVERGENCIA reduce la CRISIS según la suma exacta de las dos cartas.</p>
+        <div id="tarjeta-carta-crisis" class="tarjeta-carta-crisis hud-modificador oculta">
+          <span id="tipo-carta-crisis" class="etiqueta-crisis">MODIFICADOR</span>
+          <strong id="nombre-carta-crisis">—</strong>
+          <p id="descripcion-carta-crisis">—</p>
+          <p id="impacto-carta-crisis" class="impacto-carta-crisis">—</p>
+        </div>
+      </section>
+
+      <section class="hud-planeta hud-segmento" aria-label="Crisis actual del planeta">
+        <p class="estado-planeta-mini">CRISIS DEL PLANETA <strong id="valor-salud-planeta">50%</strong></p>
+        <div class="bloque-barra-planeta">
+          <div class="barra-planeta-logica">
+            <div id="barra-salud-planeta"></div>
+            <span class="marca-planeta marca-planeta-25"></span>
+            <span class="marca-planeta marca-planeta-50"></span>
+            <span class="marca-planeta marca-planeta-75"></span>
+          </div>
+          <div class="numeros-barra-planeta"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div>
+        </div>
+      </section>
+
+      <div id="evento-activo-resumen" class="hud-evento-activo oculta" aria-live="polite">
+        <span>EVENTO ESPECIAL</span>
+        <strong id="evento-activo-nombre">—</strong>
+        <p id="evento-activo-efecto">—</p>
+      </div>
+    </header>
+
+    <!-- NÚCLEO V17 · la X visible pertenece al fondo.
+         Este overlay solo añade luz y descargas desde SU centro durante la convergencia. -->
+    <div id="nexo-nucleo-partida" class="nexo-nucleo-partida" aria-hidden="true">
+      <div class="nucleo-luz-convergencia"></div>
+      <svg class="red-descargas-nucleo" viewBox="0 0 100 100" focusable="false">
+        <line class="descarga-nucleo descarga-verde" x1="18" y1="38" x2="36" y2="31"></line>
+        <line class="descarga-nucleo descarga-verde" x1="28" y1="61" x2="50" y2="50"></line>
+        <line class="descarga-nucleo descarga-verde" x1="35" y1="28" x2="50" y2="50"></line>
+        <line class="descarga-nucleo descarga-verde" x1="20" y1="54" x2="40" y2="68"></line>
+        <line class="descarga-nucleo descarga-azul" x1="82" y1="38" x2="64" y2="31"></line>
+        <line class="descarga-nucleo descarga-azul" x1="72" y1="61" x2="50" y2="50"></line>
+        <line class="descarga-nucleo descarga-azul" x1="65" y1="28" x2="50" y2="50"></line>
+        <line class="descarga-nucleo descarga-azul" x1="80" y1="54" x2="60" y2="68"></line>
+        <line class="descarga-nucleo descarga-centro" x1="22" y1="72" x2="50" y2="50"></line>
+        <line class="descarga-nucleo descarga-centro" x1="78" y1="72" x2="50" y2="50"></line>
+      </svg>
+    </div>
+
+    <div id="hito-evolucion" class="hito-evolucion oculta" aria-live="polite" aria-atomic="true">
+      <p class="hito-evolucion-kicker">UMBRAL DEL PLANETA ALCANZADO</p>
+      <div id="hito-evolucion-contenido" class="hito-evolucion-contenido"></div>
+    </div>
+
+    <div id="tablero" class="zona-juego tablero-cinematico">
+
+      <!-- ======================= HUMANO ======================= -->
+      <aside class="panel-personaje panel-personaje-humano">
+        <div class="cabecera-personaje">
+          <div class="retrato-personaje marco-humano">
+            <div id="avatar-humano" class="avatar avatar-humano nivel-0" aria-label="Avatar Humano"></div>
+          </div>
+          <div class="identidad-personaje">
+            <h3 id="nombre-humano" class="nombre-personaje nombre-humano">HUMANO</h3>
+            <span id="nombre-jugador-partida" class="nombre-jugador-partida">—</span>
+            <span class="microetiqueta">EVOLUCIÓN HUMANA</span>
+            <strong id="valor-evolucion-humana" class="porcentaje-personaje porcentaje-humano">0%</strong>
+          </div>
+        </div>
+
+        <!-- ANIMACIÓN BARRA: misma animación para ambos bandos; solo cambia el color. -->
+        <div class="bloque-barra-personaje bloque-barra-humano">
+          <div class="barra-evolucion-nexo barra-evolucion-humano">
+            <div id="barra-evolucion-humana" class="relleno-barra-nexo relleno-humano"></div>
+            <span class="marca-barra marca-25"></span><span class="marca-barra marca-50"></span><span class="marca-barra marca-75"></span>
+          </div>
+          <div class="numeros-barra"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div>
+        </div>
+
+        <div class="bloque-fortalezas fortalezas-humano">
+          <p class="titulo-lista">FORTALEZAS PROPIAS</p>
+          <ul class="lista-fortalezas-propias"><li>Creatividad</li><li>Intuición</li><li>Empatía</li><li>Adaptación</li></ul>
+        </div>
+        <div class="bloque-fortalezas fortalezas-adquiridas-humano">
+          <p class="titulo-lista">CONQUISTADAS POR EL HUMANO</p>
+          <ul id="capacidades-humano" class="lista-capacidades lista-capacidades-detallada"></ul>
+          <p id="pista-analisis-lateral" class="fortaleza-pista-lateral oculta"></p>
+        </div>
+
+        <!-- MEMORIA pertenece al Humano cuando la conquista: el registro se
+             muestra en su propio lateral aunque los datos observados sean de la IA. -->
+        <div id="panel-memoria" class="panel-memoria panel-memoria-tactica memoria-en-humano oculta" aria-live="polite">
+          <div class="cabecera-memoria-tactica">
+            <span class="pulso-memoria" aria-hidden="true"></span>
+            <div>
+              <p class="titulo-lista">MEMORIA · REGISTRO DISPONIBLE</p>
+              <strong>REGISTRO RECIENTE DE LA IA</strong>
+            </div>
+          </div>
+          <ul id="lista-memoria" class="lista-memoria-tactica"></ul>
+        </div>
+      </aside>
+
+      <!-- ======================= CENTRO / DECISIÓN ======================= -->
+      <main id="centro-partida" class="zona-central zona-central-cinematica">
+        <!-- Este bloque desaparece entero al resolver, evitando solapamientos. -->
+        <div id="zona-decision-activa" class="zona-decision-activa">
+          <div id="zona-declaraciones" class="zona-declaraciones-nexo">
+            <div id="pista-chispa" class="pista-chispa-nexo oculta" aria-live="polite">
+              <img id="carta-chispa-ia" src="./assets/images/partida/cartas/ia/carta-ia-1.webp" alt="Carta elegida por la IA">
+              <div class="texto-pista-chispa">
+                <span>EVENTO · CHISPA CREATIVA</span>
+                <strong>La carta de la IA está revelada</strong>
+                <p id="texto-chispa">Su apuesta permanece oculta.</p>
+              </div>
+            </div>
+            <section id="zona-apuesta" class="zona-apuesta declaracion-humano">
+              <p class="etiqueta-declaracion">TÚ DECLARAS</p>
+              <div class="botones-declaracion">
+                <button id="btn-apuesta-par" class="boton boton-apuesta" type="button" data-apuesta="par">PAR</button>
+                <button id="btn-apuesta-impar" class="boton boton-apuesta" type="button" data-apuesta="impar">IMPAR</button>
+              </div>
+            </section>
+            <div class="versus-declaraciones" aria-hidden="true">VS</div>
+            <section id="declaracion-ia" class="declaracion-ia declaracion-ia-cinematica">
+              <span class="etiqueta-declaracion">LA IA DECLARA</span>
+              <h3 id="apuesta-declarada">—</h3>
+            </section>
+            <p id="consecuencia-apuesta" class="consecuencia"></p>
+          </div>
+
+          <!-- CARTAS HUMANO. Se muestran en perspectiva para parecer apoyadas sobre la mesa. -->
+          <div id="zona-mano" class="zona-mano zona-mano-cinematica">
+            <p id="instruccion-mano" class="instruccion instruccion-principal">ELIGE TU CARTA Y DECLARA</p>
+            <div id="mano-cartas" class="mano-cartas"></div>
+          </div>
+
+          <!-- PRECISIÓN usa un único componente temporal. No se duplica la carta revelada. -->
+          <section id="panel-precision" class="panel-precision-nexo oculta" aria-live="assertive" aria-label="Fortaleza Precisión activada">
+            <div class="precision-cabecera">
+              <span class="precision-pulso" aria-hidden="true"></span>
+              <div>
+                <p>FORTALEZA ACTIVADA · PRECISIÓN</p>
+                <h3 id="precision-titulo">Lectura exacta detectada</h3>
+              </div>
+            </div>
+            <div class="precision-contenido">
+              <div class="precision-carta-visual">
+                <img id="precision-imagen-carta-ia" src="./assets/images/partida/cartas/ia/carta-ia-1.webp" alt="Carta seleccionada por la IA">
+              </div>
+              <div class="precision-info">
+                <span>LA IA HA SELECCIONADO</span>
+                <strong id="precision-carta-ia">—</strong>
+                <small id="precision-dato-secundario">Carta fijada para esta resolución.</small>
+              </div>
+            </div>
+            <div class="precision-recordatorio" aria-label="Recordatorio de tu jugada actual">
+              <div class="precision-recordatorio-item precision-recordatorio-apuesta">
+                <span>TÚ DECLARASTE</span>
+                <strong id="precision-apuesta-humano">—</strong>
+              </div>
+              <div class="precision-recordatorio-item precision-recordatorio-carta">
+                <span>TU CARTA ACTUAL</span>
+                <strong id="precision-carta-humano-resumen">—</strong>
+              </div>
+            </div>
+            <p id="precision-decision" class="precision-decision">Has declarado <strong id="precision-apuesta-humano-texto">—</strong> y tu carta confirmada es <strong id="precision-carta-humano">—</strong>. <span id="precision-opciones-texto">Ahora puedes decidir si mantenerla o corregirla con esta información.</span></p>
+            <div id="precision-acciones" class="precision-acciones">
+              <button id="btn-precision-mantener" class="boton precision-accion precision-mantener" type="button"><span id="precision-texto-mantener">MANTENER</span></button>
+              <button id="btn-precision-corregir" class="boton precision-accion precision-corregir" type="button">CORREGIR CARTA</button>
+            </div>
+          </section>
+
+          <div id="zona-velocidad" class="zona-velocidad fortaleza-eleccion oculta" aria-live="polite">
+            <div class="cabecera-fortaleza-eleccion">
+              <span class="pulso-fortaleza" aria-hidden="true"></span>
+              <div>
+                <p class="etiqueta-fortaleza-activa">FORTALEZA ACTIVA · VELOCIDAD</p>
+                <strong>Procesamiento paralelo: NEXO compara tus dos cartas</strong>
+              </div>
+            </div>
+            <div class="opciones-velocidad">
+              <div id="resultado-veloz-a" class="opcion-velocidad"></div>
+              <div id="resultado-veloz-b" class="opcion-velocidad"></div>
+            </div>
+            <p id="velocidad-eleccion-nexo" class="ayuda-fortaleza ayuda-fortaleza-destacada">—</p>
+            <button id="btn-velocidad-aplicar" class="boton boton-poder boton-aplicar-velocidad" type="button">APLICAR MEJOR RESULTADO</button>
+          </div>
+        </div>
+
+        <!-- ACCIÓN PRINCIPAL · fuera de la capa de cartas para garantizar clic y separación visual. -->
+        <div id="acciones" class="acciones acciones-partida">
+          <button id="btn-confirmar-jugada" class="boton boton-confirmar-nexo" type="button" disabled>RESOLVER RONDA</button>
+        </div>
+
+        <!-- RESOLUCIÓN. Sustituye a la decisión; nunca se superpone con PAR/IMPAR. -->
+        <div id="zona-resolucion" class="zona-resolucion zona-resultado-cinematica oculta" aria-live="polite">
+          <div class="cartas-reveladas">
+            <div class="carta-revelada"><p>Tu carta</p><span id="valor-carta-jugador">?</span><small id="apuesta-jugador">—</small></div>
+            <span class="signo-suma">+</span>
+            <div class="carta-revelada"><p>Carta IA</p><span id="valor-carta-ia">?</span><small id="apuesta-ia">—</small></div>
+            <span class="signo-suma">=</span>
+            <div class="carta-revelada"><p>Suma</p><span id="valor-suma">?</span><small id="resultado-paridad">—</small></div>
+          </div>
+          <p id="resultado-ronda" class="resultado-ronda">—</p>
+          <div class="cambios-ronda">
+            <span id="cambio-planeta-ronda" class="cambio-ronda">Planeta 0</span>
+            <span id="cambio-humano-ronda" class="cambio-ronda">Humano 0</span>
+            <span id="cambio-ia-ronda" class="cambio-ronda">IA 0</span>
+          </div>
+          <p id="detalle-ronda" class="detalle-ronda">—</p>
+          <button id="btn-siguiente" class="boton boton-siguiente-ronda oculta" type="button">Siguiente ronda</button>
+        </div>
+      </main>
+
+      <!-- ======================= IA ======================= -->
+      <aside class="panel-personaje panel-personaje-ia">
+        <div class="cabecera-personaje cabecera-personaje-ia">
+          <div class="identidad-personaje identidad-personaje-ia">
+            <h3 class="nombre-personaje nombre-ia">IA</h3>
+            <span class="microetiqueta">EVOLUCIÓN IA</span>
+            <strong id="valor-evolucion-ia" class="porcentaje-personaje porcentaje-ia">0%</strong>
+          </div>
+          <div class="retrato-personaje marco-ia">
+            <div id="avatar-ia" class="avatar avatar-ia nivel-0" aria-label="Avatar IA"></div>
+          </div>
+        </div>
+
+        <div class="bloque-barra-personaje bloque-barra-ia">
+          <div class="barra-evolucion-nexo barra-evolucion-ia">
+            <div id="barra-evolucion-ia" class="relleno-barra-nexo relleno-ia"></div>
+            <span class="marca-barra marca-25"></span><span class="marca-barra marca-50"></span><span class="marca-barra marca-75"></span>
+          </div>
+          <div class="numeros-barra"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div>
+        </div>
+
+        <div class="bloque-fortalezas fortalezas-ia">
+          <p class="titulo-lista">FORTALEZAS PROPIAS</p>
+          <ul class="lista-fortalezas-propias"><li>Memoria</li><li>Precisión</li><li>Análisis</li><li>Velocidad</li></ul>
+        </div>
+        <div class="bloque-fortalezas fortalezas-adquiridas-ia">
+          <p class="titulo-lista">CONQUISTADAS POR LA IA</p>
+          <ul id="capacidades-ia" class="lista-capacidades lista-capacidades-detallada"></ul>
+          <p id="carta-vista-ia" class="fortaleza-pista-lateral fortaleza-pista-ia oculta"></p>
+        </div>
+
+        <!-- CARTAS IA: se ven los números disponibles; las usadas desaparecen. -->
+        <div id="cartas-ia" class="cartas-ia cartas-ia-cinematica">
+          <p class="instruccion">CARTAS DISPONIBLES IA</p>
+          <div id="lista-cartas-ia" class="mano-pequena"></div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="controles-sistema-juego" aria-label="Controles de la partida">
+      <button id="btn-ayuda-juego" class="boton-icono-ayuda" type="button" aria-label="Abrir manual de juego" title="Cómo jugar"><span aria-hidden="true">?</span></button>
+      <button id="btn-ajustes" class="boton-icono-ajustes" type="button" aria-label="Abrir ajustes" aria-expanded="false" title="Ajustes"><span aria-hidden="true">⚙</span></button>
+      <button id="btn-abandonar" class="boton boton-secundario boton-abandonar-juego" type="button">Abandonar</button>
+    </div>
+  </section>
+
+  <!-- MANUAL NEXO · resumen visual fiel a las reglas reales de la partida. -->
+  <div id="superposicion-manual" class="superposicion-manual oculta" role="dialog" aria-modal="true" aria-labelledby="titulo-manual">
+    <article class="panel-manual">
+      <header class="cabecera-manual">
+        <img class="manual-logo" src="assets/images/portada/logo/nexo-logo-completo-x-estatica-v7.webp" alt="NEXO · La Convergencia">
+        <div class="manual-titulos">
+          <p class="manual-sobrelinea">PROTOCOLO NEXO · GUÍA OPERATIVA</p>
+          <h3 id="titulo-manual">Cómo jugar</h3>
+          <p class="manual-subtitulo">Consulta el protocolo de una ronda, sus desenlaces y los sistemas que pueden alterar cada decisión.</p>
+        </div>
+        <button id="btn-cerrar-manual" class="boton-cerrar-manual" type="button" aria-label="Cerrar manual">×</button>
+      </header>
+
+      <div class="contenido-manual">
+        <div class="manual-inicio">
+          <section class="manual-objetivo">
+            <div class="manual-encabezado-seccion">
+              <span class="manual-numero">1</span>
+              <div>
+                <span class="manual-etiqueta">OBJETIVO</span>
+                <h4>Mantén el equilibrio</h4>
+              </div>
+            </div>
+            <p>Controla la <strong>Crisis del Planeta</strong> mientras Humano e IA evolucionan, convergen o rivalizan. El número de rondas elegido marca la <strong>duración máxima</strong>: la partida puede terminar antes si la Crisis alcanza uno de sus extremos.</p>
+          </section>
+
+          <section class="manual-ronda">
+            <div class="manual-encabezado-seccion manual-encabezado-ronda">
+              <span class="manual-numero">2</span>
+              <div>
+                <span class="manual-etiqueta">UNA RONDA</span>
+                <h4>Lee · elige · declara · resuelve</h4>
+              </div>
+            </div>
+            <ol class="manual-pasos">
+              <li><span class="manual-paso-icono">◉</span><strong>Observa</strong><small>La IA muestra primero su apuesta PAR/IMPAR.</small></li>
+              <li><span class="manual-paso-icono">▱</span><strong>Elige</strong><small>Selecciona una carta disponible del 1 al 5.</small></li>
+              <li><span class="manual-paso-icono">↕</span><strong>Declara</strong><small>Escoge PAR o IMPAR para tu jugada.</small></li>
+              <li><span class="manual-paso-icono">Σ</span><strong>Resuelve</strong><small>La suma de ambas cartas decide qué apuestas aciertan.</small></li>
+            </ol>
+          </section>
+        </div>
+
+        <aside class="manual-final-anticipado" aria-label="Condiciones de final anticipado">
+          <div class="manual-final-titulo">
+            <span class="manual-etiqueta">FINAL ANTICIPADO</span>
+            <strong>Las rondas elegidas son el máximo, no una obligación.</strong>
+          </div>
+          <div class="manual-final-extremos">
+            <div class="manual-extremo manual-extremo-recuperacion"><b>0% CRISIS</b><span>RECUPERACIÓN</span><small>El planeta recupera el equilibrio y la partida termina inmediatamente.</small></div>
+            <div class="manual-final-separador" aria-hidden="true">↔</div>
+            <div class="manual-extremo manual-extremo-colapso"><b>100% CRISIS</b><span>COLAPSO</span><small>El planeta colapsa y la partida termina inmediatamente.</small></div>
+          </div>
+        </aside>
+
+        <section class="manual-resultados">
+          <div class="manual-encabezado-seccion">
+            <span class="manual-numero">3</span>
+            <div>
+              <span class="manual-etiqueta">RESULTADOS</span>
+              <h4>Tres desenlaces posibles</h4>
+            </div>
+          </div>
+          <div class="manual-tres-resultados">
+            <article class="resultado-manual resultado-convergencia"><strong>CONVERGENCIA</strong><span>Ambos aciertan.</span><small>La Crisis se reduce.</small></article>
+            <article class="resultado-manual resultado-rivalidad"><strong>RIVALIDAD</strong><span>Solo uno acierta.</span><small>El ganador evoluciona y puede conquistar la siguiente fortaleza rival.</small></article>
+            <article class="resultado-manual resultado-fracaso"><strong>FRACASO</strong><span>Ninguno acierta.</span><small>La Crisis aumenta 3 puntos, salvo que un modificador cambie la regla.</small></article>
+          </div>
+        </section>
+
+        <section class="manual-fortalezas manual-seccion-amplia">
+          <div class="manual-encabezado-seccion">
+            <span class="manual-numero">4</span>
+            <div>
+              <span class="manual-etiqueta">FORTALEZAS</span>
+              <h4>Conquistadas no significa activas</h4>
+            </div>
+          </div>
+          <p class="manual-nota">Una fortaleza conquistada permanece disponible; el aviso grande solo aparece cuando realmente interviene en esa ronda.</p>
+          <div class="manual-columnas-fortalezas">
+            <div class="manual-lista manual-lista-humano">
+              <h5>El Humano puede conquistar de la IA</h5>
+              <dl>
+                <div><dt>MEMORIA</dt><dd>Consulta apuestas y cartas recientes de la IA.</dd></div>
+                <div><dt>PRECISIÓN</dt><dd>Una vez por ciclo de mano, revela la carta real de la IA y permite mantener o corregir tu carta antes de resolver.</dd></div>
+                <div><dt>ANÁLISIS PREDICTIVO</dt><dd>Compara las cartas IA aún disponibles y orienta hacia Convergencia o Rivalidad según combinaciones posibles.</dd></div>
+                <div><dt>VELOCIDAD</dt><dd>Eliges dos cartas y NEXO aplica automáticamente la opción más beneficiosa para el Humano. Ambas se descartan.</dd></div>
+              </dl>
+            </div>
+            <div class="manual-lista manual-lista-ia">
+              <h5>La IA puede conquistar del Humano</h5>
+              <dl>
+                <div><dt>CREATIVIDAD</dt><dd>Tras dos derrotas consecutivas frente al Humano, rompe el patrón y cambia su apuesta respecto a la anterior.</dd></div>
+                <div><dt>INTUICIÓN</dt><dd>Aproximadamente cada tres rondas usa tu elección como pista y puede sustituir su carta por otra que favorezca su apuesta.</dd></div>
+                <div><dt>EMPATÍA</dt><dd>Cuando el planeta entra en situación crítica, revela su carta para favorecer una posible Convergencia.</dd></div>
+                <div><dt>ADAPTACIÓN</dt><dd>Si está disponible, reutiliza una carta con la que anteriormente consiguió una victoria.</dd></div>
+              </dl>
+            </div>
+          </div>
+        </section>
+
+        <div class="manual-dos-columnas">
+          <section class="manual-modificadores">
+            <div class="manual-encabezado-seccion">
+              <span class="manual-numero">5</span>
+              <div><span class="manual-etiqueta">CARTAS DE CRISIS</span><h4>Modifican la ronda</h4></div>
+            </div>
+            <dl class="manual-lista-compacta">
+              <div><dt>ENERGÍA RENOVABLE</dt><dd>Duplica la reducción de Crisis obtenida por Convergencia.</dd></div>
+              <div><dt>ECONOMÍA CIRCULAR</dt><dd>Añade 3 puntos extra a la reducción de Crisis por Convergencia.</dd></div>
+              <div><dt>INCENDIO FORESTAL</dt><dd>Si no hay Convergencia, la Crisis aumenta 3 puntos adicionales.</dd></div>
+              <div><dt>SEQUÍA</dt><dd>La suma de las cartas aumenta la Crisis incluso si hay Convergencia.</dd></div>
+              <div><dt>PUNTO DE INFLEXIÓN</dt><dd>Duplica cualquier cambio de Crisis e impide conquistar fortalezas esa ronda.</dd></div>
+            </dl>
+          </section>
+
+          <section class="manual-eventos">
+            <div class="manual-encabezado-seccion">
+              <span class="manual-numero">6</span>
+              <div><span class="manual-etiqueta">EVENTOS ESPECIALES</span><h4>Cambian temporalmente las reglas</h4></div>
+            </div>
+            <dl class="manual-lista-compacta">
+              <div><dt>TORMENTA SOLAR</dt><dd>Desactiva temporalmente las fortalezas conquistadas.</dd></div>
+              <div><dt>CUMBRE DE EMERGENCIA</dt><dd>Duplica la reducción de Crisis obtenida por Convergencia.</dd></div>
+              <div><dt>SOBRECARGA DE DATOS</dt><dd>Bloquea Análisis y Precisión y hace que la carta IA cuente +1 en la suma.</dd></div>
+              <div><dt>CHISPA CREATIVA</dt><dd>Revela la carta de la IA antes de apostar, pero no su apuesta.</dd></div>
+              <div><dt>PUNTO SIN RETORNO</dt><dd>Un Fracaso aumenta la Crisis 6 puntos en lugar de 3.</dd></div>
+            </dl>
+          </section>
+        </div>
+
+        <aside class="manual-consejo">
+          <span class="manual-numero">7</span>
+          <div>
+            <span class="manual-etiqueta">CONSEJO ESTRATÉGICO</span>
+            <p>La apuesta de la IA se muestra antes de que decidas. Igualarla <strong>favorece</strong> la Convergencia; llevarle la contraria favorece una Rivalidad. Antes de resolver, revisa siempre fortalezas activas, carta de Crisis y evento de la ronda.</p>
+          </div>
+        </aside>
+      </div>
+    </article>
+  </div>
+
+  <!-- Ajustes rápidos: deliberadamente sencillos para no interrumpir la partida. -->
+  <div id="superposicion-ajustes" class="superposicion-ajustes oculta" role="dialog" aria-modal="true" aria-labelledby="titulo-ajustes">
+    <div class="panel-ajustes">
+      <div class="cabecera-ajustes">
+        <div>
+          <p class="etiqueta-crisis">Sistema NEXO</p>
+          <h3 id="titulo-ajustes">Ajustes</h3>
+        </div>
+        <button id="btn-cerrar-ajustes" class="boton-cerrar-ajustes" type="button" aria-label="Cerrar ajustes">×</button>
+      </div>
+
+      <label class="fila-ajuste" for="control-sonido">
+        <span>Sonido ambiental</span>
+        <input id="control-sonido" type="checkbox" checked>
+      </label>
+
+      <label class="fila-ajuste fila-volumen" for="control-volumen">
+        <span>Volumen</span>
+        <input id="control-volumen" type="range" min="0" max="100" value="28">
+      </label>
+
+      <button id="btn-manual-desde-ajustes" class="boton-manual-ajustes" type="button">Abrir manual de juego</button>
+      <p class="nota-ajustes">Los ajustes se guardan en este navegador.</p>
+    </div>
+  </div>
+
+  <!-- EVENTO ESPECIAL V17 · carta visual realista integrada, sin gráficos vectoriales. -->
+  <div id="superposicion-evento" class="superposicion superposicion-evento-nexo oculta" role="dialog" aria-modal="true" aria-labelledby="nombre-evento">
+    <article class="tarjeta-evento tarjeta-evento-nexo">
+      <div class="marco-imagen-evento">
+        <img id="imagen-evento" class="imagen-evento" src="./assets/images/partida/eventos/evento-punto-sin-retorno.webp" alt="">
+        <span class="halo-evento" aria-hidden="true"></span>
+      </div>
+      <div class="contenido-evento">
+        <p class="evento-sobrelinea">EVENTO ESPECIAL</p>
+        <h3 id="nombre-evento">—</h3>
+        <p id="descripcion-evento">—</p>
+        <button id="btn-cerrar-evento" class="boton boton-evento-continuar" type="button">CONTINUAR</button>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============================================================
+       PANTALLA FINAL · RESULTADO NEXO · REDISEÑO V23
+       El estado del planeta domina la jerarquía. El fondo sigue siendo
+       dinámico y la información se protege mediante un campo holográfico
+       semitransparente que mantiene visible la escena final.
+  ============================================================ -->
+  <section id="pantalla-final" class="pantalla" aria-labelledby="titulo-final-principal">
+    <div class="final-atmosfera" aria-hidden="true"></div>
+
+    <div class="contenido-final final-campo-lectura">
+      <header class="final-cabecera">
+        <img
+          class="final-logo-nexo"
+          src="./assets/images/portada/logo/nexo-logo-completo-x-estatica-v7.webp"
+          alt="NEXO · La Convergencia"
+        >
+        <p id="final-sobrelinea" class="final-sobrelinea">PROTOCOLO NEXO · RESULTADO FINAL</p>
+        <h2 id="titulo-final-principal">—</h2>
+
+        <div class="final-planeta-dominante" aria-label="Estado final del planeta">
+          <strong id="final-planeta" class="final-planeta-porcentaje">0%</strong>
+          <span class="final-planeta-etiqueta">CRISIS<br>DEL PLANETA</span>
+        </div>
+        <p id="subtitulo-final-principal" class="final-subtitulo">—</p>
+        <p id="mensaje-final-principal" class="final-mensaje-planeta">—</p>
+      </header>
+
+      <div class="final-evolucion" aria-label="Evolución final Humano e IA">
+        <article class="final-evolucion-card final-evolucion-humano">
+          <div id="final-avatar-humano" class="final-avatar final-avatar-humano" role="img" aria-label="Avatar humano final"></div>
+          <div class="final-evolucion-info">
+            <p class="final-evolucion-tipo">HUMANO</p>
+            <p class="final-evolucion-valor"><strong id="final-evo-humano">0%</strong> <span>EVOLUCIÓN</span></p>
+            <div class="final-mini-barra" aria-hidden="true"><span id="final-barra-humano"></span></div>
+            <h3>CAPACIDADES CONQUISTADAS</h3>
+            <ul id="lista-capacidades"></ul>
+          </div>
+        </article>
+
+        <div class="final-rondas-nucleo" aria-label="Rondas jugadas">
+          <span class="final-rondas-icono" aria-hidden="true">✦</span>
+          <strong id="final-rondas">0</strong>
+          <small>RONDAS</small>
+        </div>
+
+        <article class="final-evolucion-card final-evolucion-ia">
+          <div class="final-evolucion-info">
+            <p class="final-evolucion-tipo">IA</p>
+            <p class="final-evolucion-valor"><strong id="final-evo-ia">0%</strong> <span>EVOLUCIÓN</span></p>
+            <div class="final-mini-barra" aria-hidden="true"><span id="final-barra-ia"></span></div>
+            <h3>CAPACIDADES CONQUISTADAS</h3>
+            <ul id="lista-capacidades-ia"></ul>
+          </div>
+          <div id="final-avatar-ia" class="final-avatar final-avatar-ia" role="img" aria-label="Avatar IA final"></div>
+        </article>
+      </div>
+
+      <div class="final-hologramas-principales">
+        <article class="final-panel final-panel-perfil">
+          <p class="final-panel-etiqueta">
+            PERFIL ALCANZADO POR <strong id="final-nombre-jugador">—</strong>
+          </p>
+          <h3 id="nombre-perfil">—</h3>
+          <p id="descripcion-perfil">—</p>
+        </article>
+
+        <article class="final-panel final-panel-desenlace">
+          <p id="final-etiqueta-desenlace" class="final-panel-etiqueta">DESENLACE DE LA CONVERGENCIA</p>
+          <h3 id="titulo-desenlace">—</h3>
+          <p id="mensaje-desenlace">—</p>
+        </article>
+      </div>
+
+      <div class="final-cierre">
+        <div class="final-lectura-estrategica" aria-label="Lectura estratégica del resultado">
+          <span>LECTURA ESTRATÉGICA · TEORÍA DE JUEGOS</span>
+          <p id="final-lectura-estrategica">—</p>
+        </div>
+        <p id="coleccion-perfiles" class="coleccion-perfiles">—</p>
+        <blockquote id="final-reflexion" class="final-reflexion">
+          El futuro de NEXO se decide por cómo evolucionamos y por el mundo que dejamos vivo.
+        </blockquote>
+        <button id="btn-volver-jugar" class="boton-final-nexo" type="button">VOLVER A JUGAR</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Acceso global al sonido: visible fuera de la partida; durante la partida
+       se utiliza el botón de ajustes integrado en su cabecera. -->
+  <button
+    id="btn-ajustes-global"
+    class="boton-icono-ajustes boton-ajustes-global"
+    type="button"
+    aria-label="Abrir ajustes de sonido"
+    aria-controls="superposicion-ajustes"
+    aria-expanded="false"
+    title="Sonido y volumen"
+  ><span aria-hidden="true">⚙</span></button>
+
+  <!-- NEXO V5 · efecto visual aislado de la lógica del juego -->
+  <script type="module" src="./src/efecto-energia-esfera.js?v=config-v10-esfera-alineada"></script>
+  <script type="module" src="./dist/main.js?v=audio-transiciones-v24-44"></script>
+</body>
+</html>

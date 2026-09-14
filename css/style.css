@@ -1,0 +1,5962 @@
+/* =====================================================================
+   NEXO — LA CONVERGENCIA — HOJA DE ESTILOS
+   =====================================================================
+   Paleta inspirada en el concepto: verde-natural (Humano/ecología)
+   frente a azul-tecnológico (IA), sobre un fondo oscuro que representa
+   el espacio y la crisis planetaria.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   1. VARIABLES DE COLOR Y TIPOGRAFÍA
+   Las guardamos en un solo sitio para poder cambiarlas fácilmente
+--------------------------------------------------------------------- */
+:root {
+  /* Colores principales */
+  --color-fondo: #0b0f14;
+  --color-fondo-panel: #131a22;
+  --color-texto: #e8eef2;
+  --color-texto-secundario: #9fb0bd;
+
+  /* Humano = verde natural | IA = azul tecnológico */
+  --color-humano: #4caf7d;
+  --color-humano-claro: #7fd9a8;
+  --color-ia: #4a9dd9;
+  --color-ia-claro: #7ec4f2;
+
+  /* Planeta: de crítico (rojo) a recuperado (verde) */
+  --color-planeta: #e0c341;
+  --color-planeta-critico: #d9534f;
+
+  /* Acentos */
+  --color-borde: #24303b;
+  --color-riesgo: #d9534f;
+  --color-exito: #4caf7d;
+
+  /* Tipografía */
+  --fuente-titulos: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --fuente-texto: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+  /* Bordes y espaciados reutilizables */
+  --radio-borde: 10px;
+  --espacio-md: 1.5rem;
+  --espacio-lg: 3rem;
+}
+
+/* ---------------------------------------------------------------------
+   2. RESET BÁSICO
+   Quitamos márgenes por defecto del navegador para controlar todo
+--------------------------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fuente-texto);
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--fuente-titulos);
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------------------
+   3. SISTEMA DE PANTALLAS
+   Cada <section class="pantalla"> ocupa toda la ventana.
+   Solo se ve la que tiene la clase "activa".
+   JavaScript se encargará de añadir/quitar esta clase.
+--------------------------------------------------------------------- */
+.pantalla {
+  display: none;
+  min-height: 100vh;
+  width: 100%;
+  padding: var(--espacio-lg) var(--espacio-md);
+  animation: aparecer 0.4s ease;
+}
+
+.pantalla.activa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---------------------------------------------------------------------
+   4. BOTONES
+--------------------------------------------------------------------- */
+.boton {
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radio-borde);
+  font-family: var(--fuente-texto);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.9rem 2rem;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.boton:hover {
+  transform: translateY(-2px);
+}
+
+.boton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.boton-principal {
+  background: linear-gradient(90deg, var(--color-humano), var(--color-ia));
+  color: #0b0f14;
+  margin-top: var(--espacio-md);
+}
+
+.boton-apuesta {
+  background-color: var(--color-fondo-panel);
+  color: var(--color-texto);
+  border: 1px solid var(--color-borde);
+  margin: 0 0.4rem;
+}
+
+.boton-apuesta.seleccionada {
+  background-color: var(--color-ia);
+  color: #0b0f14;
+}
+
+/* =====================================================================
+   PANTALLA 1 — INICIO
+   ===================================================================== */
+
+.fondo-inicio {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  background-image:
+    radial-gradient(ellipse 48% 42% at 50% 37%, rgba(112, 241, 211, 0.20), transparent 72%),
+    radial-gradient(ellipse 75% 55% at 50% 100%, rgba(17, 139, 166, 0.17), transparent 70%),
+    linear-gradient(to bottom, rgba(5, 11, 18, 0.16) 0%, rgba(5, 11, 18, 0.08) 42%, rgba(5, 11, 18, 0.58) 100%),
+    url("../assets/images/portada/fondos/fondo-inicio-nexo.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* La portada es una escena fija de videojuego: no debe poder desplazarse. */
+#pantalla-inicio.activa {
+  position: relative;
+  isolation: isolate;
+  height: 100svh;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.contenido-inicio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  width: min(90vw, 920px);
+  min-height: 100%;
+  padding: clamp(1rem, 2.2vh, 2rem) 0 clamp(1.5rem, 4vh, 3rem);
+}
+
+.logo-inicio {
+  width: min(76vw, 820px);
+  min-width: 350px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.lema-juego {
+  color: #d3e1e6;
+  font-size: clamp(0.96rem, 1.4vw, 1.12rem);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  max-width: 530px;
+  /* El lema pertenece visualmente al botón: guía la mirada hacia la acción. */
+  margin: auto auto clamp(0.9rem, 1.8vh, 1.3rem);
+  line-height: 1.55;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+}
+
+/* Botón prismático de Inicio: imagen normal + respuesta al pasar el ratón. */
+.boton-jugar-imagen {
+  width: min(24vw, 320px);
+  min-width: 205px;
+  margin-top: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.boton-jugar-imagen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: brightness(0.9) saturate(0.94);
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.boton-jugar-imagen:hover img,
+.boton-jugar-imagen:focus-visible img {
+  transform: translateY(-3px) scale(1.025);
+  filter: brightness(1.14) saturate(1.08)
+          drop-shadow(0 0 11px rgba(124, 194, 66, 0.5))
+          drop-shadow(0 0 16px rgba(0, 159, 227, 0.46));
+}
+
+.boton-jugar-imagen:focus-visible {
+  outline: 2px solid #d9fff8;
+  outline-offset: 5px;
+  border-radius: 10px;
+}
+
+.boton-jugar-imagen:active img {
+  transform: translateY(-1px) scale(1.01);
+  filter: brightness(1.2) saturate(1.14)
+          drop-shadow(0 0 18px rgba(118, 235, 210, 0.68));
+}
+
+/* =====================================================================
+   PANTALLA 2 — INTRODUCCIÓN
+   ===================================================================== */
+#pantalla-introduccion.activa {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  height: 100svh;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: clamp(2.8rem, 6.6vh, 4.2rem) clamp(1.2rem, 4vw, 5rem) 1rem;
+  overflow: hidden;
+}
+
+.fondo-introduccion {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image:
+    linear-gradient(90deg, transparent 0%, transparent 43%, rgba(2, 8, 11, 0.14) 54%, rgba(2, 8, 11, 0.50) 100%),
+    radial-gradient(ellipse 44% 82% at 76% 42%, rgba(2, 8, 11, 0.20) 0%, rgba(2, 8, 11, 0.09) 58%, transparent 84%),
+    linear-gradient(180deg, rgba(2, 8, 11, 0.04) 0%, transparent 56%, rgba(2, 8, 11, 0.40) 100%),
+    url("../assets/images/introduccion/fondos/fondo-introduccion-nexo.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.contenido-introduccion {
+
+  position: relative;
+  z-index: 2;
+  width: min(44vw, 740px);
+  margin-left: auto;
+  margin-right: clamp(2rem, 4.5vw, 5.5rem);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.92);
+}
+
+.sobrelinea-introduccion {
+  margin-bottom: 0;
+  color: #9de4d5;
+  font-size: clamp(0.65rem, 0.72vw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.sobrelinea-introduccion::after {
+  content: "";
+  display: block;
+  width: min(34%, 210px);
+  height: 1px;
+  margin-top: 0.9rem;
+  background: linear-gradient(90deg, rgba(132, 226, 205, 0.92), transparent);
+}
+
+.cabecera-introduccion h2 {
+  margin-top: 0.8rem;
+  color: #f5fbf8;
+  font-size: clamp(2rem, 2.35vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: 0.025em;
+}
+
+.relato-introduccion {
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: clamp(190px, 23vh, 245px);
+  margin-top: clamp(0.35rem, 0.8vh, 0.6rem);
+}
+
+.relato-introduccion p {
+  max-width: 72ch;
+  color: #e4ece9;
+  font-size: clamp(0.95rem, 0.94vw, 1.06rem);
+  line-height: 1.52;
+}
+
+
+/* ---------------------------------------------------------------------
+   INTRO NARRATIVA POR BLOQUES
+   La animación es solo visual. El usuario decide cuándo avanzar.
+   --------------------------------------------------------------------- */
+.cabecera-intro-fila {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.btn-saltar-intro {
+  margin-top: 0.95rem;
+  padding: 0.45rem 0.2rem;
+  border: 0;
+  border-bottom: 1px solid rgba(156, 224, 214, 0.34);
+  color: rgba(210, 231, 228, 0.72);
+  background: transparent;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, text-shadow 160ms ease;
+}
+
+.btn-saltar-intro:hover,
+.btn-saltar-intro:focus-visible {
+  color: #dff9f4;
+  border-color: rgba(126, 228, 208, 0.78);
+  text-shadow: 0 0 10px rgba(80, 222, 201, 0.42);
+}
+
+.relato-introduccion {
+  position: relative;
+  display: block;
+  min-height: clamp(220px, 27vh, 290px);
+  margin-top: clamp(1.2rem, 2.7vh, 1.8rem);
+}
+
+.bloque-intro {
+
+  width: 100%;
+  min-height: clamp(180px, 21vh, 230px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 clamp(0.15rem, 0.4vw, 0.35rem);
+}
+
+.bloque-intro.activo {
+  animation: entradaBloqueNexo 0.58s ease both;
+}
+
+.bloque-intro p {
+
+  width: 100%;
+  max-width: none;
+  margin: 0 0 clamp(0.4rem, 0.75vh, 0.62rem);
+  color: #dce8e5;
+  font-size: clamp(0.90rem, 0.94vw, 1.02rem);
+  line-height: 1.45;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
+.bloque-intro p:first-child {
+
+  color: #f5fbf8;
+  font-size: clamp(1rem, 1.05vw, 1.16rem);
+  font-weight: 700;
+  text-align: left;
+  letter-spacing: 0.01em;
+}
+
+.bloque-intro strong {
+  color: #b9f1e3;
+  font-weight: 750;
+  text-shadow: 0 0 12px rgba(74, 218, 191, 0.18);
+}
+
+@keyframes entradaBloqueNexo {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Ruta NEXO: cuatro mini-X conectadas por una línea de convergencia.
+   Se inspira en la X y en el nexo central del logotipo sin repetirlo literalmente. */
+.progreso-intro {
+
+  position: relative;
+  width: min(58%, 320px);
+  height: 28px;
+  margin: clamp(0.1rem, 0.35vh, 0.3rem) auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.linea-progreso-intro {
+  position: absolute;
+  z-index: 0;
+  left: 10px;
+  right: 10px;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    rgba(104, 223, 166, 0.52),
+    rgba(221, 203, 72, 0.36) 48%,
+    rgba(70, 188, 239, 0.52));
+  box-shadow: 0 0 8px rgba(80, 211, 208, 0.16);
+}
+
+.paso-nexo {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  border-radius: 50%;
+  background: #071216;
+  box-shadow: 0 0 0 1px rgba(149, 209, 207, 0.28);
+  opacity: 0.46;
+  transition: opacity 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.paso-nexo::before,
+.paso-nexo::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 4px;
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  transform-origin: center;
+}
+
+.paso-nexo::before {
+  background: #77dfa8;
+  transform: rotate(45deg);
+}
+
+.paso-nexo::after {
+  background: #55c6f4;
+  transform: rotate(-45deg);
+}
+
+.paso-nexo.completado {
+  opacity: 0.78;
+}
+
+.paso-nexo.activo {
+  opacity: 1;
+  transform: scale(1.16);
+  box-shadow:
+    0 0 0 1px rgba(188, 244, 234, 0.72),
+    0 0 11px rgba(87, 224, 179, 0.34),
+    0 0 16px rgba(73, 188, 242, 0.24);
+}
+
+.controles-intro {
+
+  display: grid;
+  grid-template-columns: minmax(90px, 1fr) auto minmax(90px, 1fr);
+  align-items: center;
+  gap: clamp(0.55rem, 1.2vw, 0.9rem);
+  width: min(84%, 540px);
+  margin: clamp(0.35rem, 0.7vh, 0.55rem) auto 0;
+}
+
+.controles-intro .boton-continuar-imagen {
+  grid-column: 2;
+  margin: 0;
+}
+
+.btn-intro-atras {
+  grid-column: 1;
+  justify-self: end;
+  min-width: 86px;
+  padding: 0.58rem 0.75rem;
+  border: 1px solid rgba(133, 207, 211, 0.22);
+  border-radius: 8px;
+  color: #a9c8c6;
+  background: rgba(3, 13, 17, 0.42);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.btn-intro-atras:hover:not(:disabled),
+.btn-intro-atras:focus-visible:not(:disabled) {
+  color: #e0f3ef;
+  border-color: rgba(124, 223, 210, 0.58);
+  background: rgba(7, 27, 31, 0.62);
+}
+
+.btn-intro-atras:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+.sistema-indicadores {
+  margin-top: clamp(1.2rem, 2.8vh, 1.75rem);
+}
+
+.sistema-indicadores h3 {
+  color: #91e2d1;
+  font-size: clamp(1.05rem, 1.12vw, 1.22rem);
+  letter-spacing: 0.08em;
+}
+
+.entradilla-indicadores {
+  margin-top: 0.42rem;
+  color: #b7c8c6;
+  font-size: clamp(0.78rem, 0.84vw, 0.9rem);
+}
+
+.explicacion-barras {
+  display: grid;
+  margin-top: clamp(1rem, 2.3vh, 1.45rem);
+}
+
+.explicacion-barra {
+  --color-indicador: #ffffff;
+  display: grid;
+  grid-template-columns: 2.2rem 3.35rem minmax(0, 1fr) minmax(110px, 180px);
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 82px;
+  padding: 0.72rem 0.25rem;
+  border: 0;
+  border-bottom: 1px solid rgba(205, 233, 230, 0.18);
+  background: transparent;
+}
+
+.explicacion-barra:first-child {
+  border-top: 1px solid rgba(205, 233, 230, 0.18);
+}
+
+.indicador-humano { --color-indicador: var(--color-humano-claro); }
+.indicador-planeta { --color-indicador: #f0ce3d; }
+.indicador-ia { --color-indicador: var(--color-ia-claro); }
+
+.numero-indicador {
+  color: var(--color-indicador);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  opacity: 0.82;
+}
+
+.icono-indicador {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid color-mix(in srgb, var(--color-indicador) 76%, transparent);
+  border-radius: 50%;
+  color: #f3f7f5;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-indicador) 12%, transparent), transparent 68%);
+  box-shadow:
+    inset 0 0 14px color-mix(in srgb, var(--color-indicador) 13%, transparent),
+    0 0 12px color-mix(in srgb, var(--color-indicador) 13%, transparent);
+}
+
+.icono-indicador svg {
+  width: 24px;
+  height: 24px;
+  overflow: visible;
+}
+
+.icono-indicador svg circle,
+.icono-indicador svg path {
+  fill: currentColor;
+  stroke: none;
+}
+
+.indicador-planeta .icono-indicador svg path,
+.indicador-ia .icono-indicador svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.texto-indicador {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.texto-indicador strong {
+  color: #f2f8f6;
+  font-size: clamp(0.86rem, 0.92vw, 1rem);
+  letter-spacing: 0.025em;
+}
+
+.texto-indicador > span {
+  color: #c8d5d3;
+  font-size: clamp(0.76rem, 0.8vw, 0.86rem);
+  line-height: 1.25;
+}
+
+.barra-indicador {
+  position: relative;
+  height: 2px;
+  background: rgba(218, 242, 238, 0.14);
+}
+
+.barra-indicador > span {
+  position: relative;
+  display: block;
+  width: 72%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--color-indicador));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-indicador) 62%, transparent);
+}
+
+.barra-indicador > span::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-indicador);
+  box-shadow: 0 0 8px var(--color-indicador);
+  transform: translateY(-50%);
+}
+
+.indicador-planeta .barra-indicador > span { width: 58%; }
+.indicador-ia .barra-indicador > span { width: 66%; }
+
+.boton-continuar-imagen {
+  position: relative;
+  display: block;
+  width: min(14vw, 260px);
+  min-width: 220px;
+  aspect-ratio: 1552 / 400;
+  align-self: center;
+  margin: clamp(1.45rem, 3.6vh, 2.25rem) auto 0;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+  transform-origin: center;
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.boton-continuar-estado {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  transition: opacity 150ms ease, filter 180ms ease;
+}
+
+.boton-continuar-normal {
+  opacity: 1;
+}
+
+.boton-continuar-hover {
+  opacity: 0;
+}
+
+.boton-continuar-imagen:hover,
+.boton-continuar-imagen:focus-visible {
+  transform: translateY(-2px) scale(1.02);
+  filter:
+    drop-shadow(0 0 9px rgba(255, 205, 75, 0.26))
+    drop-shadow(0 0 12px rgba(69, 216, 255, 0.34));
+}
+
+.boton-continuar-imagen:hover .boton-continuar-normal,
+.boton-continuar-imagen:focus-visible .boton-continuar-normal {
+  opacity: 0;
+}
+
+.boton-continuar-imagen:hover .boton-continuar-hover,
+.boton-continuar-imagen:focus-visible .boton-continuar-hover {
+  opacity: 1;
+  filter: brightness(1.05) saturate(1.04);
+}
+
+.boton-continuar-imagen:focus-visible {
+  outline: 2px solid rgba(139, 236, 255, 0.90);
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+
+.boton-continuar-imagen:active {
+  transform: translateY(-1px) scale(1.01);
+}
+
+.texto-solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Solo compactamos en ventanas realmente bajas. El límite anterior de
+   760 px se activaba con el escalado de Windows y comprimía esta pantalla. */
+@media (max-height: 620px) {
+  #pantalla-introduccion.activa {
+    padding-top: 0.5rem;
+  }
+
+  .contenido-introduccion {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .cabecera-introduccion h2 {
+    font-size: 1.8rem;
+  }
+
+  .relato-introduccion {
+    gap: 0.32rem;
+    margin-top: 0.48rem;
+  }
+
+  .relato-introduccion p {
+    font-size: 0.88rem;
+    line-height: 1.38;
+  }
+
+  .sistema-indicadores {
+    margin-top: 0.55rem;
+  }
+
+  .explicacion-barras {
+    margin-top: 0.35rem;
+  }
+
+  .explicacion-barra {
+    min-height: 60px;
+    padding-top: 0.34rem;
+    padding-bottom: 0.34rem;
+  }
+
+  .icono-indicador {
+    width: 42px;
+    height: 42px;
+  }
+
+  .boton-continuar-imagen {
+    width: 240px;
+    min-width: 0;
+    margin-top: 0.4rem;
+  }
+}
+
+@media (max-width: 1100px) {
+.contenido-introduccion {
+    width: min(56vw, 650px);
+    margin-left: auto;
+    margin-right: clamp(1rem, 5vw, 3.5rem);
+  }
+}
+
+@media (max-width: 760px) {
+  #pantalla-introduccion.activa {
+    height: auto;
+    min-height: 100svh;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  .fondo-introduccion {
+    background-position: 45% center;
+  }
+
+  .contenido-introduccion {
+    width: min(94vw, 650px);
+    margin: 0 auto;
+  }
+
+  .explicacion-barra {
+    grid-template-columns: 2rem 2.8rem minmax(0, 1fr);
+    gap: 0.65rem;
+  }
+
+  .barra-indicador {
+    grid-column: 3;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+
+  .icono-indicador {
+    width: 40px;
+    height: 40px;
+  }
+
+  .boton-continuar-imagen {
+    width: min(64vw, 270px);
+    min-width: 205px;
+    align-self: center;
+  }
+
+  .cabecera-intro-fila {
+    display: block;
+  }
+
+  .btn-saltar-intro {
+    margin-top: 0.35rem;
+  }
+
+  .relato-introduccion {
+    min-height: 0;
+  }
+
+  .controles-intro {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .controles-intro .boton-continuar-imagen,
+  .btn-intro-atras {
+    grid-column: 1;
+  }
+
+  .btn-intro-atras {
+    grid-row: 2;
+    justify-self: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boton-continuar-imagen,
+  .boton-continuar-estado,
+  .paso-nexo,
+  .btn-saltar-intro,
+  .btn-intro-atras {
+    transition: none;
+  }
+
+  .bloque-intro.activo {
+    animation: none;
+  }
+}
+
+/* =====================================================================
+   PORTADA · PULSO DE LA X SINCRONIZADO CON EL LATIDO DEL MP3 · v14
+   El ciclo medido es de 1,009272 s: golpe principal cerca del 19,3% y
+   segundo golpe, más corto, cerca del 53%.
+   ===================================================================== */
+@keyframes nexo-x-base-latido-humano-v14 {
+  0%, 10%, 31%, 43%, 65%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  15.5% { opacity: .72; }
+  19.3% { opacity: 0; }
+  25.3% { opacity: .58; }
+  49% { opacity: .78; }
+  53% { opacity: .28; }
+  59% { opacity: .68; }
+}
+
+@keyframes nexo-x-expansion-latido-humano-v14 {
+  0%, 10%, 31%, 43%, 65%, 100% {
+    opacity: 0;
+    transform: scaleX(1) scaleY(1);
+    filter: brightness(1) saturate(1);
+  }
+  15% {
+    opacity: .32;
+    transform: scaleX(1.08) scaleY(1.05);
+  }
+  19.3% {
+    opacity: 1;
+    transform: scaleX(1.28) scaleY(1.17);
+    filter:
+      brightness(1.45)
+      saturate(1.18)
+      drop-shadow(0 0 9px rgba(255, 255, 255, .70))
+      drop-shadow(0 0 17px rgba(135, 255, 63, .48))
+      drop-shadow(0 0 23px rgba(38, 189, 255, .52));
+  }
+  25.3% {
+    opacity: .24;
+    transform: scaleX(1.05) scaleY(1.03);
+  }
+  49% {
+    opacity: .28;
+    transform: scaleX(1.06) scaleY(1.04);
+  }
+  53% {
+    opacity: .78;
+    transform: scaleX(1.17) scaleY(1.10);
+    filter:
+      brightness(1.27)
+      saturate(1.10)
+      drop-shadow(0 0 8px rgba(255, 255, 255, .55))
+      drop-shadow(0 0 17px rgba(55, 200, 255, .38));
+  }
+  59% {
+    opacity: .18;
+    transform: scaleX(1.035) scaleY(1.02);
+  }
+}
+
+@keyframes nexo-nodos-latido-humano-v12 {
+  0%, 8%, 35%, 43%, 68%, 100% {
+    background-position:
+      7.5% 77.3%, 7.5% 77.3%,
+      90.4% 77.3%, 90.4% 77.3%, center;
+    background-size:
+      2px 2px, 5px 5px,
+      2px 2px, 5px 5px, 100% 100%;
+  }
+  16%, 49% {
+    background-position:
+      18% 77.3%, 18% 77.3%,
+      81.7% 77.3%, 81.7% 77.3%, center;
+    background-size:
+      5px 5px, 14px 14px,
+      5px 5px, 14px 14px, 100% 100%;
+  }
+  22% {
+    background-position:
+      25.5% 77.3%, 25.5% 77.3%,
+      75.5% 77.3%, 75.5% 77.3%, center;
+    background-size:
+      11px 11px, 35px 35px,
+      11px 11px, 35px 35px, 100% 100%;
+  }
+  29%, 62% {
+    background-position:
+      25.5% 77.3%, 25.5% 77.3%,
+      75.5% 77.3%, 75.5% 77.3%, center;
+    background-size:
+      0 0, 0 0, 0 0, 0 0, 100% 100%;
+  }
+  55% {
+    background-position:
+      25.5% 77.3%, 25.5% 77.3%,
+      75.5% 77.3%, 75.5% 77.3%, center;
+    background-size:
+      8px 8px, 26px 26px,
+      8px 8px, 26px 26px, 100% 100%;
+  }
+}
+
+/* Los nodos siguen las cuatro descargas tecnológicas principales del audio.
+   Este ciclo dura la mitad de la pista y se repite dos veces. */
+@keyframes nexo-nodos-descarga-tecnologica-v14 {
+  0%, 6.33%, 9.38%, 31.5%, 34.6%, 38.52%, 41.44%, 60.74%, 64.7%, 100% {
+    background-position:
+      7.5% 77.3%, 7.5% 77.3%,
+      90.4% 77.3%, 90.4% 77.3%, center;
+    background-size:
+      0 0, 0 0,
+      0 0, 0 0, 100% 100%;
+  }
+
+  7.23%, 32.3%, 39.32%, 61.64%, 64.31% {
+    background-position:
+      16% 77.3%, 16% 77.3%,
+      83.4% 77.3%, 83.4% 77.3%, center;
+    background-size:
+      4px 4px, 12px 12px,
+      4px 4px, 12px 12px, 100% 100%;
+  }
+
+  8.18%, 33.29%, 40.17%, 62.58% {
+    background-position:
+      23% 77.3%, 23% 77.3%,
+      77.5% 77.3%, 77.5% 77.3%, center;
+    background-size:
+      7px 7px, 23px 23px,
+      7px 7px, 23px 23px, 100% 100%;
+  }
+
+  /* Destellos medidos: 0,980 · 3,780 · 4,540 · 7,040 s por ciclo. */
+  8.83%, 34.05%, 40.89%, 63.41% {
+    background-position:
+      25.5% 77.3%, 25.5% 77.3%,
+      75.5% 77.3%, 75.5% 77.3%, center;
+    background-size:
+      12px 12px, 38px 38px,
+      12px 12px, 38px 38px, 100% 100%;
+  }
+
+  9.38%, 34.6%, 41.44%, 63.88%, 64.7% {
+    background-position:
+      25.5% 77.3%, 25.5% 77.3%,
+      75.5% 77.3%, 75.5% 77.3%, center;
+    background-size:
+      0 0, 0 0,
+      0 0, 0 0, 100% 100%;
+  }
+
+  /* Pequeña réplica de la descarga más larga. */
+  64.31% {
+    background-position:
+      25.5% 77.3%, 25.5% 77.3%,
+      75.5% 77.3%, 75.5% 77.3%, center;
+    background-size:
+      7px 7px, 22px 22px,
+      7px 7px, 22px 22px, 100% 100%;
+  }
+}
+
+
+/* =====================================================================
+   PANTALLA 3 — CONFIGURACIÓN · REDISEÑO V4
+   Centro libre: esfera bicolor. Humano izquierda, IA derecha.
+   Rondas e iniciar protocolo apilados y centrados abajo.
+   ===================================================================== */
+#pantalla-configuracion.activa {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  height: 100svh;
+  min-height: 620px;
+  overflow: hidden;
+  background: #02080d;
+}
+
+.fondo-configuracion {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  /* NEXO V7 · fondo definitivo WebP 2560x1440 */
+  background-image:
+    linear-gradient(180deg, rgba(0, 7, 12, .10) 0%, rgba(0, 7, 12, 0) 50%, rgba(0, 7, 12, .24) 100%),
+    url("../assets/images/configuracion/fondos/fondo-configuracion-nexo-v10-web.webp");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.fondo-configuracion::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* NEXO V7 · viñeta lateral muy suave.
+     Se elimina la antigua radial que hacía más visible el aro desplazado. */
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 8, 13, .22) 0%,
+      transparent 20%,
+      transparent 80%,
+      rgba(0, 8, 13, .22) 100%
+    );
+}
+
+.contenido-configuracion {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  color: #f4fbfa;
+  text-align: center;
+  text-shadow: 0 2px 16px rgba(0,0,0,.82);
+}
+
+.cabecera-configuracion {
+  position: absolute;
+  z-index: 5;
+  top: clamp(1rem, 2.2vh, 1.75rem);
+  left: 50%;
+  width: min(92vw, 720px);
+  transform: translateX(-50%);
+}
+
+.sobrelinea-configuracion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .8rem;
+  margin: 0 0 .32rem;
+  color: #8fe8df;
+  font-size: clamp(.64rem, .78vw, .82rem);
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+.sobrelinea-configuracion::before,
+.sobrelinea-configuracion::after {
+  content: "";
+  width: clamp(38px, 5vw, 76px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #8dff45 46%, #27cfff 100%);
+  opacity: .78;
+}
+.sobrelinea-configuracion::after { transform: scaleX(-1); }
+
+.cabecera-configuracion h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.8rem, 2.55vw, 2.9rem);
+  font-weight: 850;
+  letter-spacing: .055em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.panel-identidad {
+  position: absolute;
+  z-index: 4;
+  top: clamp(7.2rem, 14vh, 9.6rem);
+  width: min(26vw, 410px);
+  padding: clamp(.75rem, 1.3vw, 1.1rem);
+  border: 1px solid rgba(112, 216, 220, .34);
+  background: linear-gradient(180deg, rgba(3, 17, 24, .66), rgba(3, 14, 20, .42));
+  backdrop-filter: blur(2px);
+  clip-path: polygon(7% 0, 93% 0, 100% 12%, 100% 88%, 93% 100%, 7% 100%, 0 88%, 0 12%);
+}
+.panel-identidad-humano { left: clamp(1.4rem, 4.8vw, 5.8rem); box-shadow: inset 0 0 0 1px rgba(130,255,70,.08), 0 0 24px rgba(104,255,62,.05); }
+.panel-identidad-ia { right: clamp(1.4rem, 4.8vw, 5.8rem); box-shadow: inset 0 0 0 1px rgba(64,205,255,.08), 0 0 24px rgba(31,173,255,.06); }
+
+.panel-identidad h3 {
+  margin: 0 0 .72rem;
+  font-size: clamp(.75rem, .95vw, .98rem);
+  font-weight: 850;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.panel-identidad-humano h3 { color: #b1ff55; }
+.panel-identidad-ia h3 { color: #5bdbff; }
+
+.opciones-avatar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(.55rem, .8vw, .85rem);
+}
+
+.tarjeta-avatar {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-width: 0;
+  height: clamp(178px, 27vh, 285px);
+  overflow: hidden;
+  cursor: pointer;
+  background: rgba(2, 17, 24, .62) none center/100% 100% no-repeat;
+  transition: transform .18s ease, filter .18s ease;
+}
+.tarjeta-avatar input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.tarjeta-avatar:hover,
+.tarjeta-avatar:focus-within { transform: translateY(-3px) scale(1.012); }
+.tarjeta-humano:has(input:checked) {
+  background-image: none;
+  filter: drop-shadow(0 0 10px rgba(140,255,64,.36));
+}
+.tarjeta-ia:has(input:checked) {
+  background-image: none;
+  filter: drop-shadow(0 0 10px rgba(58,201,255,.38));
+}
+
+.retrato-avatar {
+  display: block;
+  width: calc(100% - 18px);
+  height: calc(100% - 52px);
+  margin: 9px auto 0;
+  background-position: center 18%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  clip-path: polygon(8% 0, 92% 0, 100% 8%, 100% 100%, 0 100%, 0 8%);
+}
+.avatar-humano-hombre { background-image: url("../assets/images/configuracion/avatares/avatar-humano-hombre.webp"); }
+.avatar-humano-mujer { background-image: url("../assets/images/configuracion/avatares/avatar-humano-mujer.webp"); }
+.avatar-ia-01 { background-image: url("../assets/images/configuracion/avatares/avatar-ia-01.webp"); }
+.avatar-ia-02 { background-image: url("../assets/images/configuracion/avatares/avatar-ia-02.webp"); }
+
+.texto-avatar {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 9px;
+  display: block;
+  padding: .36rem .25rem .18rem;
+  background: linear-gradient(180deg, transparent, rgba(1,12,18,.82) 36%);
+}
+.texto-avatar strong,
+.texto-avatar small { display: block; }
+.texto-avatar strong { color: #fff; font-size: clamp(.68rem, .8vw, .84rem); letter-spacing: .12em; }
+.texto-avatar small { margin-top: .14rem; color: #c7d9d8; font-size: clamp(.55rem, .63vw, .68rem); }
+
+.info-grupo-avatar {
+  margin: .58rem 0 0;
+  font-size: clamp(.58rem, .66vw, .72rem);
+}
+.info-humano { color: #b7ef8a; }
+.info-ia { color: #8bdcff; }
+
+.configuracion-inferior {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: clamp(.85rem, 2vh, 1.35rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(.42rem, .8vh, .7rem);
+  width: min(94vw, 600px);
+  transform: translateX(-50%);
+}
+
+.grupo-rondas {
+  width: 100%;
+  text-align: center;
+}
+.grupo-rondas h3 {
+  margin: 0;
+  color: #f4fffd;
+  font-size: clamp(.72rem, .9vw, .92rem);
+  font-weight: 850;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.microtexto-rondas {
+  margin: .18rem 0 .42rem;
+  color: #b9d7d6;
+  font-size: clamp(.58rem, .66vw, .7rem);
+}
+.opciones-rondas {
+  display: flex;
+  justify-content: center;
+  gap: clamp(.45rem, .8vw, .72rem);
+}
+
+@media (max-width: 1100px) {
+  .panel-identidad { width: min(31vw, 340px); }
+  .panel-identidad-humano { left: 1.2rem; }
+  .panel-identidad-ia { right: 1.2rem; }
+  .tarjeta-avatar { height: clamp(155px, 24vh, 230px); }
+  .configuracion-inferior { width: min(92vw, 520px); }
+}
+
+@media (max-height: 760px) and (min-width: 761px) {
+  #pantalla-configuracion.activa { min-height: 560px; }
+  .panel-identidad { top: 6.3rem; }
+  .tarjeta-avatar { height: clamp(145px, 23vh, 190px); }
+  .configuracion-inferior { bottom: .5rem; gap: .28rem; }
+  .microtexto-rondas { margin-bottom: .25rem; }
+}
+
+@media (max-width: 760px) {
+  #pantalla-configuracion.activa {
+    height: auto;
+    min-height: 100svh;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+  .fondo-configuracion { position: fixed; background-position: center; }
+  .contenido-configuracion {
+    height: auto;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 0 1.4rem;
+  }
+  .cabecera-configuracion,
+  .panel-identidad,
+  .configuracion-inferior {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: min(100%, 460px);
+    margin: 0 auto;
+    transform: none;
+  }
+  .cabecera-configuracion { order: 1; }
+  .panel-identidad-humano { order: 2; }
+  .panel-identidad-ia { order: 3; }
+  .configuracion-inferior { order: 4; }
+  .tarjeta-avatar { height: 240px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta-avatar { transition: none; }
+}
+
+
+/* =====================================================================
+   PANTALLA 4 — JUEGO
+   ===================================================================== */
+#pantalla-juego.activa {
+  justify-content: flex-start;
+  gap: var(--espacio-md);
+}
+
+.cabecera-juego {
+  display: flex;
+  width: 100%;
+  max-width: 1100px;
+  gap: var(--espacio-md);
+}
+
+.marcador {
+  flex: 1;
+  text-align: center;
+}
+
+.etiqueta-marcador {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-texto-secundario);
+  margin-bottom: 0.3rem;
+}
+
+.barra-progreso {
+  width: 100%;
+  height: 14px;
+  background-color: var(--color-fondo-panel);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--color-borde);
+}
+
+.relleno-barra {
+  height: 100%;
+  width: 50%; /* JavaScript actualizará este valor */
+  transition: width 0.4s ease;
+}
+
+.relleno-humano { background-color: var(--color-humano); }
+.relleno-ia { background-color: var(--color-ia); }
+.relleno-planeta { background-color: var(--color-planeta); }
+
+.contador-ronda {
+  color: var(--color-texto-secundario);
+  font-size: 0.9rem;
+}
+
+.zona-juego {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-lg);
+  width: 100%;
+  max-width: 1100px;
+  flex: 1;
+}
+
+.avatar-lateral img {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatar-humano-lateral img { border: 3px solid var(--color-humano); }
+.avatar-ia-lateral img { border: 3px solid var(--color-ia); }
+
+.zona-central {
+  text-align: center;
+  flex: 1;
+  max-width: 450px;
+}
+
+.tarjeta-crisis,
+.tarjeta-carta-crisis {
+  background-color: var(--color-fondo-panel);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-borde);
+  padding: var(--espacio-md);
+  margin-bottom: 1rem;
+}
+
+.etiqueta-crisis {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-texto-secundario);
+  margin-bottom: 0.4rem;
+}
+
+.zona-resolucion {
+  margin-top: var(--espacio-md);
+}
+
+.cartas-reveladas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.carta-revelada {
+  background-color: var(--color-fondo-panel);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-borde);
+  padding: 0.8rem 1.2rem;
+  text-align: center;
+}
+
+.carta-revelada span {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.signo-suma {
+  font-size: 1.4rem;
+  color: var(--color-texto-secundario);
+}
+
+.resultado-ronda {
+  margin-top: 1rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+/* Pie de la pantalla de juego: apuesta + mano de cartas */
+.pie-juego {
+  width: 100%;
+  max-width: 1100px;
+  text-align: center;
+}
+
+.zona-apuesta {
+  margin-bottom: var(--espacio-md);
+  color: var(--color-texto-secundario);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* =====================================================================
+   PANTALLA 6 — EVENTO ESPECIAL (superposición)
+   ===================================================================== */
+.superposicion {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.tarjeta-evento {
+  background-color: var(--color-fondo-panel);
+  border: 1px solid var(--color-humano-claro);
+  border-radius: var(--radio-borde);
+  padding: var(--espacio-lg);
+  max-width: 400px;
+  text-align: center;
+}
+
+.tarjeta-evento p:not(.etiqueta-crisis) {
+  color: var(--color-texto-secundario);
+  margin: 1rem 0;
+  line-height: 1.5;
+}
+
+/* =====================================================================
+   CLASE UTILITARIA: ocultar elementos
+   JavaScript añade/quita esta clase para mostrar/ocultar bloques
+   ===================================================================== */
+.oculta {
+  display: none !important;
+}
+
+/* =====================================================================
+   RESPONSIVE — ADAPTACIÓN A MÓVIL Y TABLET
+   Regla general: en pantallas estrechas, las filas se convierten
+   en columnas y los elementos se agrandan para tocarlos con el dedo.
+   ===================================================================== */
+@media (max-width: 900px) {
+  .zona-juego {
+    flex-direction: column;
+    gap: var(--espacio-md);
+  }
+
+  .avatar-lateral img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .cabecera-juego {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .contenido-inicio {
+    min-height: 100svh;
+    padding-top: clamp(1.3rem, 3.5vh, 2.5rem);
+  }
+
+  .logo-inicio { width: min(93vw, 590px); }
+  .lema-juego { margin: auto auto 0.9rem; }
+  .boton-jugar-imagen {
+    width: min(64vw, 300px);
+    min-width: 0;
+    margin-top: 0;
+  }
+
+  
+
+  
+
+  .cartas-reveladas {
+    flex-wrap: wrap;
+  }
+
+  .pantalla {
+    padding: var(--espacio-md) 1rem;
+  }
+}
+
+/* =====================================================================
+   PRUEBA DE INTEGRACIÓN VISUAL + LÓGICA · 2026-08-20
+   Este bloque se añade al final: conserva todo el CSS anterior y solo
+   adapta la configuración y los controles nuevos que necesita la partida.
+   ===================================================================== */
+
+/* Pantalla de juego funcional: usa la paleta existente del proyecto. */
+#pantalla-juego.activa {
+  min-height: 100svh;
+  height: auto;
+  overflow-y: auto;
+  padding: clamp(1rem, 2.5vw, 2rem);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(47, 159, 164, 0.13), transparent 36%),
+    linear-gradient(180deg, #07131a 0%, #09141c 55%, #050b11 100%);
+}
+
+.valor-marcador {
+  display: block;
+  margin-top: 0.32rem;
+  color: var(--color-texto);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.tablero-integrado {
+  align-items: flex-start;
+  max-width: 1200px;
+  gap: clamp(1rem, 2.2vw, 2rem);
+}
+
+.lado {
+  flex: 1 1 170px;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+.zona-central {
+  flex: 2 1 520px;
+  width: 100%;
+  max-width: 650px;
+  padding: clamp(0.85rem, 1.8vw, 1.3rem);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-borde);
+  background: rgba(5, 17, 23, 0.78);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+/* V22.24: estilos legacy de evolución de avatar eliminados.
+   La pantalla de partida usa exclusivamente css/partida.css y assets WebP por tramo. */
+
+.titulo-lista,
+.instruccion {
+  color: var(--color-texto-secundario);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.lista-capacidades {
+  width: 100%;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.lista-capacidades li {
+  padding: 0.38rem 0.5rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 4px;
+  color: var(--color-texto-secundario);
+}
+
+.capacidad-vacia {
+  opacity: 0.62;
+  font-style: italic;
+}
+
+.panel-memoria {
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px dashed var(--color-borde);
+  border-radius: var(--radio-borde);
+}
+
+.panel-memoria ul {
+  margin-top: 0.4rem;
+  list-style: none;
+  color: var(--color-texto-secundario);
+  font-size: 0.74rem;
+}
+
+.pista {
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.55rem 0.7rem;
+  border-left: 3px solid #a98bd3;
+  color: #d7c5f0;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+
+
+.cartas-ia {
+  padding: 0.65rem;
+  border: 1px dashed var(--color-borde);
+  border-radius: var(--radio-borde);
+}
+
+.mano-pequena {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.carta-pequena {
+  width: 28px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-ia);
+  border-radius: 4px;
+  background: rgba(9, 30, 40, 0.88);
+  color: var(--color-ia-claro);
+  font-weight: 750;
+}
+
+.declaracion-ia {
+  padding: 0.7rem;
+  border: 1px solid rgba(74, 202, 231, 0.62);
+  border-radius: var(--radio-borde);
+  background: rgba(33, 137, 176, 0.11);
+}
+
+.declaracion-ia h3 {
+  margin-top: 0.2rem;
+  color: var(--color-ia-claro);
+  font-size: 1.65rem;
+  letter-spacing: 0.14em;
+}
+
+.zona-apuesta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.zona-apuesta .instruccion,
+.zona-apuesta .consecuencia {
+  flex: 1 0 100%;
+}
+
+.consecuencia {
+  color: var(--color-texto-secundario);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.boton-apuesta.seleccionada {
+  border-color: var(--color-humano-claro);
+  color: var(--color-humano-claro);
+  box-shadow: 0 0 14px rgba(133, 219, 146, 0.2);
+}
+
+
+
+
+
+.acciones,
+.opciones-velocidad {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+
+.boton-poder {
+  border-color: #a98bd3;
+  color: #e2d4f5;
+}
+
+.zona-resolucion {
+  width: 100%;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-borde);
+}
+
+.carta-revelada small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.66rem;
+}
+
+.resultado-convergencia { color: var(--color-exito); }
+.resultado-rivalidad { color: #f1c75b; }
+.resultado-fracaso { color: #ef7d78; }
+
+.detalle-ronda {
+  margin-top: 0.65rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.planeta-critico { background-color: #1b0b0d; }
+.planeta-deteriorado { background-color: #17130b; }
+.planeta-estable { background-color: #07131a; }
+.planeta-recuperado { background-color: #071811; }
+
+@media (max-width: 900px) {
+  .tablero-integrado {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lado {
+    max-width: 420px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  .boton-protocolo-integrado {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: min(100%, 360px);
+    min-width: 0;
+    margin-top: auto;
+    transform: none;
+  }
+
+  .boton-protocolo-integrado:hover,
+  .boton-protocolo-integrado:focus-visible,
+  .boton-protocolo-integrado:active {
+    transform: translateY(-2px);
+  }
+}
+
+/* =====================================================================
+   AJUSTE UX — PANTALLA DE JUEGO SIN SCROLL EN ESCRITORIO + AJUSTES
+   ===================================================================== */
+@media (min-width: 901px) {
+  #pantalla-juego.activa {
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+    padding: clamp(0.55rem, 1.2vh, 0.9rem) clamp(1rem, 2vw, 1.6rem);
+    gap: clamp(0.45rem, 1vh, 0.75rem);
+  }
+
+  #pantalla-juego .cabecera-juego {
+    flex: 0 0 auto;
+    max-width: 1040px;
+    gap: 1rem;
+  }
+
+  #pantalla-juego .zona-juego {
+    min-height: 0;
+    flex: 1 1 auto;
+    max-width: 1120px;
+    gap: clamp(0.75rem, 1.5vw, 1.35rem);
+    align-items: stretch;
+  }
+
+  #pantalla-juego .zona-central {
+    min-height: 0;
+    max-width: 590px;
+    padding: clamp(0.55rem, 1vh, 0.8rem);
+    overflow: hidden;
+  }
+
+  #pantalla-juego .lado {
+    min-height: 0;
+    max-width: 190px;
+    gap: 0.35rem;
+    justify-content: flex-start;
+  }
+
+  #pantalla-juego .avatar {
+    width: clamp(72px, 9vh, 92px);
+    height: clamp(72px, 9vh, 92px);
+  }
+
+  #pantalla-juego .tarjeta-crisis,
+  #pantalla-juego .tarjeta-carta-crisis {
+    padding: 0.55rem 0.7rem;
+    margin-bottom: 0.45rem;
+  }
+
+  
+
+  #pantalla-juego .cartas-ia,
+  #pantalla-juego .declaracion-ia {
+    padding: 0.42rem 0.55rem;
+  }
+
+  #pantalla-juego .declaracion-ia h3 {
+    font-size: clamp(1.1rem, 2.4vh, 1.4rem);
+  }
+
+  
+
+  
+
+  
+
+  #pantalla-juego .acciones,
+  #pantalla-juego .opciones-velocidad {
+    margin-top: 0.4rem;
+    gap: 0.5rem;
+  }
+
+  #pantalla-juego .acciones .boton,
+  #pantalla-juego .zona-apuesta .boton {
+    padding: 0.58rem 1.2rem;
+    font-size: 0.88rem;
+  }
+
+  #pantalla-juego .lista-capacidades {
+    gap: 0.22rem;
+    font-size: 0.72rem;
+  }
+
+  #pantalla-juego .lista-capacidades li {
+    padding: 0.25rem 0.4rem;
+  }
+
+  #pantalla-juego .titulo-lista,
+  #pantalla-juego .instruccion {
+    font-size: 0.66rem;
+  }
+}
+
+.controles-sistema-juego {
+  position: fixed;
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: max(0.85rem, env(safe-area-inset-right));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.boton-icono-ajustes {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(126, 196, 242, 0.34);
+  border-radius: 50%;
+  background: rgba(5, 17, 23, 0.72);
+  color: var(--color-texto-secundario);
+  font-size: 1.05rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+
+.boton-icono-ajustes:hover,
+.boton-icono-ajustes:focus-visible {
+  color: var(--color-ia-claro);
+  border-color: var(--color-ia);
+  background: rgba(8, 29, 39, 0.9);
+  transform: rotate(18deg);
+  outline: none;
+}
+
+.boton-abandonar-juego {
+  padding: 0.48rem 0.82rem;
+  border: 1px solid rgba(217, 83, 79, 0.32);
+  background: rgba(31, 13, 15, 0.62);
+  color: #d8a19f;
+  font-size: 0.75rem;
+  backdrop-filter: blur(8px);
+}
+
+.boton-abandonar-juego:hover,
+.boton-abandonar-juego:focus-visible {
+  color: #ffd0ce;
+  border-color: rgba(217, 83, 79, 0.72);
+  background: rgba(58, 20, 22, 0.88);
+  outline: none;
+}
+
+.superposicion-ajustes {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 4.2rem 1rem 1rem;
+  background: rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(3px);
+}
+
+.superposicion-ajustes.oculta {
+  display: none;
+}
+
+.panel-ajustes {
+  width: min(92vw, 330px);
+  padding: 1rem;
+  border: 1px solid rgba(126, 196, 242, 0.34);
+  border-radius: 12px;
+  background: rgba(5, 17, 23, 0.96);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.cabecera-ajustes {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.boton-cerrar-ajustes {
+  border: 0;
+  background: transparent;
+  color: var(--color-texto-secundario);
+  font-size: 1.65rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.boton-cerrar-ajustes:hover,
+.boton-cerrar-ajustes:focus-visible {
+  color: var(--color-texto);
+  outline: none;
+}
+
+.fila-ajuste {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--color-borde);
+  color: var(--color-texto);
+  font-size: 0.88rem;
+}
+
+.fila-ajuste input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-ia);
+  cursor: pointer;
+}
+
+.fila-volumen {
+  flex-wrap: wrap;
+}
+
+.fila-volumen input[type="range"] {
+  width: 100%;
+  accent-color: var(--color-ia);
+}
+
+.nota-ajustes {
+  margin-top: 0.55rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  #pantalla-juego.activa {
+    height: auto;
+    min-height: 100svh;
+    overflow-y: auto;
+    padding-top: 4.2rem;
+  }
+
+  .controles-sistema-juego {
+    position: absolute;
+  }
+}
+
+/* =====================================================================
+   JUGADORES LOCALES · CONFIGURACIÓN V22
+   El bloque comparte la franja inferior con las rondas para conservar
+   intacta la composición de avatares Humano / IA.
+   ===================================================================== */
+#pantalla-configuracion .configuracion-inferior {
+  display: grid;
+  grid-template-columns: minmax(230px, .95fr) minmax(285px, 1.05fr);
+  align-items: end;
+  column-gap: clamp(.8rem, 1.8vw, 1.5rem);
+  row-gap: clamp(.35rem, .65vh, .55rem);
+  width: min(94vw, 680px);
+}
+
+#pantalla-configuracion .grupo-jugador,
+#pantalla-configuracion .grupo-rondas {
+  min-width: 0;
+}
+
+#pantalla-configuracion .grupo-jugador {
+  display: grid;
+  gap: .22rem;
+  text-align: left;
+}
+
+#pantalla-configuracion .grupo-jugador label {
+  color: #b7ff55;
+  font-size: clamp(.68rem, .82vw, .84rem);
+  font-weight: 850;
+  letter-spacing: .15em;
+}
+
+#pantalla-configuracion #nombre-jugador {
+  width: 100%;
+  height: 38px;
+  padding: 0 .75rem;
+  border: 1px solid rgba(138, 239, 196, .50);
+  border-radius: 7px;
+  outline: none;
+  background: linear-gradient(90deg, rgba(4, 30, 27, .94), rgba(3, 23, 34, .94));
+  box-shadow: inset 0 0 18px rgba(92, 229, 187, .05), 0 0 18px rgba(72, 219, 193, .08);
+  color: #f2fffc;
+  font: inherit;
+  font-size: .82rem;
+}
+
+#pantalla-configuracion #nombre-jugador:focus {
+  border-color: #9ef1dd;
+  box-shadow: 0 0 22px rgba(77, 220, 199, .22);
+}
+
+#pantalla-configuracion .estado-jugador {
+  min-height: 1.1em;
+  margin: 0;
+  color: #a9c9c7;
+  font-size: clamp(.56rem, .64vw, .68rem);
+  line-height: 1.2;
+}
+
+#pantalla-configuracion .boton-iniciar-nexo {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
+#pantalla-juego .nombre-jugador-partida {
+  display: block;
+  max-width: 100%;
+  margin: .08rem 0 .3rem;
+  overflow: hidden;
+  color: #b9f4dc;
+  font-size: clamp(.68rem, .8vw, .86rem);
+  font-weight: 760;
+  letter-spacing: .1em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@media (max-height: 720px) and (min-width: 761px) {
+  #pantalla-configuracion #nombre-jugador { height: 34px; }
+  #pantalla-configuracion .estado-jugador { font-size: .56rem; }
+}
+
+@media (max-width: 760px) {
+  #pantalla-configuracion .configuracion-inferior {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: min(100%, 460px);
+  }
+  #pantalla-configuracion .grupo-jugador { width: 100%; }
+  #pantalla-configuracion .boton-iniciar-nexo { align-self: center; }
+}
+
+
+/* =====================================================================
+   AJUSTE UX INTRO v6
+   La columna narrativa aprovecha mejor el espacio derecho y todos los
+   bloques ocupan la misma zona visual. No modifica HTML ni JavaScript.
+   ===================================================================== */
+.cabecera-introduccion {
+  width: 100%;
+}
+
+.cabecera-intro-fila {
+  width: 100%;
+}
+
+.bloque-intro p:last-child {
+  margin-bottom: 0;
+}
+
+/* En pantallas de escritorio algo menos anchas seguimos manteniendo
+   una caja de lectura cómoda y centrada en la mitad derecha. */
+@media (min-width: 901px) and (max-width: 1280px) {
+  .contenido-introduccion {
+    width: min(49vw, 690px);
+    margin-right: clamp(1.2rem, 3vw, 2.8rem);
+  }
+
+  .bloque-intro p {
+    font-size: clamp(0.92rem, 1.05vw, 1rem);
+    line-height: 1.5;
+  }
+
+  .relato-introduccion {
+    min-height: clamp(235px, 30vh, 300px);
+  }
+
+  .bloque-intro {
+    min-height: clamp(220px, 27vh, 280px);
+  }
+}
+
+
+/* ==========================================================
+   UX INTRO v7 — ajuste para mantener CONTINUAR siempre visible
+   ========================================================== */
+@media (min-width: 901px) and (max-height: 820px) {
+  .contenido-introduccion {
+    width: min(43vw, 700px);
+    margin-right: clamp(1.5rem, 4vw, 4.5rem);
+  }
+
+  .relato-introduccion {
+    min-height: 165px;
+    margin-top: 0.2rem;
+  }
+
+  .bloque-intro {
+    min-height: 155px;
+  }
+
+  .bloque-intro p {
+    font-size: 0.88rem;
+    line-height: 1.36;
+    margin-bottom: 0.38rem;
+  }
+
+  .bloque-intro p:first-child {
+    font-size: 0.98rem;
+  }
+
+  .progreso-intro {
+    height: 24px;
+    margin-top: 0.1rem;
+  }
+
+  .controles-intro {
+    margin-top: 0.25rem;
+  }
+}
+
+@media (min-width: 901px) and (max-height: 700px) {
+  .relato-introduccion {
+    min-height: 145px;
+  }
+
+  .bloque-intro {
+    min-height: 138px;
+  }
+
+  .bloque-intro p {
+    font-size: 0.83rem;
+    line-height: 1.3;
+    margin-bottom: 0.28rem;
+  }
+
+  .progreso-intro {
+    height: 22px;
+  }
+}
+
+
+/* ==========================================================
+   INTRO v8 — corrección de bloques y botón siempre accesible
+   ========================================================== */
+
+/* IMPORTANTE:
+   Cada bloque que lleva el atributo hidden debe desaparecer por completo.
+   Esto evita que los cuatro relatos se apilen y empujen los controles. */
+.bloque-intro[hidden] {
+  display: none !important;
+}
+
+/* Solo el bloque actual ocupa la caja de lectura. */
+.bloque-intro:not([hidden]) {
+  display: flex;
+}
+
+/* Caja narrativa compacta y estable en escritorio. */
+@media (min-width: 761px) {
+  #pantalla-introduccion.activa {
+    padding-top: clamp(1.4rem, 3.2vh, 2.5rem);
+    padding-bottom: 0.8rem;
+  }
+
+  .contenido-introduccion {
+    width: min(45vw, 720px);
+    margin-right: clamp(1.5rem, 4vw, 4.5rem);
+    max-height: calc(100svh - 2.2rem);
+  }
+
+  .sobrelinea-introduccion::after {
+    margin-top: 0.5rem;
+  }
+
+  .cabecera-introduccion h2 {
+    margin-top: 0.55rem;
+    font-size: clamp(1.8rem, 2.15vw, 2.45rem);
+  }
+
+  .btn-saltar-intro {
+    margin-top: 0.55rem;
+  }
+
+  .relato-introduccion {
+    min-height: clamp(190px, 24vh, 235px);
+    margin-top: clamp(0.45rem, 1vh, 0.75rem);
+    display: flex;
+    align-items: center;
+  }
+
+  .bloque-intro {
+    min-height: 0;
+    padding: 0 0.15rem;
+  }
+
+  .bloque-intro p {
+    margin-bottom: clamp(0.38rem, 0.7vh, 0.55rem);
+    font-size: clamp(0.88rem, 0.92vw, 0.99rem);
+    line-height: 1.42;
+  }
+
+  .bloque-intro p:first-child {
+    font-size: clamp(0.98rem, 1.02vw, 1.12rem);
+  }
+
+  .progreso-intro {
+    height: 26px;
+    margin-top: 0.15rem;
+  }
+
+  .controles-intro {
+    margin-top: 0.3rem;
+  }
+
+  .controles-intro .boton-continuar-imagen {
+    width: clamp(205px, 16vw, 245px);
+    min-width: 0;
+  }
+}
+
+/* Alturas típicas de portátil: aún más compacto, sin perder lectura. */
+@media (min-width: 761px) and (max-height: 760px) {
+  #pantalla-introduccion.activa {
+    padding-top: 0.7rem;
+    padding-bottom: 0.45rem;
+  }
+
+  .contenido-introduccion {
+    max-height: calc(100svh - 1.15rem);
+  }
+
+  .sobrelinea-introduccion {
+    font-size: 0.62rem;
+  }
+
+  .sobrelinea-introduccion::after {
+    margin-top: 0.32rem;
+  }
+
+  .cabecera-introduccion h2 {
+    margin-top: 0.4rem;
+    font-size: 1.72rem;
+  }
+
+  .relato-introduccion {
+    min-height: 160px;
+    margin-top: 0.25rem;
+  }
+
+  .bloque-intro p {
+    font-size: 0.84rem;
+    line-height: 1.34;
+    margin-bottom: 0.3rem;
+  }
+
+  .bloque-intro p:first-child {
+    font-size: 0.94rem;
+  }
+
+  .progreso-intro {
+    height: 22px;
+  }
+
+  .controles-intro {
+    margin-top: 0.18rem;
+  }
+
+  .controles-intro .boton-continuar-imagen {
+    width: 205px;
+  }
+}
+
+
+/* ==========================================================
+   INTRO v9 — REEQUILIBRIO VISUAL DE LA COLUMNA DERECHA
+   Objetivo:
+   - Todo el contenido funciona como una única composición.
+   - Centrado vertical dentro de la mitad derecha.
+   - Márgenes visuales similares y moderados.
+   - Texto, progreso y botones comparten el mismo eje.
+   ========================================================== */
+
+@media (min-width: 901px) {
+
+  #pantalla-introduccion.activa {
+    position: relative;
+    display: block;
+    min-height: 100vh;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .contenido-introduccion {
+    position: absolute;
+    top: 50%;
+    right: clamp(2.2rem, 4vw, 4.8rem);
+    transform: translateY(-50%);
+
+    width: min(43vw, 700px);
+    max-height: 90vh;
+
+    margin: 0;
+    padding: clamp(0.45rem, 1vh, 0.8rem) 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+
+    text-align: left;
+  }
+
+  /* Cabecera alineada con todo el cuerpo narrativo */
+  .cabecera-introduccion,
+  .cabecera-intro-fila {
+    width: 100%;
+  }
+
+  .sobrelinea-introduccion {
+    margin: 0;
+  }
+
+  .sobrelinea-introduccion::after {
+    margin-top: 0.45rem;
+  }
+
+  .cabecera-introduccion h2 {
+    margin-top: 0.55rem;
+    margin-bottom: 0;
+    font-size: clamp(2rem, 2.35vw, 2.65rem);
+    line-height: 1.05;
+  }
+
+  /* Saltar intro se mantiene arriba, pero integrado en la misma columna */
+  .btn-saltar-intro {
+    margin-top: 0.35rem;
+  }
+
+  /* Una caja de lectura compacta y estable */
+  .relato-introduccion {
+    width: 100%;
+    min-height: clamp(190px, 23vh, 235px);
+    margin-top: clamp(0.75rem, 1.6vh, 1.05rem);
+
+    display: flex;
+    align-items: center;
+  }
+
+  .bloque-intro {
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .bloque-intro[hidden] {
+    display: none !important;
+  }
+
+  .bloque-intro:not([hidden]) {
+    display: flex;
+  }
+
+  .bloque-intro p {
+    width: 100%;
+    margin: 0 0 clamp(0.48rem, 0.9vh, 0.68rem);
+    font-size: clamp(0.92rem, 0.98vw, 1.04rem);
+    line-height: 1.48;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+  }
+
+  .bloque-intro p:first-child {
+    margin-bottom: clamp(0.55rem, 1vh, 0.75rem);
+    font-size: clamp(1.03rem, 1.08vw, 1.16rem);
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .bloque-intro p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Ruta de convergencia centrada respecto al texto */
+  .progreso-intro {
+    width: min(56%, 330px);
+    height: 30px;
+    margin: clamp(0.5rem, 1vh, 0.75rem) auto 0;
+  }
+
+  /* Botonera como pie del mismo bloque */
+  .controles-intro {
+    width: min(82%, 540px);
+    margin: clamp(0.55rem, 1.1vh, 0.8rem) auto 0;
+
+    display: grid;
+    grid-template-columns: minmax(92px, 1fr) auto minmax(92px, 1fr);
+    align-items: center;
+    gap: clamp(0.7rem, 1.35vw, 1rem);
+  }
+
+  .controles-intro .boton-continuar-imagen {
+    width: clamp(210px, 15.5vw, 245px);
+    min-width: 0;
+  }
+}
+
+/* Portátiles con menos altura: reducimos solo lo necesario,
+   pero mantenemos el conjunto centrado verticalmente. */
+@media (min-width: 901px) and (max-height: 760px) {
+
+  .contenido-introduccion {
+    width: min(44vw, 680px);
+    max-height: 94vh;
+    right: clamp(1.6rem, 3.4vw, 3.8rem);
+  }
+
+  .cabecera-introduccion h2 {
+    font-size: clamp(1.72rem, 2vw, 2.1rem);
+  }
+
+  .relato-introduccion {
+    min-height: 155px;
+    margin-top: 0.45rem;
+  }
+
+  .bloque-intro p {
+    font-size: 0.84rem;
+    line-height: 1.34;
+    margin-bottom: 0.34rem;
+  }
+
+  .bloque-intro p:first-child {
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .progreso-intro {
+    width: min(54%, 300px);
+    height: 24px;
+    margin-top: 0.3rem;
+  }
+
+  .controles-intro {
+    margin-top: 0.35rem;
+  }
+
+  .controles-intro .boton-continuar-imagen {
+    width: 205px;
+  }
+}
+
+/* V22.20 · Introducción sobre un eje vertical único y centrado en la página. */
+@media (min-width: 901px) {
+  #pantalla-introduccion .contenido-introduccion {
+    top:0!important;
+    left:50%!important;
+    width:min(58vw,760px)!important;
+    height:100svh!important;
+    padding:0!important;
+    transform:translateX(-50%)!important;
+  }
+
+  #pantalla-introduccion .cabecera-introduccion {
+    position:absolute!important;
+    top:clamp(3.8rem,8vh,5.5rem)!important;
+    left:50%!important;
+    width:100%!important;
+    transform:translateX(-50%)!important;
+    text-align:center!important;
+  }
+
+  #pantalla-introduccion .cabecera-intro-fila {
+    position:relative!important;
+    display:flex!important;
+    justify-content:center!important;
+    align-items:center!important;
+    width:100%!important;
+  }
+
+  #pantalla-introduccion .cabecera-introduccion h2 {
+    width:100%!important;
+    margin:0 auto!important;
+    text-align:center!important;
+  }
+
+  #pantalla-introduccion .btn-saltar-intro {
+    position:absolute!important;
+    left:calc(100% + 1.5rem)!important;
+    right:auto!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+    white-space:nowrap!important;
+  }
+
+  #pantalla-introduccion .relato-introduccion {
+    position:absolute!important;
+    top:51%!important;
+    left:50%!important;
+    width:100%!important;
+    margin:0!important;
+    transform:translate(-50%,-50%)!important;
+  }
+
+  #pantalla-introduccion .bloque-intro {
+    width:100%!important;
+    margin:0 auto!important;
+  }
+}
+
+@media (min-width: 901px) and (max-height: 760px) {
+  #pantalla-introduccion .cabecera-introduccion {top:clamp(1.25rem,4vh,2.25rem)!important}
+  #pantalla-introduccion .relato-introduccion {top:49%!important}
+}
+
+/* V22.4 · Lectura y ritmo narrativo de la introducción. */
+#pantalla-introduccion .relato-introduccion::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -1.1rem -1.5rem;
+  border-radius: 18px;
+  background: radial-gradient(ellipse at center, rgba(1, 8, 12, .38), rgba(1, 8, 12, .18) 62%, transparent 100%);
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+#pantalla-introduccion .bloque-intro.activo {
+  animation: entrada-bloque-intro-v224 430ms cubic-bezier(.2,.72,.25,1) both;
+}
+
+@keyframes entrada-bloque-intro-v224 {
+  from { opacity: 0; transform: translateY(8px); filter: blur(2px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+#pantalla-introduccion .boton-continuar-imagen.ultimo-paso::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  left: 16%;
+  right: 16%;
+  top: 27%;
+  bottom: 27%;
+  background: linear-gradient(90deg, transparent, rgba(3, 17, 23, .98) 13%, rgba(3, 17, 23, .98) 87%, transparent);
+  pointer-events: none;
+}
+
+#pantalla-introduccion .boton-continuar-imagen.ultimo-paso::after {
+  content: "CONFIGURAR PARTIDA";
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: clamp(.58rem, .67vw, .72rem);
+  font-weight: 750;
+  letter-spacing: .15em;
+  text-shadow: 0 2px 8px #000, 0 0 9px rgba(79, 224, 255, .38);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #pantalla-introduccion .bloque-intro.activo {
+    animation: none !important;
+  }
+}
+
+/* En móvil/tablet volvemos al flujo normal para no bloquear contenido. */
+@media (max-width: 900px) {
+  .contenido-introduccion {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    width: auto;
+    max-height: none;
+    margin: 0 auto;
+  }
+}
+
+
+/* Escritorio: la composición sigue en la mitad derecha, pero utiliza
+   mejor su ancho y deja márgenes laterales similares y contenidos. */
+@media (min-width: 901px) {
+
+  .contenido-introduccion {
+    left: 52%;
+    right: auto;
+    width: 46%;
+    max-width: none;
+    transform: translateY(-50%);
+  }
+
+  .relato-introduccion {
+    min-height: clamp(205px, 24vh, 255px);
+  }
+
+  .bloque-intro p {
+    font-size: clamp(1.04rem, 1.08vw, 1.16rem);
+    line-height: 1.52;
+    margin-bottom: clamp(0.52rem, 0.9vh, 0.72rem);
+  }
+
+  .bloque-intro p:first-child {
+    font-size: clamp(1.14rem, 1.18vw, 1.28rem);
+    line-height: 1.38;
+    margin-bottom: clamp(0.58rem, 1vh, 0.78rem);
+  }
+
+  .cabecera-introduccion h2 {
+    font-size: clamp(2.05rem, 2.4vw, 2.72rem);
+  }
+
+  .progreso-intro {
+    width: min(52%, 350px);
+  }
+
+  .controles-intro {
+    width: min(76%, 560px);
+  }
+}
+
+/* Portátiles de poca altura: mantenemos una lectura cómoda sin
+   empujar el botón fuera del viewport. */
+@media (min-width: 901px) and (max-height: 760px) {
+
+  .contenido-introduccion {
+    left: 51.5%;
+    width: 47%;
+  }
+
+  .relato-introduccion {
+    min-height: 175px;
+    margin-top: 0.45rem;
+  }
+
+  .bloque-intro p {
+    font-size: 0.94rem;
+    line-height: 1.4;
+    margin-bottom: 0.36rem;
+  }
+
+  .bloque-intro p:first-child {
+    font-size: 1.04rem;
+    line-height: 1.34;
+  }
+
+  .cabecera-introduccion h2 {
+    font-size: clamp(1.82rem, 2.05vw, 2.18rem);
+  }
+
+  .progreso-intro {
+    width: min(50%, 320px);
+  }
+
+  .controles-intro {
+    width: min(74%, 520px);
+  }
+}
+
+.cabecera-introduccion h2 {
+  border-bottom: 1px solid rgba(112, 236, 191, 0.42);
+  padding-bottom: 0.42rem;
+}
+
+
+/* ==============================================================
+   INTRODUCCIÓN — COMPOSICIÓN CENTRAL EN ZONA SEGURA
+   El conjunto se centra dentro del paisaje abierto, a la derecha de
+   las figuras Humano/IA, para conservarlas visibles en todo momento.
+   ============================================================== */
+@media (min-width: 901px) {
+  #pantalla-introduccion .contenido-introduccion {
+    left: 63%;
+    right: auto;
+    width: min(50vw, 720px);
+    margin: 0;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    text-align: center;
+  }
+
+  #pantalla-introduccion .cabecera-introduccion,
+  #pantalla-introduccion .relato-introduccion {
+    width: 100%;
+  }
+
+  #pantalla-introduccion .sobrelinea-introduccion {
+    text-align: center;
+  }
+
+  #pantalla-introduccion .sobrelinea-introduccion::after {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  #pantalla-introduccion .cabecera-intro-fila {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #pantalla-introduccion .btn-saltar-intro {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  #pantalla-introduccion .bloque-intro p {
+    max-width: 62ch;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: left;
+    text-wrap: pretty;
+  }
+
+  #pantalla-introduccion .bloque-intro p:first-child {
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  #pantalla-introduccion .progreso-intro,
+  #pantalla-introduccion .controles-intro {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  #pantalla-introduccion .contenido-introduccion {
+    align-items: center;
+    text-align: center;
+  }
+
+  #pantalla-introduccion .sobrelinea-introduccion,
+  #pantalla-introduccion .bloque-intro p:first-child {
+    text-align: center;
+  }
+
+  #pantalla-introduccion .bloque-intro p {
+    text-align: left;
+  }
+
+  #pantalla-introduccion .sobrelinea-introduccion::after {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+
+
+/* =====================================================================
+   PORTADA — LOGO NEXO · TIPOGRAFÍA ORIGINAL HD + UN SOLO PULSO · v11
+   =====================================================================
+   CAMBIOS PRINCIPALES:
+   1. El logo se ha recentrado ópticamente dentro de su propio lienzo.
+   2. Se han eliminado de la imagen las dos bolitas FIJAS junto a
+      "LA CONVERGENCIA".
+   3. La expansión de la X ya no utiliza un segundo dibujo desalineado:
+      se genera desde la MISMA X y crece desde su centro hacia sus extremos.
+      Por tanto, la X no puede desplazarse lateralmente.
+   4. Los nodos empiezan pequeños y tenues en los extremos exteriores.
+      Aumentan progresivamente tamaño, brillo y halo mientras avanzan.
+   5. Alcanzan su máximo justo al lado de las letras del subtítulo.
+   6. Un solo pulso por ciclo de 1.2 s, manteniendo la cadencia general.
+   ===================================================================== */
+
+
+/* ---------------------------------------------------------------------
+   1. CONTENEDOR DEL LOGO
+   --------------------------------------------------------------------- */
+#pantalla-inicio .logo-nexo-animado {
+  position: relative;
+
+  width: min(82vw, 900px);
+  min-width: 360px;
+  aspect-ratio: 428 / 128;
+
+  margin:
+    clamp(0.25rem, 1vh, 0.7rem)
+    auto
+    clamp(0.15rem, 0.6vh, 0.4rem);
+
+  flex: 0 0 auto;
+  overflow: visible;
+  border: 0;
+  isolation: isolate;
+
+  /*
+     El asset base ya está recentrado ópticamente.
+     Las cuatro primeras capas son los dos nodos:
+       núcleo verde + halo verde
+       núcleo azul  + halo azul
+  */
+  background-image:
+    radial-gradient(
+      circle,
+      rgba(247, 255, 225, 1) 0 22%,
+      rgba(175, 255, 90, 1) 23% 50%,
+      transparent 72%
+    ),
+    radial-gradient(
+      circle,
+      rgba(133, 255, 77, 0.38) 0 20%,
+      rgba(90, 255, 60, 0.13) 42%,
+      transparent 74%
+    ),
+    radial-gradient(
+      circle,
+      rgba(236, 253, 255, 1) 0 22%,
+      rgba(75, 219, 255, 1) 23% 50%,
+      transparent 72%
+    ),
+    radial-gradient(
+      circle,
+      rgba(64, 205, 255, 0.40) 0 20%,
+      rgba(38, 174, 255, 0.13) 42%,
+      transparent 74%
+    ),
+    url("../assets/images/portada/logo/nexo_logo_base_tipografia_original_hd.webp");
+
+  background-repeat:
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat;
+
+  /*
+     POSICIONES CORREGIDAS TRAS RECENTRAR EL ASSET:
+     verde: extremo exterior 7.5% -> extremo interior 25.5%
+     azul:  extremo exterior 90.4% -> extremo interior 75.5%
+  */
+  background-position:
+    7.5% 77.3%,
+    7.5% 77.3%,
+    90.4% 77.3%,
+    90.4% 77.3%,
+    center;
+
+  /* Inicio mucho más discreto. */
+  background-size:
+    2px 2px,
+    5px 5px,
+    2px 2px,
+    5px 5px,
+    100% 100%;
+
+  animation:
+    nexo-nodos-v8 1.2s linear infinite;
+}
+
+
+/* El SVG antiguo queda fuera de la composición visual. */
+#pantalla-inicio .logo-nexo-svg {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------------------
+   2. X BASE
+   ---------------------------------------------------------------------
+   El mismo asset se utiliza en ambas capas de la X.
+   El centro visual de la X, una vez recentrada, está aprox. en:
+      x = 57.8%
+      y = 34.8%
+   --------------------------------------------------------------------- */
+#pantalla-inicio .logo-nexo-animado::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 2;
+  pointer-events: none;
+
+  background:
+    center / 100% 100%
+    no-repeat
+    url("../assets/images/portada/logo/nexo_x_estatica_centrada_sin_limite.webp");
+
+  opacity: 1;
+
+  transform: scale(1);
+  transform-origin: 57.8% 34.8%;
+
+  animation:
+    nexo-x-base-v8 1.2s cubic-bezier(.36, 0, .28, 1) infinite;
+
+  will-change:
+    opacity,
+    filter;
+}
+
+
+/* ---------------------------------------------------------------------
+   3. X EN EXPANSIÓN
+   ---------------------------------------------------------------------
+   MUY IMPORTANTE:
+   NO cargamos una segunda X distinta.
+   Es exactamente la misma X duplicada y escalada desde el mismo centro.
+
+   Esto elimina:
+   - desplazamiento lateral;
+   - salto entre dos dibujos;
+   - caja rectangular;
+   - desalineación entre estado inicial y expandido.
+   --------------------------------------------------------------------- */
+#pantalla-inicio .logo-nexo-animado::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 3;
+  pointer-events: none;
+
+  background:
+    center / 100% 100%
+    no-repeat
+    url("../assets/images/portada/logo/nexo_x_estatica_centrada_sin_limite.webp");
+
+  opacity: 0;
+
+  transform:
+    scaleX(1)
+    scaleY(1);
+
+  transform-origin: 57.8% 34.8%;
+
+  animation:
+    nexo-x-expansion-v8 1.2s cubic-bezier(.36, 0, .28, 1) infinite;
+
+  will-change:
+    opacity,
+    transform,
+    filter;
+}
+
+
+/* X de reposo: desaparece únicamente durante el pico. */
+@keyframes nexo-x-base-v8 {
+
+  /*
+     UN SOLO PULSO POR CICLO:
+     la X de reposo se mantiene estable, cede progresivamente a la X
+     expandida y vuelve una sola vez. El ciclo completo sigue durando 1.2 s.
+  */
+
+  0%,
+  42%,
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+
+  50% {
+    opacity: 0.82;
+  }
+
+  58% {
+    opacity: 0.46;
+  }
+
+  66% {
+    opacity: 0.12;
+  }
+
+  /* Pico único */
+  70% {
+    opacity: 0;
+  }
+
+  78% {
+    opacity: 0.38;
+  }
+
+  86% {
+    opacity: 0.76;
+  }
+
+  92% {
+    opacity: 1;
+  }
+}
+
+
+/* ---------------------------------------------------------------------
+   EXPANSIÓN SIMÉTRICA:
+   crece DESDE EL CENTRO hacia los cuatro extremos.
+   No existe ningún translate ni cambio de left/top.
+   --------------------------------------------------------------------- */
+@keyframes nexo-x-expansion-v8 {
+
+  /*
+     EXPANSIÓN ÚNICA "PUM":
+     desde la X normal hasta el máximo de expansión en una sola subida.
+     No hay segundo golpe.
+  */
+
+  0%,
+  42%,
+  100% {
+    opacity: 0;
+
+    transform:
+      scaleX(1)
+      scaleY(1);
+
+    filter:
+      brightness(1)
+      saturate(1);
+  }
+
+  /* Comienza el crecimiento */
+  48% {
+    opacity: 0.12;
+
+    transform:
+      scaleX(1.025)
+      scaleY(1.015);
+  }
+
+  54% {
+    opacity: 0.28;
+
+    transform:
+      scaleX(1.07)
+      scaleY(1.045);
+  }
+
+  60% {
+    opacity: 0.50;
+
+    transform:
+      scaleX(1.13)
+      scaleY(1.08);
+  }
+
+  65% {
+    opacity: 0.75;
+
+    transform:
+      scaleX(1.20)
+      scaleY(1.12);
+  }
+
+  /* ÚNICO PICO — máximo brillo y expansión */
+  70% {
+    opacity: 1;
+
+    transform:
+      scaleX(1.28)
+      scaleY(1.17);
+
+    filter:
+      brightness(1.45)
+      saturate(1.18)
+
+      drop-shadow(
+        0 0 9px
+        rgba(255, 255, 255, 0.70)
+      )
+
+      drop-shadow(
+        0 0 17px
+        rgba(135, 255, 63, 0.48)
+      )
+
+      drop-shadow(
+        0 0 23px
+        rgba(38, 189, 255, 0.52)
+      )
+
+      drop-shadow(
+        0 0 34px
+        rgba(63, 215, 236, 0.22)
+      );
+  }
+
+  /* Descenso único, sin segundo golpe */
+  77% {
+    opacity: 0.68;
+
+    transform:
+      scaleX(1.17)
+      scaleY(1.10);
+
+    filter:
+      brightness(1.18)
+      saturate(1.08);
+  }
+
+  84% {
+    opacity: 0.35;
+
+    transform:
+      scaleX(1.08)
+      scaleY(1.05);
+
+    filter:
+      brightness(1.08);
+  }
+
+  90% {
+    opacity: 0.10;
+
+    transform:
+      scaleX(1.025)
+      scaleY(1.015);
+  }
+
+  94% {
+    opacity: 0;
+
+    transform:
+      scaleX(1)
+      scaleY(1);
+  }
+}
+
+
+/* ---------------------------------------------------------------------
+   4. NODOS
+   ---------------------------------------------------------------------
+   El contraste entre inicio y final se ha aumentado claramente.
+
+   INICIO:
+   - 2 px de núcleo;
+   - halo casi imperceptible;
+   - poco brillo.
+
+   FINAL:
+   - núcleo de 11 px;
+   - halo de 35 px;
+   - máximo resplandor justo al lado del texto.
+   --------------------------------------------------------------------- */
+@keyframes nexo-nodos-v8 {
+
+  /* EXTERIOR: mínimo tamaño y brillo */
+  0%,
+  15% {
+    background-position:
+      7.5% 77.3%,
+      7.5% 77.3%,
+      90.4% 77.3%,
+      90.4% 77.3%,
+      center;
+
+    background-size:
+      2px 2px,
+      5px 5px,
+      2px 2px,
+      5px 5px,
+      100% 100%;
+  }
+
+
+  /* Empiezan a adquirir energía */
+  30% {
+    background-position:
+      12.5% 77.3%,
+      12.5% 77.3%,
+      86.2% 77.3%,
+      86.2% 77.3%,
+      center;
+
+    background-size:
+      3px 3px,
+      8px 8px,
+      3px 3px,
+      8px 8px,
+      100% 100%;
+  }
+
+
+  /* Mitad del recorrido */
+  44% {
+    background-position:
+      18% 77.3%,
+      18% 77.3%,
+      81.7% 77.3%,
+      81.7% 77.3%,
+      center;
+
+    background-size:
+      5px 5px,
+      14px 14px,
+      5px 5px,
+      14px 14px,
+      100% 100%;
+  }
+
+
+  /* Cerca de LA CONVERGENCIA */
+  56% {
+    background-position:
+      23% 77.3%,
+      23% 77.3%,
+      77.5% 77.3%,
+      77.5% 77.3%,
+      center;
+
+    background-size:
+      7px 7px,
+      22px 22px,
+      7px 7px,
+      22px 22px,
+      100% 100%;
+  }
+
+
+  /* MÁXIMO justo al lado de las letras */
+  70%,
+  74% {
+    background-position:
+      25.5% 77.3%,
+      25.5% 77.3%,
+      75.5% 77.3%,
+      75.5% 77.3%,
+      center;
+
+    background-size:
+      11px 11px,
+      35px 35px,
+      11px 11px,
+      35px 35px,
+      100% 100%;
+  }
+
+
+  /*
+     Tras el pico desaparecen.
+     Como las bolitas fijas se han eliminado del asset,
+     no queda ningún círculo visible en reposo.
+  */
+  78% {
+    background-position:
+      25.5% 77.3%,
+      25.5% 77.3%,
+      75.5% 77.3%,
+      75.5% 77.3%,
+      center;
+
+    background-size:
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      100% 100%;
+  }
+
+
+  79%,
+  98% {
+    background-position:
+      7.5% 77.3%,
+      7.5% 77.3%,
+      90.4% 77.3%,
+      90.4% 77.3%,
+      center;
+
+    background-size:
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      100% 100%;
+  }
+
+
+  100% {
+    background-position:
+      7.5% 77.3%,
+      7.5% 77.3%,
+      90.4% 77.3%,
+      90.4% 77.3%,
+      center;
+
+    background-size:
+      2px 2px,
+      5px 5px,
+      2px 2px,
+      5px 5px,
+      100% 100%;
+  }
+}
+
+
+/* ---------------------------------------------------------------------
+   5. BOTÓN JUGAR
+   --------------------------------------------------------------------- */
+#pantalla-inicio .boton-jugar-imagen {
+  width: min(19vw, 245px);
+  min-width: 185px;
+
+  margin-top: 0.1rem;
+
+  opacity: 0.92;
+
+  transform-origin: center;
+
+  transition:
+    transform 180ms ease,
+    filter 180ms ease,
+    opacity 180ms ease;
+}
+
+#pantalla-inicio .boton-jugar-imagen img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  opacity: 0.88;
+
+  filter:
+    brightness(0.85)
+    saturate(0.91)
+    contrast(0.99);
+
+  transition:
+    transform 180ms ease,
+    filter 180ms ease,
+    opacity 180ms ease;
+}
+
+#pantalla-inicio .boton-jugar-imagen:hover img,
+#pantalla-inicio .boton-jugar-imagen:focus-visible img {
+  opacity: 1;
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+
+  filter:
+    brightness(1.08)
+    saturate(1.04)
+    drop-shadow(0 0 8px rgba(124, 194, 66, 0.30))
+    drop-shadow(0 0 11px rgba(0, 159, 227, 0.31));
+}
+
+
+/* ---------------------------------------------------------------------
+   6. LEMA
+   --------------------------------------------------------------------- */
+#pantalla-inicio .lema-juego {
+  max-width: 620px;
+
+  color: rgba(219, 233, 237, 0.88);
+
+  font-size:
+    clamp(0.90rem, 1.18vw, 1.04rem);
+
+  line-height: 1.35;
+
+  margin:
+    auto
+    auto
+    clamp(0.7rem, 1.5vh, 1rem);
+
+  text-shadow:
+    0 2px 12px
+    rgba(0, 0, 0, 0.86);
+}
+
+#pantalla-inicio .lema-linea {
+  display: block;
+}
+
+#pantalla-inicio .lema-linea + .lema-linea {
+  margin-top: 0.22rem;
+}
+
+#pantalla-inicio .lema-decision {
+  margin-top: 0.7rem;
+  color: #b7f3e7;
+  font-size: 1.06em;
+  font-weight: 750;
+  letter-spacing: 0.055em;
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.94),
+    0 0 14px rgba(91, 226, 201, 0.28);
+}
+
+#pantalla-inicio .lema-cierre {
+  margin-top: 0.7rem;
+  color: #ffffff;
+  font-size: 1.12em;
+  font-weight: 800;
+  letter-spacing: 0.085em;
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.96),
+    0 0 16px rgba(236, 255, 251, 0.22);
+  transform: translateY(clamp(1rem, 2.4vh, 1.15rem));
+}
+
+
+/* ---------------------------------------------------------------------
+   7. RESPONSIVE
+   --------------------------------------------------------------------- */
+@media (min-width: 761px) and (max-height: 760px) {
+
+  #pantalla-inicio .logo-nexo-animado {
+    width: min(73vw, 770px);
+  }
+
+  #pantalla-inicio .boton-jugar-imagen {
+    width: min(17vw, 220px);
+    min-width: 170px;
+  }
+}
+
+@media (max-width: 760px) {
+
+  #pantalla-inicio .logo-nexo-animado {
+    width: min(94vw, 620px);
+    min-width: 0;
+  }
+
+  #pantalla-inicio .boton-jugar-imagen {
+    width: min(48vw, 230px);
+    min-width: 165px;
+  }
+}
+
+
+/* ---------------------------------------------------------------------
+   8. ACCESIBILIDAD
+   --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+
+  #pantalla-inicio .logo-nexo-animado {
+    animation: none;
+
+    background-image:
+      url("../assets/images/portada/logo/nexo_logo_base_tipografia_original_hd.webp");
+
+    background-size:
+      100% 100%;
+
+    background-position:
+      center;
+  }
+
+  #pantalla-inicio .logo-nexo-animado::before {
+    animation: none;
+    opacity: 1;
+  }
+
+  #pantalla-inicio .logo-nexo-animado::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+
+/* ---------------------------------------------------------------------
+   9. COMPOSICIÓN CENTRAL DE PORTADA
+   Mantiene el contenido en el corredor visual central para dejar visibles
+   las representaciones humana y tecnológica de los laterales del fondo.
+   --------------------------------------------------------------------- */
+#pantalla-inicio .contenido-inicio {
+  position: relative;
+  width: min(92vw, 760px);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: clamp(1rem, 3vh, 2rem) 0;
+  justify-content: flex-start;
+}
+
+#pantalla-inicio .logo-nexo-animado {
+  position: absolute;
+  top: 21vh;
+  left: 50%;
+  width: min(68vw, 680px);
+  min-width: 0;
+  margin: 0;
+  transform: translateX(-50%);
+}
+
+#pantalla-inicio .lema-juego {
+  width: min(100%, 520px);
+  margin: auto auto clamp(1.75rem, 3.5vh, 2.5rem);
+}
+
+#pantalla-inicio .boton-jugar-imagen {
+  margin: 0 auto;
+}
+
+@media (max-width: 760px) {
+  #pantalla-inicio .contenido-inicio {
+    width: min(92vw, 620px);
+    padding-top: clamp(1rem, 3vh, 1.5rem);
+    padding-bottom: clamp(1rem, 3vh, 1.5rem);
+  }
+
+  #pantalla-inicio .logo-nexo-animado {
+    top: 18vh;
+    width: min(88vw, 620px);
+  }
+
+  #pantalla-inicio .lema-juego {
+    width: min(88vw, 500px);
+    font-size: clamp(0.76rem, 3.2vw, 0.92rem);
+    margin-bottom: clamp(1.35rem, 3vh, 2rem);
+  }
+}
+
+
+/* =====================================================================
+   NEXO V10 · CONFIGURACIÓN · ESFERA + PEDESTAL ALINEADOS DESDE ORIGEN
+   =====================================================================
+   REGLA CLAVE DE ALINEACIÓN:
+   - fondo: 2560x1440 + background-size: cover + center
+   - SVG:   viewBox 2560x1440 + preserveAspectRatio xMidYMid slice
+   Ambos usan el MISMO sistema de coordenadas.
+   Por tanto la circunferencia/máscara de la animación siempre coincide
+   con la esfera del fondo, incluso cuando el navegador recorta con cover.
+   ===================================================================== */
+
+#pantalla-configuracion .fondo-configuracion {
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(0, 7, 12, .035) 0%,
+      rgba(0, 7, 12, 0) 52%,
+      rgba(0, 7, 12, .10) 100%
+    ),
+    url("../assets/images/configuracion/fondos/fondo-configuracion-nexo-v10-web.webp");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+#pantalla-configuracion .fondo-configuracion::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,7,11,.10) 0%,
+      transparent 15%,
+      transparent 85%,
+      rgba(0,7,11,.10) 100%
+    );
+}
+
+/* Luces ambientales de la INTRO: realzan la tecnología de la escena narrativa. */
+#pantalla-introduccion .fondo-introduccion::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: url("../assets/images/introduccion/decoracion/luces-tecnologia-intro.svg") center / cover no-repeat;
+  mix-blend-mode: screen;
+  opacity: .72;
+  filter: saturate(1.18);
+  animation: nexo-luces-tecnologia 6.8s ease-in-out infinite alternate;
+}
+
+@keyframes nexo-luces-tecnologia {
+  0%   { opacity: .48; filter: brightness(.88) blur(.15px) saturate(1.08); }
+  38%  { opacity: .76; filter: brightness(1.20) blur(.05px) saturate(1.24); }
+  67%  { opacity: .58; filter: brightness(1.02) blur(.18px) saturate(1.16); }
+  100% { opacity: .84; filter: brightness(1.32) blur(0) saturate(1.30); }
+}
+
+/* ---------- CABECERA ---------- */
+#pantalla-configuracion .cabecera-configuracion {
+  top: clamp(.55rem, 1vh, .9rem);
+  width: min(94vw, 900px);
+  padding: .18rem 1rem .5rem;
+  background: linear-gradient(
+    180deg,
+    rgba(1,10,16,.62),
+    rgba(1,10,16,.24) 72%,
+    transparent
+  );
+  border-radius: 10px;
+}
+
+#pantalla-configuracion .cabecera-configuracion h2 {
+  margin-top: .12rem;
+  font-size: clamp(1.75rem, 2.25vw, 2.62rem);
+}
+
+/* ---------- PANELES LATERALES ---------- */
+#pantalla-configuracion .panel-identidad {
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(25vw, 420px);
+  padding: clamp(.76rem, 1.05vw, 1rem);
+  background:
+    linear-gradient(180deg, rgba(3,17,24,.70), rgba(2,12,18,.50));
+  border: 1px solid rgba(121,213,213,.10);
+  backdrop-filter: blur(2px);
+}
+
+#pantalla-configuracion .panel-identidad-humano {
+  left: clamp(1.3rem, 4.7vw, 5.6rem);
+}
+
+#pantalla-configuracion .panel-identidad-ia {
+  right: clamp(1.3rem, 4.7vw, 5.6rem);
+}
+
+/* ---------- AVATARES: selección muy visible ---------- */
+#pantalla-configuracion .tarjeta-avatar {
+  position: relative;
+  height: clamp(180px, 25.5vh, 270px);
+  overflow: visible;
+  border: 1px solid rgba(177,214,218,.22);
+  background: rgba(1,13,19,.56);
+  clip-path: polygon(9% 0, 91% 0, 100% 9%, 100% 91%, 91% 100%, 9% 100%, 0 91%, 0 9%);
+  opacity: .70;
+  filter: saturate(.78) brightness(.84);
+  transform: scale(.98);
+  transition:
+    transform .20s ease,
+    opacity .20s ease,
+    filter .20s ease,
+    box-shadow .20s ease,
+    border-color .20s ease;
+}
+
+#pantalla-configuracion .tarjeta-humano:has(input:checked),
+#pantalla-configuracion .tarjeta-ia:has(input:checked) {
+  opacity: 1;
+  filter: saturate(1.16) brightness(1.08);
+  transform: translateY(-4px) scale(1.03);
+}
+
+#pantalla-configuracion .tarjeta-humano:has(input:checked) {
+  border-color: #b5ff4c;
+  box-shadow:
+    inset 0 0 0 2px rgba(181,255,76,.45),
+    0 0 12px rgba(176,255,67,.68),
+    0 0 30px rgba(87,255,50,.27);
+}
+
+#pantalla-configuracion .tarjeta-ia:has(input:checked) {
+  border-color: #55dfff;
+  box-shadow:
+    inset 0 0 0 2px rgba(85,223,255,.47),
+    0 0 12px rgba(66,219,255,.70),
+    0 0 30px rgba(29,175,255,.28);
+}
+
+#pantalla-configuracion .tarjeta-avatar::after {
+  content: "✓";
+  position: absolute;
+  z-index: 8;
+  top: -10px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 17px;
+  font-weight: 1000;
+  color: #061014;
+  opacity: 0;
+  transform: scale(.62);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+#pantalla-configuracion .tarjeta-humano:has(input:checked)::after {
+  opacity: 1;
+  transform: scale(1);
+  background: #b7ff45;
+  box-shadow: 0 0 15px rgba(161,255,61,.92);
+}
+
+#pantalla-configuracion .tarjeta-ia:has(input:checked)::after {
+  opacity: 1;
+  transform: scale(1);
+  background: #59dfff;
+  box-shadow: 0 0 15px rgba(73,218,255,.92);
+}
+
+/* ---------- SVG ENERGÍA: MISMO RECORTE QUE EL FONDO ---------- */
+#pantalla-configuracion .energia-esfera {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  pointer-events: none;
+  opacity: .78;
+  mix-blend-mode: screen;
+}
+
+#pantalla-configuracion .energia-esfera-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ---------- NODOS ---------- */
+#pantalla-configuracion .nodo-energia {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: .38;
+  animation: nexo-pulso-nodo-v10 3.2s ease-in-out infinite;
+}
+
+#pantalla-configuracion .nodo-verde {
+  fill: #d9f5ac;
+  color: #aaff48;
+  filter:
+    drop-shadow(0 0 3px rgba(201,255,120,.72))
+    drop-shadow(0 0 7px rgba(133,255,61,.34));
+}
+
+#pantalla-configuracion .nodo-azul {
+  fill: #d5f6fb;
+  color: #50dcff;
+  filter:
+    drop-shadow(0 0 3px rgba(190,247,255,.74))
+    drop-shadow(0 0 7px rgba(51,202,255,.38));
+}
+
+#pantalla-configuracion .nodo-centro {
+  fill: #fff;
+  color: #bafcff;
+  opacity: .74;
+  filter:
+    drop-shadow(0 0 5px #fff)
+    drop-shadow(0 0 11px rgba(118,241,255,.68));
+}
+
+#pantalla-configuracion .nodo-energia.nodo-activo {
+  animation: nexo-nodo-recibe-energia-v10 470ms ease-out forwards;
+}
+
+/* ---------- DESCARGAS ---------- */
+#pantalla-configuracion .energia-ruta {
+  --duracion-descarga: 390ms;
+  fill: none;
+  stroke-width: 3.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  stroke-dasharray: .13 .87;
+  stroke-dashoffset: 1;
+}
+
+#pantalla-configuracion .energia-verde {
+  stroke: #d8ff90;
+  color: #a8ff47;
+}
+
+#pantalla-configuracion .energia-azul {
+  stroke: #a4f3ff;
+  color: #3ed3ff;
+}
+
+#pantalla-configuracion .energia-cian {
+  stroke: #fff;
+  color: #91f6ff;
+}
+
+#pantalla-configuracion .energia-ruta.activa {
+  animation:
+    nexo-descarga-esfera-v10
+    var(--duracion-descarga)
+    cubic-bezier(.15,.8,.22,1)
+    forwards;
+}
+
+#pantalla-configuracion .energia-pulso-centro {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+#pantalla-configuracion .energia-pulso-centro.activo {
+  animation: nexo-pulso-convergencia-v10 560ms ease-out forwards;
+}
+
+@keyframes nexo-pulso-nodo-v10 {
+  0%, 100% { opacity: .32; transform: scale(.82); }
+  48%      { opacity: .72; transform: scale(1.14); }
+  66%      { opacity: .50; transform: scale(.96); }
+}
+
+@keyframes nexo-nodo-recibe-energia-v10 {
+  0%   { opacity: .52; transform: scale(1); }
+  35%  {
+    opacity: 1;
+    transform: scale(1.75);
+    filter:
+      drop-shadow(0 0 5px #fff)
+      drop-shadow(0 0 12px currentColor)
+      drop-shadow(0 0 18px currentColor);
+  }
+  100% { opacity: .50; transform: scale(1); }
+}
+
+@keyframes nexo-descarga-esfera-v10 {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+    filter: drop-shadow(0 0 2px currentColor);
+  }
+  14% { opacity: .76; }
+  42% {
+    opacity: .94;
+    filter:
+      drop-shadow(0 0 3px #fff)
+      drop-shadow(0 0 7px currentColor);
+  }
+  58% {
+    opacity: 1;
+    filter:
+      drop-shadow(0 0 4px #fff)
+      drop-shadow(0 0 10px currentColor)
+      drop-shadow(0 0 16px currentColor);
+  }
+  80% {
+    opacity: .56;
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+    filter: none;
+  }
+}
+
+@keyframes nexo-pulso-convergencia-v10 {
+  0%   { opacity: 0; transform: scale(.24); }
+  26%  { opacity: .72; }
+  100% { opacity: 0; transform: scale(1.16); }
+}
+
+#pantalla-configuracion .configuracion-inferior {
+  bottom: clamp(.62rem, 1.2vh, .95rem);
+  width: min(93vw, 630px);
+  gap: clamp(.36rem, .65vh, .56rem);
+}
+
+@media (max-height: 760px) and (min-width: 761px) {
+  #pantalla-configuracion .panel-identidad {
+    top: 50%;
+    width: min(24.5vw, 395px);
+  }
+
+  #pantalla-configuracion .tarjeta-avatar {
+    height: clamp(165px, 23.5vh, 225px);
+  }
+
+  #pantalla-configuracion .cabecera-configuracion h2 {
+    font-size: clamp(1.5rem, 2vw, 2.15rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #pantalla-configuracion .energia-ruta,
+  #pantalla-configuracion .nodo-energia,
+  #pantalla-configuracion .energia-pulso-centro,
+  #pantalla-introduccion .fondo-introduccion::before {
+    animation: none !important;
+  }
+}
+
+
+/* =====================================================================
+   NEXO V24.5 · BOTONES DE CONFIGURACIÓN · FAMILIA VISUAL NEXO
+   ---------------------------------------------------------------------
+   Selección de rondas = botón de selección holográfico.
+   Iniciar Protocolo = misma acción principal usada en Partida/Final.
+   Se mantienen las dimensiones y la composición de Configuración.
+   ===================================================================== */
+
+/* --------------------- RONDAS · SELECCIÓN NEXO --------------------- */
+#pantalla-configuracion .boton-opcion {
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:clamp(88px,6.4vw,112px);
+  height:clamp(62px,7.4vh,82px);
+  padding:0;
+  margin:0;
+  border:1px solid rgba(108,217,219,.36);
+  border-radius:12px;
+  outline:0;
+  background:
+    linear-gradient(180deg,rgba(7,31,36,.80),rgba(3,17,24,.92)),
+    radial-gradient(circle at 50% 0%,rgba(104,226,211,.10),transparent 58%);
+  color:#f3ffff;
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  font-size:clamp(1.04rem,1.28vw,1.38rem);
+  font-weight:850;
+  line-height:1;
+  cursor:pointer;
+  text-shadow:0 2px 8px rgba(0,0,0,.92),0 0 10px rgba(93,220,230,.12);
+  box-shadow:inset 0 1px 0 rgba(231,255,252,.08),0 7px 16px rgba(0,0,0,.26);
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+#pantalla-configuracion .boton-opcion::before{
+  content:"";
+  position:absolute;
+  left:12px;right:12px;top:6px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(116,224,238,.55),transparent);
+  opacity:.62;
+}
+#pantalla-configuracion .boton-opcion:hover,
+#pantalla-configuracion .boton-opcion:focus-visible {
+  transform:translateY(-3px) scale(1.035);
+  border-color:rgba(91,219,245,.82);
+  background:linear-gradient(180deg,rgba(8,46,54,.90),rgba(4,23,34,.96));
+  box-shadow:inset 0 0 20px rgba(64,203,236,.08),0 0 19px rgba(58,203,239,.20),0 10px 20px rgba(0,0,0,.28);
+  outline:none;
+}
+#pantalla-configuracion .boton-opcion-activa {
+  transform:translateY(-2px) scale(1.025);
+  border-color:rgba(178,255,112,.92);
+  background:linear-gradient(180deg,rgba(54,106,43,.72),rgba(3,30,21,.96));
+  color:#ffffff;
+  box-shadow:inset 0 0 24px rgba(145,229,66,.14),0 0 22px rgba(145,229,66,.27),0 9px 20px rgba(0,0,0,.28);
+}
+#pantalla-configuracion .boton-opcion-activa::before{
+  background:linear-gradient(90deg,transparent,rgba(199,255,138,.72),rgba(99,226,231,.44),transparent);
+}
+#pantalla-configuracion .boton-opcion.boton-opcion-activa:hover,
+#pantalla-configuracion .boton-opcion.boton-opcion-activa:focus-visible,
+#pantalla-configuracion .boton-opcion[aria-pressed="true"]:hover,
+#pantalla-configuracion .boton-opcion[aria-pressed="true"]:focus-visible{
+  transform:translateY(-2px) scale(1.035);
+  border-color:rgba(190,255,123,.98);
+  background:linear-gradient(180deg,rgba(66,126,51,.82),rgba(4,38,25,.98));
+  color:#fff;
+  box-shadow:inset 0 0 28px rgba(145,229,66,.18),0 0 26px rgba(145,229,66,.34),0 10px 20px rgba(0,0,0,.28);
+}
+#pantalla-configuracion .boton-opcion[aria-pressed="true"]{
+  border-color:rgba(178,255,112,.92);
+  background:linear-gradient(180deg,rgba(54,106,43,.72),rgba(3,30,21,.96));
+  color:#fff;
+  box-shadow:inset 0 0 24px rgba(145,229,66,.14),0 0 22px rgba(145,229,66,.27),0 9px 20px rgba(0,0,0,.28);
+}
+
+/* ---------------- INICIAR PROTOCOLO · ACCIÓN PRINCIPAL NEXO ---------------- */
+#pantalla-configuracion .boton-iniciar-nexo {
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:min(88vw,570px);
+  height:clamp(108px,12.2vh,132px);
+  margin:0;
+  padding:0 clamp(5rem,8vw,7rem);
+  border:0;
+  outline:0;
+  background-color:transparent;
+  background-image:url("../assets/images/partida/botones/boton-accion-nexo-v16-normal-limpio.webp");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:100% 100%;
+  color:#ffffff;
+  cursor:pointer;
+  filter:drop-shadow(0 8px 13px rgba(0,0,0,.48)) drop-shadow(0 0 14px rgba(83,218,209,.12));
+  transition:transform .20s ease,filter .20s ease;
+}
+#pantalla-configuracion .boton-iniciar-nexo span {
+  position:relative;
+  z-index:2;
+  max-width:100%;
+  color:#ffffff;
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  font-size:clamp(1rem,1.32vw,1.28rem);
+  font-weight:850;
+  letter-spacing:.085em;
+  line-height:1;
+  white-space:nowrap;
+  text-align:center;
+  text-shadow:0 3px 10px rgba(0,0,0,.98),0 0 10px rgba(95,224,217,.18);
+}
+#pantalla-configuracion .boton-iniciar-nexo:hover,
+#pantalla-configuracion .boton-iniciar-nexo:focus-visible {
+  background-image:url("../assets/images/partida/botones/boton-accion-nexo-v16-hover-limpio.webp");
+  transform:translateY(-4px) scale(1.025);
+  filter:brightness(1.10) drop-shadow(0 10px 15px rgba(0,0,0,.52)) drop-shadow(0 0 18px rgba(75,214,221,.23));
+  outline:none;
+}
+#pantalla-configuracion .boton-iniciar-nexo:active {transform:translateY(-1px) scale(1.01)}
+
+/* El bloque inferior conserva la composición estable de V10. */
+#pantalla-configuracion .configuracion-inferior {
+  gap: clamp(.28rem, .52vh, .44rem);
+}
+
+@media (max-width: 760px) {
+  #pantalla-configuracion .boton-opcion {
+    width: clamp(74px, 19vw, 102px);
+    height: 70px;
+  }
+
+  #pantalla-configuracion .boton-iniciar-nexo {
+    width: min(100%, 540px);
+    height: 116px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #pantalla-configuracion .boton-opcion,
+  #pantalla-configuracion .boton-iniciar-nexo {
+    transition: none;
+  }
+}
+
+/* V22.2 · Alineación final del jugador y las rondas. */
+#pantalla-configuracion .configuracion-inferior {
+  width: min(94vw, 920px);
+  grid-template-columns: minmax(300px, .95fr) minmax(430px, 1.05fr);
+  column-gap: clamp(1.25rem, 3vw, 2.4rem);
+}
+
+#pantalla-configuracion .grupo-jugador,
+#pantalla-configuracion .grupo-rondas {
+  display: grid;
+  grid-template-rows: 2.4rem clamp(62px, 7.4vh, 82px);
+  align-items: end;
+}
+
+#pantalla-configuracion .grupo-jugador label,
+#pantalla-configuracion .grupo-rondas h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.4rem;
+  margin: 0;
+  text-align: center;
+  line-height: 1.15;
+}
+
+#pantalla-configuracion .control-jugador {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px;
+  width: 100%;
+  height: clamp(62px, 7.4vh, 82px);
+}
+
+#pantalla-configuracion #nombre-jugador {
+  height: 100%;
+  padding: 0 1rem;
+  border-radius: 9px 0 0 9px;
+  font-size: clamp(.82rem, 1vw, .96rem);
+}
+
+#pantalla-configuracion #selector-jugadores {
+  width: 56px;
+  height: 100%;
+  padding: 0;
+  border: 1px solid rgba(138,239,196,.50);
+  border-left: 0;
+  border-radius: 0 9px 9px 0;
+  outline: 0;
+  background: rgba(3,25,32,.96);
+  color: #aef5dd;
+  font-size: 1rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+#pantalla-configuracion #selector-jugadores:disabled {
+  cursor: default;
+  opacity: .38;
+}
+
+#pantalla-configuracion #selector-jugadores option {
+  background: #07171d;
+  color: #eefcff;
+}
+
+#pantalla-configuracion .opciones-rondas {
+  align-items: center;
+  height: clamp(62px, 7.4vh, 82px);
+}
+
+@media (max-width: 900px) {
+  #pantalla-configuracion .configuracion-inferior {
+    width: min(100%, 520px);
+    grid-template-columns: 1fr;
+  }
+}
+
+/* V22.3 · Más aire y correspondencia visual entre avatares y controles. */
+@media (min-width: 1101px) {
+  #pantalla-configuracion .panel-identidad {
+    top: 42%;
+  }
+
+  #pantalla-configuracion .configuracion-inferior {
+    bottom: clamp(.9rem, 2vh, 1.35rem);
+    width: min(94vw, 1780px);
+    display: grid;
+    grid-template-columns: 500px minmax(300px, 1fr) 500px;
+    grid-template-areas:
+      "jugador espacio rondas"
+      ". iniciar .";
+    column-gap: clamp(2rem, 5vw, 7rem);
+    row-gap: clamp(2.7rem, 5.8vh, 3.5rem);
+    align-items: end;
+  }
+
+  #pantalla-configuracion .grupo-jugador {
+    grid-area: jugador;
+    justify-self: center;
+    width: 100%;
+  }
+
+  #pantalla-configuracion .grupo-rondas {
+    grid-area: rondas;
+    justify-self: center;
+    width: 100%;
+  }
+
+  #pantalla-configuracion .opciones-rondas {
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  #pantalla-configuracion .boton-iniciar-nexo {
+    grid-area: iniciar;
+    justify-self: center;
+    transform: translateY(clamp(2.5rem, 6vh, 3.5rem));
+  }
+
+  #pantalla-configuracion .boton-iniciar-nexo:hover,
+  #pantalla-configuracion .boton-iniciar-nexo:focus-visible {
+    transform: translateY(calc(clamp(2.5rem, 6vh, 3.5rem) - 4px)) scale(1.025);
+  }
+
+  #pantalla-configuracion .boton-iniciar-nexo:active {
+    transform: translateY(calc(clamp(2.5rem, 6vh, 3.5rem) - 1px)) scale(1.01);
+  }
+}
+
+@media (min-width: 1101px) and (max-height: 760px) {
+  #pantalla-configuracion .panel-identidad {
+    top: 40%;
+  }
+
+  #pantalla-configuracion .configuracion-inferior {
+    row-gap: 1rem;
+  }
+}
+
+/* V22.12 · Controles simétricos, compactos y legibles sobre el fondo. */
+@media (min-width:1101px) {
+  #pantalla-configuracion .configuracion-inferior{
+    grid-template-columns:440px minmax(300px,1fr) 440px;
+    column-gap:clamp(2rem,4vw,5rem);
+  }
+  #pantalla-configuracion .grupo-jugador,
+  #pantalla-configuracion .grupo-rondas{width:440px!important}
+  #pantalla-configuracion .grupo-jugador label,
+  #pantalla-configuracion .grupo-rondas h3{
+    width:max-content;max-width:100%;margin:0 auto 7px!important;padding:7px 18px!important;
+    min-height:0!important;border:1px solid rgba(92,226,218,.26);border-radius:8px;
+    background:linear-gradient(90deg,rgba(2,18,21,.80),rgba(4,25,31,.93),rgba(2,18,21,.80));
+    box-shadow:inset 0 -2px 0 rgba(62,211,238,.30),0 0 20px rgba(45,213,229,.16);
+    text-shadow:0 2px 5px #000,0 0 12px currentColor;
+  }
+  #pantalla-configuracion .grupo-jugador label{border-color:rgba(157,239,72,.30);box-shadow:inset 0 -2px 0 rgba(150,238,68,.36),0 0 20px rgba(126,226,66,.15)}
+  #pantalla-configuracion .control-jugador{width:440px!important}
+  #pantalla-configuracion .opciones-rondas{width:440px!important;justify-content:center!important;gap:10px!important}
+  #pantalla-configuracion .boton-opcion{width:102px!important;min-width:102px!important}
+}
+
+/* V22.3 · La navegación de la introducción permanece anclada. */
+@media (min-width: 901px) {
+  #pantalla-introduccion .contenido-introduccion {
+    top: 50%;
+    height: min(88vh, 760px);
+    max-height: none;
+    justify-content: flex-start;
+  }
+
+  #pantalla-introduccion .relato-introduccion {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-bottom: 0;
+  }
+
+  #pantalla-introduccion .progreso-intro {
+    flex: 0 0 30px;
+  }
+
+  #pantalla-introduccion .controles-intro {
+    flex: 0 0 auto;
+    height: 64px;
+  }
+
+  #pantalla-introduccion .boton-continuar-imagen:hover,
+  #pantalla-introduccion .boton-continuar-imagen:focus-visible,
+  #pantalla-introduccion .boton-continuar-imagen:active {
+    transform: none;
+  }
+}
+
+@media (min-width: 901px) and (max-height: 760px) {
+  #pantalla-introduccion .contenido-introduccion {
+    height: 94vh;
+  }
+}
+
+/* V22.14 · Continuidad de puntero entre JUGAR e INTRODUCCIÓN.
+   El botón principal conserva el mismo centro de pantalla en los cuatro pasos;
+   relato y progreso se ordenan sobre ese eje sin alterar la navegación. */
+@media (min-width: 901px) {
+  #pantalla-introduccion .contenido-introduccion {
+    top: 0;
+    left: 50%;
+    width: min(58vw, 760px);
+    height: 100svh;
+    max-height: none;
+    padding: clamp(1rem, 3vh, 2rem) 0 clamp(8.8rem, 18vh, 9.8rem);
+    transform: translateX(-50%);
+    justify-content: flex-start;
+  }
+
+  #pantalla-introduccion .cabecera-introduccion {
+    flex: 0 0 auto;
+  }
+
+  #pantalla-introduccion .relato-introduccion {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: clamp(.45rem, 1vh, .75rem) 0 0;
+    display: flex;
+    align-items: center;
+  }
+
+  #pantalla-introduccion .bloque-intro {
+    justify-content: center;
+  }
+
+  #pantalla-introduccion .progreso-intro {
+    position: absolute;
+    left: 50%;
+    bottom: calc(clamp(1rem, 3vh, 2rem) + 79px);
+    width: min(48%, 330px);
+    margin: 0;
+    transform: translateX(-50%);
+  }
+
+  #pantalla-introduccion .controles-intro {
+    position: absolute;
+    left: 50%;
+    bottom: calc(clamp(1rem, 3vh, 2rem) + 7px);
+    width: min(76%, 560px);
+    height: 64px;
+    margin: 0;
+    transform: translateX(-50%);
+  }
+
+  #pantalla-introduccion .controles-intro .boton-continuar-imagen {
+    width: min(17vw, 220px);
+    min-width: 185px;
+  }
+}
+
+@media (min-width: 901px) and (max-height: 760px) {
+  #pantalla-introduccion .contenido-introduccion {
+    height: 100svh;
+    padding-top: .7rem;
+    padding-bottom: 8rem;
+  }
+
+  #pantalla-introduccion .progreso-intro {
+    bottom: calc(clamp(1rem, 3vh, 2rem) + 70px);
+    height: 24px;
+  }
+
+  #pantalla-introduccion .controles-intro {
+    bottom: calc(clamp(1rem, 3vh, 2rem) + 5px);
+    height: 58px;
+  }
+}
+
+/* V22.15 · Lectura editorial del relato: cuerpo justificado y apertura centrada. */
+#pantalla-introduccion .bloque-intro p:not(:first-child) {
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+#pantalla-introduccion .bloque-intro p:first-child {
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* V22.16 · Jerarquía narrativa de videojuego.
+   Se elimina el radar ornamental, que competía con el texto sin informar,
+   y se compacta cabecera + relato como una única unidad de lectura. */
+@media (min-width: 901px) {
+  #pantalla-introduccion .contenido-introduccion {
+    width: min(56vw, 740px);
+    padding-top: clamp(1.75rem, 4vh, 2.6rem);
+  }
+
+  #pantalla-introduccion .relato-introduccion {
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    margin-top: clamp(1.1rem, 2.4vh, 1.55rem);
+    display: block;
+  }
+
+  #pantalla-introduccion .bloque-intro {
+    min-height: 0;
+    justify-content: flex-start;
+  }
+}
+
+@media (min-width: 901px) and (max-height: 760px) {
+  #pantalla-introduccion .contenido-introduccion {
+    padding-top: clamp(.75rem, 2.2vh, 1.2rem);
+  }
+
+  #pantalla-introduccion .relato-introduccion {
+    margin-top: clamp(.65rem, 1.5vh, .95rem);
+  }
+}
+
+/* V22.21 · Identidad narrativa: sin repetir la X del logotipo de portada. */
+#pantalla-introduccion .cabecera-introduccion h2 {
+  position:relative!important;
+  padding-left:0!important;
+  padding-bottom:.72rem!important;
+  border-bottom:0!important;
+}
+
+#pantalla-introduccion .cabecera-introduccion h2::before {
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+}
+
+#pantalla-introduccion .cabecera-introduccion h2::after {
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:0!important;
+  width:100%!important;
+  height:2px!important;
+  border:0!important;
+  border-radius:999px!important;
+  transform:translateX(-50%)!important;
+  background-image:
+    linear-gradient(90deg,transparent 0%,rgba(255,255,255,.12) 30%,#dffff8 48%,#b4ee73 52%,rgba(255,255,255,.12) 70%,transparent 100%),
+    linear-gradient(90deg,transparent 0%,rgba(255,255,255,.12) 30%,#dffff8 48%,#7bdff2 52%,rgba(255,255,255,.12) 70%,transparent 100%),
+    linear-gradient(90deg,transparent 0%,rgba(80,182,238,.18) 18%,#5fded3 44%,#76e3c6 50%,#5fded3 56%,rgba(80,182,238,.18) 82%,transparent 100%)!important;
+  background-size:24% 100%,24% 100%,100% 100%!important;
+  background-repeat:no-repeat!important;
+  background-position:-32% 0,132% 0,center;
+  box-shadow:0 0 7px rgba(91,224,211,.25)!important;
+  opacity:.72;
+  animation:none!important;
+  pointer-events:none!important;
+}
+
+#pantalla-introduccion.activa .cabecera-introduccion h2::after {
+  animation:energia-linea-intro 1.4s cubic-bezier(.18,.72,.22,1) 1 both!important;
+}
+
+@keyframes energia-linea-intro {
+  0% {background-position:-32% 0,132% 0,center;opacity:.34;filter:brightness(.86)}
+  74% {background-position:50% 0,50% 0,center;opacity:1;filter:brightness(1.42)}
+  100% {background-position:50% 0,50% 0,center;opacity:.68;filter:brightness(1)}
+}
+
+@media (min-width: 901px) {
+  #pantalla-introduccion .cabecera-introduccion {
+    top:clamp(7.5rem,17vh,10rem)!important;
+  }
+  #pantalla-introduccion .progreso-intro {bottom:134px!important}
+  #pantalla-introduccion .controles-intro {bottom:58px!important}
+  #pantalla-introduccion .btn-saltar-intro {
+    position:absolute!important;
+    left:50%!important;
+    right:auto!important;
+    top:auto!important;
+    bottom:16px!important;
+    transform:translateX(-50%)!important;
+    min-width:150px!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+  }
+}
+
+@media (min-width: 901px) and (max-height: 760px) {
+  #pantalla-introduccion .cabecera-introduccion {top:6rem!important}
+  #pantalla-introduccion .progreso-intro {bottom:126px!important}
+  #pantalla-introduccion .controles-intro {bottom:54px!important}
+  #pantalla-introduccion .btn-saltar-intro {bottom:12px!important}
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #pantalla-introduccion .cabecera-introduccion h2::after {animation:none!important;opacity:.66!important}
+}
+
+/* =====================================================================
+   V22.26 · MANUAL / CÓMO JUGAR
+   Recurso informativo sencillo: HTML + CSS + mostrar/ocultar con JavaScript.
+   ===================================================================== */
+#pantalla-introduccion .acciones-secundarias-intro{
+  position:absolute;
+  left:50%;
+  bottom:14px;
+  transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  z-index:20;
+}
+#pantalla-introduccion .acciones-secundarias-intro .btn-saltar-intro{
+  position:static!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+}
+#pantalla-introduccion .btn-como-jugar{
+  min-width:150px;
+  padding:.58rem 1.05rem;
+  border:1px solid rgba(120,225,216,.55);
+  border-radius:999px;
+  background:rgba(3,20,25,.72);
+  color:#dffcf8;
+  font:700 .72rem/1.1 Inter,Segoe UI,Arial,sans-serif;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  cursor:pointer;
+  box-shadow:0 0 18px rgba(73,208,205,.12);
+  transition:transform .18s ease,background .18s ease,border-color .18s ease;
+}
+#pantalla-introduccion .btn-como-jugar:hover,
+#pantalla-introduccion .btn-como-jugar:focus-visible{
+  transform:translateY(-2px);
+  background:rgba(8,42,48,.92);
+  border-color:rgba(172,255,241,.92);
+  outline:none;
+}
+
+/* =====================================================================
+   MANUAL NEXO · GUÍA OPERATIVA V24
+   Misma información y lógica; lenguaje visual integrado con el juego.
+   ===================================================================== */
+.superposicion-manual{
+  position:fixed;
+  inset:0;
+  z-index:220;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(10px,2vh,22px);
+  background:
+    radial-gradient(circle at 50% 48%,rgba(14,69,76,.16),transparent 45%),
+    rgba(0,6,9,.88);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+.panel-manual{
+  --manual-verde:#aaff72;
+  --manual-azul:#70e6ff;
+  --manual-cian:#7cf2eb;
+  position:relative;
+  isolation:isolate;
+  width:min(1360px,96vw);
+  max-height:94vh;
+  overflow:hidden;
+  border:1px solid rgba(105,226,229,.48);
+  border-radius:22px 8px 22px 8px;
+  background:
+    radial-gradient(circle at 18% 4%,rgba(87,221,94,.075),transparent 29%),
+    radial-gradient(circle at 82% 4%,rgba(69,188,245,.085),transparent 31%),
+    linear-gradient(145deg,rgba(2,19,24,.985),rgba(1,10,16,.99));
+  box-shadow:
+    inset 0 0 60px rgba(71,217,221,.035),
+    0 30px 95px rgba(0,0,0,.72),
+    0 0 46px rgba(62,207,214,.12);
+  color:#eefbfc;
+}
+.panel-manual::before{
+  content:"";
+  position:absolute;
+  inset:7px;
+  z-index:5;
+  pointer-events:none;
+  background:
+    linear-gradient(var(--manual-verde),var(--manual-verde)) left top/48px 1px no-repeat,
+    linear-gradient(var(--manual-verde),var(--manual-verde)) left top/1px 48px no-repeat,
+    linear-gradient(var(--manual-azul),var(--manual-azul)) right top/48px 1px no-repeat,
+    linear-gradient(var(--manual-azul),var(--manual-azul)) right top/1px 48px no-repeat,
+    linear-gradient(var(--manual-verde),var(--manual-verde)) left bottom/48px 1px no-repeat,
+    linear-gradient(var(--manual-verde),var(--manual-verde)) left bottom/1px 48px no-repeat,
+    linear-gradient(var(--manual-azul),var(--manual-azul)) right bottom/48px 1px no-repeat,
+    linear-gradient(var(--manual-azul),var(--manual-azul)) right bottom/1px 48px no-repeat;
+  opacity:.58;
+}
+.panel-manual::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:1px;
+  z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(transparent,rgba(117,236,232,.065) 18%,rgba(117,236,232,.03) 76%,transparent);
+}
+.cabecera-manual{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  min-height:154px;
+  padding:14px 84px 18px;
+  border-bottom:1px solid rgba(111,211,210,.18);
+  background:
+    linear-gradient(90deg,rgba(82,181,66,.085),transparent 36%,transparent 64%,rgba(57,156,218,.09)),
+    linear-gradient(180deg,rgba(5,33,39,.74),rgba(3,18,24,.36));
+}
+.cabecera-manual::before,
+.cabecera-manual::after{
+  content:"";
+  position:absolute;
+  bottom:-1px;
+  width:42%;
+  height:2px;
+  pointer-events:none;
+}
+.cabecera-manual::before{left:8%;background:linear-gradient(90deg,transparent,var(--manual-verde),rgba(170,255,114,.2))}
+.cabecera-manual::after{right:8%;background:linear-gradient(90deg,rgba(112,230,255,.2),var(--manual-azul),transparent)}
+.manual-logo{
+  display:block;
+  width:clamp(205px,16vw,260px);
+  max-height:86px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 15px rgba(88,226,225,.18));
+}
+.manual-titulos{text-align:center;max-width:800px}
+.manual-sobrelinea{
+  margin:-1px 0 4px;
+  color:var(--manual-cian);
+  font-size:.72rem;
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+.cabecera-manual h3{margin:0;color:#f7ffff;font-size:clamp(1.65rem,2.6vw,2.15rem);letter-spacing:.02em;text-shadow:0 0 18px rgba(124,242,235,.14)}
+.manual-subtitulo{margin:5px 0 0;color:#b5ccd0;font-size:.84rem;line-height:1.45;text-wrap:balance}
+.boton-cerrar-manual{
+  position:absolute;
+  top:20px;
+  right:26px;
+  width:46px;
+  height:46px;
+  border:1px solid rgba(112,230,255,.42);
+  border-radius:50%;
+  background:rgba(1,15,20,.66);
+  color:#fff;
+  font-size:1.55rem;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:inset 0 0 15px rgba(84,220,229,.035),0 0 16px rgba(63,207,214,.06);
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.boton-cerrar-manual:hover,.boton-cerrar-manual:focus-visible{
+  transform:scale(1.06);
+  border-color:var(--manual-cian);
+  background:rgba(10,48,55,.78);
+  box-shadow:0 0 18px rgba(92,232,228,.19);
+  outline:none;
+}
+.contenido-manual{
+  max-height:calc(94vh - 154px);
+  overflow:auto;
+  padding:24px 30px 34px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(104,211,213,.72) rgba(2,15,20,.72);
+  background:
+    linear-gradient(90deg,rgba(86,213,85,.025),transparent 19%,transparent 81%,rgba(65,180,236,.028));
+}
+.contenido-manual::-webkit-scrollbar{width:8px}
+.contenido-manual::-webkit-scrollbar-track{background:rgba(2,15,20,.72);border-left:1px solid rgba(99,199,202,.08)}
+.contenido-manual::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(126,238,211,.72),rgba(81,178,220,.66));border-radius:999px;border:2px solid rgba(2,15,20,.72)}
+.contenido-manual section{min-width:0}
+.manual-inicio{
+  display:grid;
+  grid-template-columns:minmax(260px,.72fr) minmax(0,2.28fr);
+  gap:18px;
+  align-items:stretch;
+}
+.manual-objetivo,.manual-ronda,.manual-resultados,.manual-fortalezas,.manual-modificadores,.manual-eventos{
+  position:relative;
+  padding:18px 20px;
+  overflow:hidden;
+  border:1px solid rgba(127,220,221,.16);
+  border-radius:16px 5px 16px 5px;
+  background:
+    linear-gradient(130deg,rgba(86,211,83,.035),transparent 31%),
+    linear-gradient(180deg,rgba(5,26,32,.72),rgba(2,14,20,.54));
+  box-shadow:inset 0 0 25px rgba(81,220,215,.025);
+}
+.manual-ronda,.manual-eventos{border-radius:5px 16px 5px 16px}
+.manual-objetivo::before,.manual-ronda::before,.manual-resultados::before,.manual-fortalezas::before,.manual-modificadores::before,.manual-eventos::before{
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--manual-verde),var(--manual-azul),transparent);
+  opacity:.52;
+}
+.manual-encabezado-seccion{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.manual-encabezado-ronda{margin-bottom:14px}
+.manual-numero{
+  display:grid;
+  place-items:center;
+  flex:0 0 32px;
+  width:32px;
+  height:32px;
+  border:1px solid rgba(161,244,116,.62);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(101,191,53,.20),rgba(41,92,35,.08));
+  color:#c5ff7f;
+  font-size:.79rem;
+  font-weight:900;
+  box-shadow:inset 0 0 12px rgba(127,243,99,.08),0 0 11px rgba(126,239,101,.04);
+}
+.manual-etiqueta{display:block;color:var(--manual-cian);font-size:.66rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.contenido-manual h4{margin:2px 0 0;color:#f0ffff;font-size:1.08rem;letter-spacing:.015em}
+.contenido-manual p,.contenido-manual li,.contenido-manual dd{font-size:.86rem;line-height:1.55;color:#c9dbde}
+.manual-objetivo p{margin:0;padding-left:43px}
+.manual-objetivo strong{color:#f6ffff}
+
+/* Una ronda: el flujo actúa como pequeño protocolo visual Humano ↔ IA. */
+.manual-pasos{
+  position:relative;
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+.manual-pasos::before{
+  content:"";
+  position:absolute;
+  left:7%;
+  right:7%;
+  top:50%;
+  height:1px;
+  background:linear-gradient(90deg,var(--manual-azul),rgba(124,242,235,.72),var(--manual-verde));
+  opacity:.25;
+}
+.manual-pasos li{
+  position:relative;
+  z-index:1;
+  min-height:116px;
+  padding:13px 11px 12px;
+  border:1px solid rgba(128,210,213,.18);
+  border-radius:14px 5px 14px 5px;
+  background:linear-gradient(180deg,rgba(4,24,30,.92),rgba(2,16,22,.90));
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  box-shadow:0 8px 20px rgba(0,0,0,.14);
+}
+.manual-pasos li:nth-child(1),.manual-pasos li:nth-child(2){border-top-color:rgba(112,230,255,.34)}
+.manual-pasos li:nth-child(3),.manual-pasos li:nth-child(4){border-bottom-color:rgba(170,255,114,.34)}
+.manual-pasos li:not(:last-child)::after{
+  content:"›";
+  position:absolute;
+  right:-12px;
+  top:39%;
+  z-index:3;
+  color:var(--manual-cian);
+  font-size:1.5rem;
+  font-weight:800;
+  text-shadow:0 0 10px rgba(124,242,235,.35);
+}
+.manual-paso-icono{
+  display:grid;
+  place-items:center;
+  width:40px;
+  height:40px;
+  border:1px solid rgba(102,222,224,.28);
+  border-radius:12px 4px 12px 4px;
+  color:#a3f8f0;
+  font-size:1.46rem;
+  background:rgba(21,83,88,.18);
+  box-shadow:inset 0 0 12px rgba(89,224,218,.045);
+}
+.manual-pasos li:nth-child(-n+2) .manual-paso-icono{color:var(--manual-azul);border-color:rgba(112,230,255,.30)}
+.manual-pasos li:nth-child(n+3) .manual-paso-icono{color:var(--manual-verde);border-color:rgba(170,255,114,.27)}
+.manual-pasos strong{font-size:.85rem;color:#fff;letter-spacing:.035em}
+.manual-pasos small{font-size:.75rem;line-height:1.4;color:#a7bdc1}
+
+/* Final anticipado: dos extremos del mismo sistema planetario. */
+.manual-final-anticipado{
+  position:relative;
+  margin-top:17px;
+  padding:14px 18px;
+  display:grid;
+  grid-template-columns:minmax(230px,.7fr) minmax(0,1.65fr);
+  gap:18px;
+  align-items:center;
+  overflow:hidden;
+  border:1px solid rgba(128,222,220,.20);
+  border-radius:15px 5px 15px 5px;
+  background:
+    linear-gradient(90deg,rgba(94,182,64,.105),rgba(4,22,29,.54) 42%,rgba(4,22,29,.54) 58%,rgba(193,70,74,.10));
+}
+.manual-final-anticipado::before{
+  content:"";
+  position:absolute;
+  left:49.95%;top:0;bottom:0;width:1px;
+  background:linear-gradient(transparent,rgba(122,230,224,.22),transparent);
+  opacity:.65;
+}
+.manual-final-titulo{display:grid;gap:5px}
+.manual-final-titulo strong{font-size:.92rem;line-height:1.35;color:#f0ffff}
+.manual-final-extremos{display:grid;grid-template-columns:1fr 32px 1fr;gap:10px;align-items:center}
+.manual-extremo{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  column-gap:10px;
+  row-gap:2px;
+  padding:10px 12px;
+  border:1px solid rgba(135,211,211,.10);
+  border-radius:11px 4px 11px 4px;
+  background:rgba(2,15,20,.72);
+}
+.manual-extremo b{grid-row:1 / span 2;font-size:.82rem;align-self:center}
+.manual-extremo span{font-size:.76rem;font-weight:900;letter-spacing:.08em}
+.manual-extremo small{font-size:.72rem;line-height:1.35;color:#adc4c7}
+.manual-extremo-recuperacion{border-left:3px solid #8ee86b;box-shadow:inset 12px 0 22px rgba(94,209,76,.035)}
+.manual-extremo-recuperacion b,.manual-extremo-recuperacion span{color:#baff86}
+.manual-extremo-colapso{border-right:3px solid #ed6570;box-shadow:inset -12px 0 22px rgba(229,77,87,.035)}
+.manual-extremo-colapso b,.manual-extremo-colapso span{color:#ff8f96}
+.manual-final-separador{display:grid;place-items:center;width:32px;height:32px;border:1px solid rgba(124,242,235,.27);border-radius:50%;color:var(--manual-cian);font-weight:900;font-size:1rem;background:rgba(4,28,33,.74);box-shadow:0 0 12px rgba(124,242,235,.08)}
+
+/* Resultados: tres desenlaces con lectura inmediata. */
+.manual-resultados{margin-top:20px}
+.manual-tres-resultados{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.resultado-manual{
+  position:relative;
+  display:grid;
+  gap:4px;
+  min-height:94px;
+  padding:14px 15px 13px 18px;
+  overflow:hidden;
+  border:1px solid rgba(136,214,217,.14);
+  border-radius:14px 4px 14px 4px;
+  background:linear-gradient(145deg,rgba(5,24,29,.80),rgba(2,15,21,.70));
+}
+.resultado-manual::after{content:"";position:absolute;right:-12px;bottom:-18px;width:70px;height:70px;border:1px solid currentColor;border-radius:50%;opacity:.055}
+.resultado-manual strong{font-size:.81rem;letter-spacing:.085em}
+.resultado-manual span{font-size:.84rem;color:#edf6f7}
+.resultado-manual small{font-size:.76rem;line-height:1.4;color:#aec1c4}
+.resultado-convergencia{color:#aaff77;border-left:3px solid #8ee86b;background:linear-gradient(145deg,rgba(43,91,40,.19),rgba(3,18,23,.74))}
+.resultado-rivalidad{color:#ffd16e;border-left:3px solid #e6b455;background:linear-gradient(145deg,rgba(92,70,31,.16),rgba(3,18,23,.74))}
+.resultado-fracaso{color:#ff8189;border-left:3px solid #e45b63;background:linear-gradient(145deg,rgba(94,39,44,.17),rgba(3,18,23,.74))}
+.resultado-manual span,.resultado-manual small{color:#e8f3f4}.resultado-manual small{color:#abc0c3}
+
+.manual-seccion-amplia{margin-top:20px}
+.manual-nota{margin:-3px 0 14px 43px;color:#93b9bd!important;font-size:.79rem!important}
+.manual-columnas-fortalezas{display:grid;grid-template-columns:1fr 1fr;gap:18px;position:relative}
+.manual-columnas-fortalezas::after{content:"↔";position:absolute;left:50%;top:1px;transform:translateX(-50%);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#04191f;border:1px solid rgba(122,232,228,.21);color:var(--manual-cian);font-size:.72rem}
+.manual-lista{padding:2px 0 0}
+.manual-lista h5{margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(141,220,221,.12);font-size:.79rem;letter-spacing:.07em}
+.manual-lista-humano h5{color:var(--manual-verde)}
+.manual-lista-ia h5{color:var(--manual-azul)}
+.manual-lista dl,.manual-lista-compacta{margin:0;display:grid;gap:5px}
+.manual-lista dl>div,.manual-lista-compacta>div{
+  display:grid;
+  grid-template-columns:minmax(145px,.34fr) 1fr;
+  gap:12px;
+  align-items:start;
+  padding:8px 10px;
+  border-radius:9px 3px 9px 3px;
+  background:rgba(5,23,28,.58);
+  border:1px solid rgba(127,213,215,.055);
+}
+.manual-lista-humano dl>div{border-left:2px solid rgba(139,231,94,.56)}
+.manual-lista-ia dl>div{border-left:2px solid rgba(69,192,241,.56)}
+.contenido-manual dt{font-size:.76rem;font-weight:900;letter-spacing:.055em;color:#f6ffff}
+.contenido-manual dd{margin:0;font-size:.79rem;line-height:1.48}
+.manual-dos-columnas{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+.manual-lista-compacta>div{grid-template-columns:minmax(150px,.38fr) 1fr;border-left:2px solid rgba(133,226,92,.46)}
+.manual-eventos .manual-lista-compacta>div{border-left-color:rgba(76,190,239,.50)}
+.manual-consejo{
+  position:relative;
+  margin-top:20px;
+  padding:15px 18px;
+  border:1px solid rgba(146,232,99,.26);
+  border-radius:15px 5px 15px 5px;
+  display:grid;
+  grid-template-columns:34px 1fr;
+  gap:12px;
+  align-items:start;
+  background:linear-gradient(90deg,rgba(92,164,53,.12),rgba(5,32,38,.33) 50%,rgba(55,143,194,.105));
+  box-shadow:inset 0 0 22px rgba(126,219,90,.025);
+}
+.manual-consejo::after{content:"";position:absolute;left:11%;right:11%;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--manual-verde),var(--manual-azul),transparent);opacity:.42}
+.manual-consejo p{margin:4px 0 0;font-size:.81rem}
+.manual-consejo strong{color:#dcffc2}
+
+@media(max-width:980px){
+  .cabecera-manual{min-height:144px;padding:14px 70px 16px}.manual-logo{width:220px;max-height:80px}.cabecera-manual h3{font-size:1.8rem}
+  .contenido-manual{max-height:calc(94vh - 144px)}
+  .manual-inicio{grid-template-columns:1fr}.manual-pasos{grid-template-columns:repeat(2,1fr)}.manual-pasos::before{display:none}.manual-pasos li:nth-child(2)::after{display:none}
+  .manual-columnas-fortalezas,.manual-dos-columnas{grid-template-columns:1fr}.manual-columnas-fortalezas::after{display:none}
+  .manual-final-anticipado{grid-template-columns:1fr}.manual-final-anticipado::before{display:none}
+}
+@media(max-width:760px){
+  .superposicion-manual{padding:7px}.panel-manual{width:99vw;max-height:97vh;border-radius:15px 5px 15px 5px}
+  .cabecera-manual{min-height:auto;padding:13px 55px 14px;gap:4px}.manual-logo{width:170px;max-height:66px}.manual-subtitulo{display:none}.cabecera-manual h3{font-size:1.5rem}.boton-cerrar-manual{top:12px;right:12px;width:39px;height:39px;font-size:1.4rem}
+  .contenido-manual{max-height:calc(97vh - 124px);padding:15px 14px 24px}.manual-pasos{grid-template-columns:1fr}.manual-pasos li:not(:last-child)::after{display:none}
+  .manual-final-extremos{grid-template-columns:1fr}.manual-final-separador{display:none}.manual-extremo{grid-template-columns:1fr}.manual-extremo b{grid-row:auto}.manual-extremo-colapso{border-left:3px solid #ed6570;border-right:1px solid rgba(135,211,211,.10)}
+  .manual-tres-resultados{grid-template-columns:1fr}.manual-lista dl>div,.manual-lista-compacta>div{grid-template-columns:1fr;gap:3px}
+  .manual-objetivo p,.manual-nota{padding-left:0;margin-left:0}
+  #pantalla-introduccion .acciones-secundarias-intro{gap:9px;width:92%}
+  #pantalla-introduccion .btn-como-jugar{min-width:128px}
+}
+
+/* =====================================================================
+   PANTALLA FINAL · NEXO · REDISEÑO HOLOGRÁFICO
+   El estado del planeta es el titular principal. El desenlace y el perfil
+   quedan como lectura secundaria, sobre el mundo final correspondiente.
+   ===================================================================== */
+#pantalla-final{
+  --final-acento:#a8ff71;
+  --final-acento-2:#63e5ff;
+  --final-panel:rgba(2,17,22,.43);
+  --final-panel-fuerte:rgba(2,13,18,.58);
+  position:relative;isolation:isolate;width:100%;min-height:100svh;overflow:hidden;
+  padding:clamp(10px,1.5vh,18px) clamp(14px,2.1vw,32px);
+  background:#031015;color:#f5ffff;font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+#pantalla-final::before{
+  content:"";position:absolute;inset:0;z-index:0;
+  background-position:center;background-size:cover;background-repeat:no-repeat;
+  transform:scale(1.006);
+}
+#pantalla-final::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(0,8,11,.02) 0%,rgba(0,8,11,.08) 45%,rgba(0,6,9,.34) 100%),
+    linear-gradient(90deg,rgba(0,7,10,.12),transparent 22%,transparent 78%,rgba(0,7,10,.12));
+}
+#pantalla-final .final-atmosfera{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(circle at 50% 20%,color-mix(in srgb,var(--final-acento) 16%,transparent),transparent 34%);
+  mix-blend-mode:screen;
+}
+#pantalla-final.final-crisis-0{--final-acento:#afff70;--final-acento-2:#67e9ff;--final-panel:rgba(2,28,22,.34);--final-panel-fuerte:rgba(2,22,20,.48)}
+#pantalla-final.final-crisis-0::before{background-image:url('../assets/images/final/fondos/final-planeta-0-24-equilibrio-saludable.webp')}
+#pantalla-final.final-crisis-25{--final-acento:#d9ee72;--final-acento-2:#72dff3;--final-panel:rgba(13,25,23,.40);--final-panel-fuerte:rgba(8,20,21,.54)}
+#pantalla-final.final-crisis-25::before{background-image:url('../assets/images/final/fondos/final-planeta-25-49-equilibrio-fragil.webp')}
+#pantalla-final.final-crisis-50{--final-acento:#ffc167;--final-acento-2:#71d0ea;--final-panel:rgba(31,22,15,.44);--final-panel-fuerte:rgba(26,17,13,.58)}
+#pantalla-final.final-crisis-50::before{background-image:url('../assets/images/final/fondos/final-planeta-50-74-equilibrio-critico.webp')}
+#pantalla-final.final-crisis-75{--final-acento:#ff8b63;--final-acento-2:#68bdd8;--final-panel:rgba(34,15,12,.48);--final-panel-fuerte:rgba(29,11,10,.62)}
+#pantalla-final.final-crisis-75::before{background-image:url('../assets/images/final/fondos/final-planeta-75-99-colapso-inminente.webp')}
+#pantalla-final.final-crisis-100{--final-acento:#ff5a4e;--final-acento-2:#7fb1c7;--final-panel:rgba(37,9,8,.58);--final-panel-fuerte:rgba(31,7,7,.72)}
+#pantalla-final.final-crisis-100::before{background-image:url('../assets/images/final/fondos/final-planeta-100-crisis-catastrofica.webp')}
+#pantalla-final.final-crisis-50::after,#pantalla-final.final-crisis-75::after,#pantalla-final.final-crisis-100::after{
+  background:
+    linear-gradient(180deg,rgba(13,4,2,.02),rgba(14,4,2,.12) 48%,rgba(8,2,2,.42)),
+    linear-gradient(90deg,rgba(7,2,1,.16),transparent 23%,transparent 77%,rgba(7,2,1,.16));
+}
+
+#pantalla-final .contenido-final{
+  position:relative;z-index:3;width:min(1480px,96vw);height:calc(100svh - clamp(20px,3vh,36px));margin:0 auto;
+  display:grid;grid-template-rows:auto auto auto auto minmax(0,1fr) auto;gap:clamp(7px,1vh,12px);align-content:start;
+}
+#pantalla-final .final-cabecera{text-align:center;display:grid;justify-items:center;gap:2px;text-shadow:0 2px 16px rgba(0,0,0,.72)}
+#pantalla-final .final-logo-nexo{width:clamp(190px,17vw,300px);max-height:84px;object-fit:contain;filter:drop-shadow(0 0 14px rgba(92,231,222,.23))}
+#pantalla-final .final-sobrelinea{margin:0;color:var(--final-acento);font-size:clamp(.68rem,1.2vh,.86rem);font-weight:900;letter-spacing:.22em;text-transform:uppercase}
+#pantalla-final #titulo-final-principal{
+  margin:1px 0 0;color:#f8fff4;font-size:clamp(2rem,4.9vh,3.7rem);line-height:.98;letter-spacing:.055em;text-transform:uppercase;
+  text-shadow:0 0 8px #fff,0 0 18px color-mix(in srgb,var(--final-acento) 72%,transparent),0 0 44px color-mix(in srgb,var(--final-acento) 40%,transparent);
+}
+#pantalla-final .final-subtitulo{margin:3px 0 0;color:var(--final-acento);font-size:clamp(.74rem,1.35vh,.96rem);font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+#pantalla-final .final-mensaje-planeta{margin:3px auto 0;max-width:940px;color:#edfafa;font-size:clamp(.72rem,1.3vh,.92rem);line-height:1.35;text-wrap:balance}
+
+#pantalla-final .final-hologramas-principales{
+  width:min(1160px,91vw);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.7vw,24px);
+}
+#pantalla-final .final-panel,#pantalla-final .capacidades-conquistadas{
+  position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--final-acento-2) 42%,transparent);
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--final-acento) 7%,transparent),transparent 32%),
+    linear-gradient(180deg,var(--final-panel-fuerte),var(--final-panel));
+  box-shadow:inset 0 0 24px rgba(94,223,218,.06),0 0 18px color-mix(in srgb,var(--final-acento-2) 8%,transparent),0 14px 34px rgba(0,0,0,.22);
+  backdrop-filter:blur(7px);
+}
+#pantalla-final .final-panel{min-height:clamp(118px,15vh,160px);padding:clamp(13px,1.6vh,20px) clamp(18px,1.6vw,26px);display:grid;align-content:center;text-align:center}
+#pantalla-final .final-panel::before,#pantalla-final .capacidades-conquistadas::before{
+  content:"";position:absolute;left:8%;right:8%;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--final-acento-2),var(--final-acento),transparent);opacity:.86;
+}
+#pantalla-final .final-panel::after,#pantalla-final .capacidades-conquistadas::after{
+  content:"";position:absolute;inset:7px;pointer-events:none;
+  background:
+    linear-gradient(var(--final-acento),var(--final-acento)) left top/28px 1px no-repeat,
+    linear-gradient(var(--final-acento),var(--final-acento)) left top/1px 28px no-repeat,
+    linear-gradient(var(--final-acento-2),var(--final-acento-2)) right bottom/28px 1px no-repeat,
+    linear-gradient(var(--final-acento-2),var(--final-acento-2)) right bottom/1px 28px no-repeat;
+  opacity:.58;
+}
+#pantalla-final .final-panel-etiqueta{margin:0;color:var(--final-acento-2);font-size:clamp(.67rem,1.12vh,.8rem);font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+#pantalla-final .final-panel h3{margin:.3rem 0 .38rem;font-size:clamp(1.28rem,2.65vh,1.95rem);line-height:1.02;letter-spacing:.055em;color:var(--final-acento);text-shadow:0 0 16px color-mix(in srgb,var(--final-acento) 30%,transparent)}
+#pantalla-final .final-panel p:last-child{margin:0 auto;max-width:94%;color:#d8e8e9;font-size:clamp(.73rem,1.3vh,.92rem);line-height:1.4;text-wrap:balance}
+#pantalla-final #final-nombre-jugador{color:#fff;font-weight:900}
+#pantalla-final .final-supremacia-humana{color:#baff78}
+#pantalla-final .final-supremacia-ia{color:#75ddff}
+#pantalla-final .final-convergencia-total{color:#8fffe2}
+#pantalla-final .final-equilibrio-inestable{color:#ffd16e}
+#pantalla-final .final-colapso{color:#ff7d70}
+
+#pantalla-final .resumen-final{
+  width:min(1120px,90vw);margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:5px 10px;
+  border-top:1px solid color-mix(in srgb,var(--final-acento-2) 50%,transparent);border-bottom:1px solid color-mix(in srgb,var(--final-acento) 45%,transparent);
+  background:linear-gradient(90deg,rgba(1,14,18,.18),rgba(2,24,28,.48),rgba(1,14,18,.18));backdrop-filter:blur(5px);
+  box-shadow:0 10px 28px rgba(0,0,0,.16);
+}
+#pantalla-final .dato-final{position:relative;min-height:clamp(60px,7.4vh,82px);display:grid;align-content:center;justify-items:center;padding:7px 10px}
+#pantalla-final .dato-final:not(:last-child)::after{content:"";position:absolute;right:0;top:18%;height:64%;width:1px;background:linear-gradient(transparent,rgba(108,225,226,.42),transparent)}
+#pantalla-final .dato-final span{color:#b7ced1;font-size:clamp(.63rem,1.06vh,.76rem);letter-spacing:.07em;text-transform:uppercase}
+#pantalla-final .dato-final strong{margin-top:3px;color:#fff;font-size:clamp(1.05rem,2.25vh,1.5rem);text-shadow:0 0 14px rgba(95,224,217,.18)}
+#pantalla-final .dato-final-planeta strong{color:var(--final-acento)}
+
+#pantalla-final .porcentajes-final{width:min(1120px,90vw);margin:0 auto;display:grid;gap:4px}
+#pantalla-final .porcentajes-final .barra-progreso{height:10px;border-radius:999px;overflow:hidden;background:rgba(1,8,11,.82);border:1px solid rgba(125,218,220,.28);box-shadow:inset 0 0 12px rgba(0,0,0,.62)}
+#pantalla-final .porcentajes-final .relleno-humano{height:100%;border-radius:inherit;background:linear-gradient(90deg,#68dc4d,#c2ff72);box-shadow:0 0 16px rgba(142,239,92,.48)}
+#pantalla-final .porcentajes-final p{margin:0;text-align:center;color:#c0dadd;font-size:clamp(.66rem,1.08vh,.78rem);letter-spacing:.08em}
+#pantalla-final .final-balance-separador{padding:0 .45rem;color:var(--final-acento-2)}
+
+#pantalla-final .columnas-capacidades-finales{width:min(1240px,93vw);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.4vw,20px);min-height:0}
+#pantalla-final .capacidades-conquistadas{padding:clamp(10px,1.2vh,15px) clamp(12px,1.2vw,18px);min-height:0}
+#pantalla-final .capacidades-conquistadas h3{margin:0 0 8px;text-align:center;color:var(--final-acento);font-size:clamp(.68rem,1.15vh,.82rem);letter-spacing:.11em}
+#pantalla-final .capacidades-ia-final h3{color:var(--final-acento-2)}
+#pantalla-final .capacidades-conquistadas ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px}
+#pantalla-final .capacidades-conquistadas li{position:relative;min-height:44px;padding:7px 8px 7px 34px;background:linear-gradient(90deg,color-mix(in srgb,var(--final-acento) 8%,transparent),transparent 76%);border-bottom:1px solid rgba(108,206,212,.14)}
+#pantalla-final .capacidades-ia-final li{background:linear-gradient(90deg,color-mix(in srgb,var(--final-acento-2) 8%,transparent),transparent 76%)}
+#pantalla-final .capacidades-conquistadas li::before{content:"";position:absolute;left:12px;top:50%;width:10px;height:10px;border:2px solid var(--final-acento);border-radius:50%;transform:translateY(-50%);box-shadow:0 0 10px color-mix(in srgb,var(--final-acento) 62%,transparent)}
+#pantalla-final .capacidades-ia-final li::before{border-color:var(--final-acento-2);box-shadow:0 0 10px color-mix(in srgb,var(--final-acento-2) 62%,transparent)}
+#pantalla-final .capacidades-conquistadas li strong,#pantalla-final .capacidades-conquistadas li small{display:block}
+#pantalla-final .capacidades-conquistadas li strong{color:#f0ffff;font-size:clamp(.65rem,1.08vh,.76rem);line-height:1.15}
+#pantalla-final .capacidades-conquistadas li small{margin-top:2px;color:#b0c5c8;font-size:clamp(.57rem,.94vh,.68rem);line-height:1.25}
+#pantalla-final .capacidades-conquistadas .capacidad-vacia{grid-column:1/-1;display:grid;place-items:center;min-height:58px;padding:10px;color:#9bb0b4;font-style:italic;background:rgba(1,9,12,.18)}
+#pantalla-final .capacidades-conquistadas .capacidad-vacia::before{display:none}
+
+#pantalla-final .final-cierre{width:min(1180px,92vw);margin:0 auto;display:grid;justify-items:center;gap:4px;text-align:center}
+#pantalla-final .coleccion-perfiles{margin:0;width:100%;padding:6px 12px;border-top:1px solid rgba(125,225,213,.18);border-bottom:1px solid rgba(125,225,213,.14);color:#b5ccce;font-size:clamp(.58rem,.96vh,.7rem);letter-spacing:.055em}
+#pantalla-final .final-reflexion{margin:0;max-width:980px;color:#f1ffff;font-size:clamp(.74rem,1.28vh,.94rem);line-height:1.35;text-shadow:0 2px 12px rgba(0,0,0,.78)}
+#pantalla-final .final-reflexion::before,#pantalla-final .final-reflexion::after{color:var(--final-acento);font-size:1.4em;font-weight:900}
+#pantalla-final .final-reflexion::before{content:"“ "}
+#pantalla-final .final-reflexion::after{content:" ”"}
+#pantalla-final .boton-final-nexo{min-width:clamp(235px,24vw,350px);min-height:clamp(54px,6.8vh,74px);padding:0 2rem;border:0;color:#f7ffff;font:inherit;font-size:clamp(.86rem,1.5vh,1.05rem);font-weight:900;letter-spacing:.09em;cursor:pointer;background:url('../assets/images/partida/botones/boton-accion-nexo-v16-normal-limpio.webp') center/100% 100% no-repeat;filter:drop-shadow(0 0 16px color-mix(in srgb,var(--final-acento) 32%,transparent));transition:transform .18s ease,filter .18s ease}
+#pantalla-final .boton-final-nexo:hover,#pantalla-final .boton-final-nexo:focus-visible{transform:translateY(-2px) scale(1.025);background-image:url('../assets/images/partida/botones/boton-accion-nexo-v16-hover-limpio.webp');filter:drop-shadow(0 0 26px color-mix(in srgb,var(--final-acento) 52%,transparent));outline:none}
+
+@media(max-width:980px){
+  #pantalla-final{overflow-y:auto;padding:12px 10px 22px}
+  #pantalla-final .contenido-final{height:auto;min-height:100svh;grid-template-rows:auto}
+  #pantalla-final .final-hologramas-principales,#pantalla-final .columnas-capacidades-finales{grid-template-columns:1fr}
+  #pantalla-final .resumen-final{grid-template-columns:repeat(2,1fr)}
+  #pantalla-final .final-logo-nexo{width:min(285px,66vw)}
+}
+@media(max-width:620px){
+  #pantalla-final .capacidades-conquistadas ul{grid-template-columns:1fr}
+  #pantalla-final .final-panel{min-height:auto}
+  #pantalla-final #titulo-final-principal{font-size:clamp(1.85rem,9vw,2.8rem)}
+}
+@media(max-height:820px) and (min-width:981px){
+  #pantalla-final{padding:7px 16px}
+  #pantalla-final .contenido-final{height:calc(100svh - 14px);gap:5px}
+  #pantalla-final .final-logo-nexo{width:clamp(175px,17vw,270px);max-height:72px}
+  #pantalla-final #titulo-final-principal{font-size:clamp(1.75rem,4.3vh,2.8rem)}
+  #pantalla-final .final-panel{min-height:102px;padding:9px 16px}
+  #pantalla-final .dato-final{min-height:50px;padding:5px}
+  #pantalla-final .capacidades-conquistadas{padding:7px 11px}
+  #pantalla-final .capacidades-conquistadas li{min-height:38px;padding-top:5px;padding-bottom:5px}
+  #pantalla-final .boton-final-nexo{min-height:48px}
+}
+@media(prefers-reduced-motion:reduce){
+  #pantalla-final .boton-final-nexo,#pantalla-juego .nexo-nucleo-partida.convergencia-activa::before{transition:none;animation:none!important}
+}
+
+/* La colocación al final del CSS garantiza que estas tres animaciones
+   sustituyen únicamente el pulso anterior del logo, sin alterar su diseño. */
+#pantalla-inicio .logo-nexo-animado {
+  --desfase-pulso-audio: 0s;
+  --desfase-descarga-audio: 0s;
+  animation-name: nexo-nodos-descarga-tecnologica-v14;
+  animation-duration: 11.101995s;
+  animation-timing-function: linear;
+  animation-delay: var(--desfase-descarga-audio);
+  animation-iteration-count: infinite;
+}
+
+#pantalla-inicio .logo-nexo-animado::before {
+  animation-name: nexo-x-base-latido-humano-v14;
+  animation-duration: 1.009272s;
+  animation-timing-function: linear;
+  animation-delay: var(--desfase-pulso-audio);
+  animation-iteration-count: infinite;
+}
+
+#pantalla-inicio .logo-nexo-animado::after {
+  animation-name: nexo-x-expansion-latido-humano-v14;
+  animation-duration: 1.009272s;
+  animation-timing-function: linear;
+  animation-delay: var(--desfase-pulso-audio);
+  animation-iteration-count: infinite;
+}
+
+/* Cambiar una variable no reinicia por sí solo una animación CSS. Esta clase
+   se mantiene un único fotograma para que el siguiente arranque quede fijado
+   al tiempo real del audio, también después de volver a jugar. */
+#pantalla-inicio .logo-nexo-animado.reiniciar-animacion-audio,
+#pantalla-inicio .logo-nexo-animado.reiniciar-animacion-audio::before,
+#pantalla-inicio .logo-nexo-animado.reiniciar-animacion-audio::after {
+  animation-name: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #pantalla-inicio .logo-nexo-animado,
+  #pantalla-inicio .logo-nexo-animado::before,
+  #pantalla-inicio .logo-nexo-animado::after {
+    animation: none;
+  }
+}
+
+/* =====================================================================
+   PANTALLA FINAL · REDISEÑO V23
+   Jerarquía: planeta > evolución Humano/IA > desenlace/perfil > cierre.
+   El campo central protege la lectura sin ocultar el fondo dinámico.
+   ===================================================================== */
+#pantalla-final .contenido-final.final-campo-lectura{
+  width:min(1220px,94vw);
+  height:auto;
+  min-height:calc(100svh - clamp(18px,3vh,34px));
+  padding:clamp(8px,1vh,12px) clamp(14px,2vw,26px) clamp(10px,1.2vh,16px);
+  display:grid;
+  grid-template-rows:auto auto auto auto;
+  gap:clamp(7px,.9vh,11px);
+  align-content:center;
+}
+#pantalla-final .contenido-final.final-campo-lectura::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:clamp(72px,8vh,98px) -2.5% 2%;
+  border:1px solid color-mix(in srgb,var(--final-acento-2) 26%,transparent);
+  border-radius:26px;
+  background:
+    radial-gradient(ellipse at 50% 23%,rgba(0,10,14,.76) 0%,rgba(0,10,14,.61) 38%,rgba(0,10,14,.34) 67%,rgba(0,10,14,.08) 86%,transparent 100%),
+    linear-gradient(180deg,rgba(1,15,19,.30),rgba(1,10,14,.12));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb,var(--final-acento-2) 36%,transparent),
+    inset 0 0 55px rgba(0,0,0,.18),
+    0 24px 70px rgba(0,0,0,.18);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  mask-image:linear-gradient(90deg,transparent 0%,#000 7%,#000 93%,transparent 100%);
+}
+#pantalla-final .contenido-final.final-campo-lectura::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:2%;right:2%;top:clamp(72px,8vh,98px);height:2px;
+  background:linear-gradient(90deg,transparent,var(--final-acento),var(--final-acento-2),transparent);
+  opacity:.75;
+  filter:drop-shadow(0 0 9px var(--final-acento-2));
+}
+
+#pantalla-final .final-cabecera{gap:1px}
+#pantalla-final .final-logo-nexo{
+  width:clamp(255px,23vw,390px);
+  max-height:112px;
+  margin-bottom:0;
+  filter:drop-shadow(0 0 18px rgba(97,229,255,.25));
+}
+#pantalla-final .final-sobrelinea{
+  margin-top:-2px;
+  font-size:clamp(.64rem,1.05vh,.78rem);
+  letter-spacing:.22em;
+}
+#pantalla-final #titulo-final-principal{
+  margin:2px 0 0;
+  font-size:clamp(2.15rem,5.2vh,4rem);
+  line-height:.94;
+}
+#pantalla-final .final-planeta-dominante{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:clamp(10px,1.3vw,20px);
+  margin:0 auto;
+  min-height:clamp(58px,8vh,82px);
+}
+#pantalla-final .final-planeta-porcentaje{
+  color:var(--final-acento);
+  font-size:clamp(3.45rem,8.8vh,6.65rem);
+  line-height:.78;
+  letter-spacing:-.055em;
+  text-shadow:
+    0 0 8px rgba(255,255,255,.72),
+    0 0 24px color-mix(in srgb,var(--final-acento) 60%,transparent),
+    0 0 54px color-mix(in srgb,var(--final-acento) 27%,transparent);
+}
+#pantalla-final .final-planeta-etiqueta{
+  color:#f5ffff;
+  font-size:clamp(1rem,2.2vh,1.55rem);
+  line-height:.95;
+  font-weight:900;
+  letter-spacing:.045em;
+  text-align:left;
+  text-transform:uppercase;
+}
+#pantalla-final .final-subtitulo{
+  margin-top:0;
+  font-size:clamp(.63rem,1.04vh,.78rem);
+  opacity:.88;
+}
+#pantalla-final .final-mensaje-planeta{
+  margin-top:1px;
+  max-width:840px;
+  font-size:clamp(.72rem,1.2vh,.9rem);
+}
+
+#pantalla-final .final-evolucion{
+  width:min(100%,1010px);
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 74px minmax(0,1fr);
+  gap:12px;
+  align-items:stretch;
+}
+#pantalla-final .final-evolucion-card{
+  position:relative;
+  overflow:hidden;
+  min-height:clamp(155px,19vh,205px);
+  display:grid;
+  grid-template-columns:minmax(125px,38%) 1fr;
+  align-items:stretch;
+  border:1px solid color-mix(in srgb,var(--final-acento) 56%,transparent);
+  border-radius:17px 5px 17px 5px;
+  background:linear-gradient(110deg,rgba(1,17,20,.74),rgba(2,19,24,.51) 62%,rgba(2,17,21,.28));
+  box-shadow:inset 0 0 26px rgba(91,226,217,.06),0 12px 28px rgba(0,0,0,.18);
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+}
+#pantalla-final .final-evolucion-ia{
+  grid-template-columns:1fr minmax(125px,38%);
+  border-color:color-mix(in srgb,var(--final-acento-2) 58%,transparent);
+  border-radius:5px 17px 5px 17px;
+}
+#pantalla-final .final-evolucion-card::after{
+  content:"";position:absolute;inset:6px;pointer-events:none;
+  background:
+    linear-gradient(var(--final-acento),var(--final-acento)) left top/30px 1px no-repeat,
+    linear-gradient(var(--final-acento),var(--final-acento)) left top/1px 30px no-repeat,
+    linear-gradient(var(--final-acento-2),var(--final-acento-2)) right bottom/30px 1px no-repeat,
+    linear-gradient(var(--final-acento-2),var(--final-acento-2)) right bottom/1px 30px no-repeat;
+  opacity:.68;
+}
+#pantalla-final .final-avatar{
+  min-height:100%;
+  background-position:center 18%;
+  background-size:cover;
+  background-repeat:no-repeat;
+  filter:saturate(.96) contrast(1.03);
+  mask-image:linear-gradient(90deg,#000 66%,transparent 100%);
+}
+#pantalla-final .final-avatar-ia{mask-image:linear-gradient(270deg,#000 66%,transparent 100%)}
+#pantalla-final .final-avatar-humano.humano-hombre.nivel-0{background-image:url('../assets/images/partida/avatares-evolucion/humano-hombre-a-ia-0-24.webp')}
+#pantalla-final .final-avatar-humano.humano-hombre.nivel-1{background-image:url('../assets/images/partida/avatares-evolucion/humano-hombre-a-ia-25-49.webp')}
+#pantalla-final .final-avatar-humano.humano-hombre.nivel-2{background-image:url('../assets/images/partida/avatares-evolucion/humano-hombre-a-ia-50-74.webp')}
+#pantalla-final .final-avatar-humano.humano-hombre.nivel-3{background-image:url('../assets/images/partida/avatares-evolucion/humano-hombre-a-ia-75-100.webp')}
+#pantalla-final .final-avatar-humano.humano-mujer.nivel-0{background-image:url('../assets/images/partida/avatares-evolucion/humano-mujer-a-ia-0-24.webp')}
+#pantalla-final .final-avatar-humano.humano-mujer.nivel-1{background-image:url('../assets/images/partida/avatares-evolucion/humano-mujer-a-ia-25-49.webp')}
+#pantalla-final .final-avatar-humano.humano-mujer.nivel-2{background-image:url('../assets/images/partida/avatares-evolucion/humano-mujer-a-ia-50-74.webp')}
+#pantalla-final .final-avatar-humano.humano-mujer.nivel-3{background-image:url('../assets/images/partida/avatares-evolucion/humano-mujer-a-ia-75-100.webp')}
+#pantalla-final .final-avatar-ia.ia-01.nivel-0{background-image:url('../assets/images/partida/avatares-evolucion/ia-femenina-a-humano-0-24.webp')}
+#pantalla-final .final-avatar-ia.ia-01.nivel-1{background-image:url('../assets/images/partida/avatares-evolucion/ia-femenina-a-humano-25-49.webp')}
+#pantalla-final .final-avatar-ia.ia-01.nivel-2{background-image:url('../assets/images/partida/avatares-evolucion/ia-femenina-a-humano-50-74.webp?v=avatars-v24-29')}
+#pantalla-final .final-avatar-ia.ia-01.nivel-3{background-image:url('../assets/images/partida/avatares-evolucion/ia-femenina-a-humano-75-100.webp')}
+#pantalla-final .final-avatar-ia.ia-02.nivel-0{background-image:url('../assets/images/partida/avatares-evolucion/ia-masculina-a-humano-0-24.webp')}
+#pantalla-final .final-avatar-ia.ia-02.nivel-1{background-image:url('../assets/images/partida/avatares-evolucion/ia-masculina-a-humano-25-49.webp')}
+#pantalla-final .final-avatar-ia.ia-02.nivel-2{background-image:url('../assets/images/partida/avatares-evolucion/ia-masculina-a-humano-50-74.webp')}
+#pantalla-final .final-avatar-ia.ia-02.nivel-3{background-image:url('../assets/images/partida/avatares-evolucion/ia-masculina-a-humano-75-100.webp')}
+
+#pantalla-final .final-evolucion-info{
+  position:relative;z-index:1;
+  padding:clamp(12px,1.4vh,17px) clamp(12px,1.2vw,18px);
+  display:grid;
+  align-content:center;
+  min-width:0;
+}
+#pantalla-final .final-evolucion-tipo{margin:0;color:var(--final-acento);font-size:clamp(.84rem,1.55vh,1.08rem);font-weight:900;letter-spacing:.08em}
+#pantalla-final .final-evolucion-ia .final-evolucion-tipo{color:var(--final-acento-2)}
+#pantalla-final .final-evolucion-valor{margin:1px 0 2px;color:#f5ffff;display:flex;align-items:baseline;gap:6px}
+#pantalla-final .final-evolucion-valor strong{font-size:clamp(1.45rem,3.25vh,2.2rem);line-height:1;color:var(--final-acento)}
+#pantalla-final .final-evolucion-ia .final-evolucion-valor strong{color:var(--final-acento-2)}
+#pantalla-final .final-evolucion-valor span{font-size:clamp(.57rem,.95vh,.68rem);font-weight:800;letter-spacing:.07em}
+#pantalla-final .final-mini-barra{height:5px;margin:1px 0 7px;background:rgba(2,7,9,.82);border-radius:99px;overflow:hidden;border:1px solid rgba(188,255,238,.13)}
+#pantalla-final .final-mini-barra span{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ddc45,var(--final-acento));box-shadow:0 0 12px var(--final-acento)}
+#pantalla-final .final-evolucion-ia .final-mini-barra span{background:linear-gradient(90deg,#2db7df,var(--final-acento-2));box-shadow:0 0 12px var(--final-acento-2)}
+#pantalla-final .final-evolucion-info h3{margin:0 0 4px;color:#d8eceb;font-size:clamp(.52rem,.84vh,.63rem);letter-spacing:.1em;font-weight:800}
+#pantalla-final .final-evolucion-info ul{list-style:none;margin:0;padding:0;display:grid;gap:2px;max-height:70px;overflow:hidden}
+#pantalla-final .final-evolucion-info li{position:relative;padding:2px 0 2px 15px;min-width:0;color:#f0ffff;font-size:clamp(.58rem,.94vh,.7rem);line-height:1.08;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pantalla-final .final-evolucion-info li::before{content:"";position:absolute;left:2px;top:.52em;width:6px;height:6px;border:1px solid var(--final-acento);border-radius:50%;box-shadow:0 0 7px var(--final-acento)}
+#pantalla-final .final-evolucion-ia li::before{border-color:var(--final-acento-2);box-shadow:0 0 7px var(--final-acento-2)}
+#pantalla-final .final-evolucion-info li strong{font:inherit;color:inherit}
+#pantalla-final .final-evolucion-info li small{display:none}
+#pantalla-final .final-evolucion-info .capacidad-vacia{font-style:italic;color:#a7b8bb}
+#pantalla-final .final-evolucion-info .capacidad-vacia::before{display:none}
+
+#pantalla-final .final-rondas-nucleo{
+  align-self:center;
+  min-height:112px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:0;
+  color:#fff;
+  text-shadow:0 2px 12px rgba(0,0,0,.75);
+}
+#pantalla-final .final-rondas-icono{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--final-acento-2);border-radius:50%;color:var(--final-acento);font-size:1.2rem;box-shadow:0 0 18px color-mix(in srgb,var(--final-acento-2) 35%,transparent);background:rgba(2,14,18,.55)}
+#pantalla-final .final-rondas-nucleo strong{font-size:clamp(1.4rem,3vh,2rem);line-height:1.1}
+#pantalla-final .final-rondas-nucleo small{font-size:.57rem;letter-spacing:.09em;font-weight:800}
+
+#pantalla-final .final-hologramas-principales{
+  width:min(100%,1010px);
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+#pantalla-final .final-panel{
+  min-height:clamp(88px,10.5vh,116px);
+  padding:clamp(9px,1.1vh,13px) clamp(15px,1.35vw,20px);
+  text-align:left;
+  border-radius:5px 15px 5px 15px;
+}
+#pantalla-final .final-panel-perfil{border-radius:15px 5px 15px 5px}
+#pantalla-final .final-panel-etiqueta{font-size:clamp(.57rem,.9vh,.68rem)}
+#pantalla-final .final-panel h3{margin:.2rem 0 .28rem;font-size:clamp(1rem,1.95vh,1.42rem)}
+#pantalla-final .final-panel p:last-child{margin:0;max-width:100%;font-size:clamp(.65rem,1.05vh,.78rem);line-height:1.28}
+
+#pantalla-final .final-cierre{width:min(100%,1010px);gap:3px}
+#pantalla-final .coleccion-perfiles{padding:3px 10px;font-size:clamp(.49rem,.77vh,.6rem);opacity:.72}
+#pantalla-final .final-reflexion{font-size:clamp(.68rem,1.06vh,.82rem)}
+#pantalla-final .boton-final-nexo{
+  min-width:clamp(250px,24vw,340px);
+  min-height:clamp(48px,5.9vh,64px);
+  font-size:clamp(.78rem,1.25vh,.95rem);
+}
+
+@media(max-width:980px){
+  #pantalla-final .contenido-final.final-campo-lectura{width:min(760px,96vw);padding-top:8px;align-content:start}
+  #pantalla-final .contenido-final.final-campo-lectura::before{inset:70px -1% 0}
+  #pantalla-final .final-evolucion{grid-template-columns:1fr;gap:8px}
+  #pantalla-final .final-rondas-nucleo{grid-row:2;min-height:54px;grid-template-columns:auto auto auto;gap:8px}
+  #pantalla-final .final-rondas-icono{width:32px;height:32px}
+  #pantalla-final .final-evolucion-card{min-height:165px}
+  #pantalla-final .final-hologramas-principales{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  #pantalla-final .final-logo-nexo{width:min(310px,76vw)}
+  #pantalla-final .final-planeta-dominante{gap:8px}
+  #pantalla-final .final-planeta-porcentaje{font-size:clamp(3rem,17vw,4.4rem)}
+  #pantalla-final .final-planeta-etiqueta{font-size:clamp(.84rem,4.4vw,1.1rem)}
+  #pantalla-final .final-evolucion-card,#pantalla-final .final-evolucion-ia{grid-template-columns:112px 1fr}
+  #pantalla-final .final-evolucion-ia .final-evolucion-info{grid-column:2}
+  #pantalla-final .final-evolucion-ia .final-avatar-ia{grid-column:1;grid-row:1;mask-image:linear-gradient(90deg,#000 66%,transparent 100%)}
+}
+@media(max-height:820px) and (min-width:981px){
+  #pantalla-final .contenido-final.final-campo-lectura{gap:4px;padding-top:4px;padding-bottom:4px}
+  #pantalla-final .final-logo-nexo{width:clamp(225px,20vw,330px);max-height:88px}
+  #pantalla-final #titulo-final-principal{font-size:clamp(1.85rem,4.4vh,3rem)}
+  #pantalla-final .final-planeta-dominante{min-height:50px}
+  #pantalla-final .final-planeta-porcentaje{font-size:clamp(2.8rem,7.5vh,4.7rem)}
+  #pantalla-final .final-evolucion-card{min-height:138px}
+  #pantalla-final .final-panel{min-height:78px}
+  #pantalla-final .final-cierre{gap:1px}
+}
+
+
+/* =====================================================================
+   PANTALLA FINAL · AJUSTE V23.1 DE LEGIBILIDAD
+   Se reduce ligeramente el peso del bloque planeta y se amplía la lectura
+   del resto de textos: subtítulos, explicación, perfiles y reflexión.
+   ===================================================================== */
+#pantalla-final .contenido-final.final-campo-lectura{gap:clamp(8px,1vh,12px)}
+#pantalla-final #titulo-final-principal{font-size:clamp(1.78rem,4vh,3rem);line-height:.96}
+#pantalla-final .final-planeta-porcentaje{font-size:clamp(2.95rem,7.1vh,5rem)}
+#pantalla-final .final-planeta-etiqueta{font-size:clamp(.98rem,1.95vh,1.36rem);line-height:.98}
+#pantalla-final .final-subtitulo{
+  max-width:980px;
+  font-size:clamp(.84rem,1.45vh,1.08rem);
+  line-height:1.18;
+  letter-spacing:.055em;
+  text-wrap:balance;
+}
+#pantalla-final .final-mensaje-planeta{
+  max-width:980px;
+  font-size:clamp(.84rem,1.45vh,1.03rem);
+  line-height:1.42;
+  color:#f3fbfb;
+  text-wrap:pretty;
+}
+#pantalla-final .final-evolucion-card{min-height:clamp(152px,18.2vh,190px)}
+#pantalla-final .final-evolucion-info{padding:clamp(11px,1.25vh,16px) clamp(13px,1.3vw,19px)}
+#pantalla-final .final-evolucion-tipo{font-size:clamp(.98rem,1.75vh,1.22rem)}
+#pantalla-final .final-evolucion-valor strong{font-size:clamp(1.52rem,3vh,2.02rem)}
+#pantalla-final .final-evolucion-valor span{font-size:clamp(.68rem,1.05vh,.8rem)}
+#pantalla-final .final-evolucion-info h3{font-size:clamp(.68rem,1.06vh,.8rem);margin:2px 0 5px}
+#pantalla-final .final-evolucion-info ul{gap:3px;max-height:none}
+#pantalla-final .final-evolucion-info li{
+  font-size:clamp(.72rem,1.08vh,.84rem);
+  line-height:1.18;
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+  padding:2px 0 2px 16px;
+}
+#pantalla-final .final-rondas-nucleo strong{font-size:clamp(1.55rem,2.7vh,1.95rem)}
+#pantalla-final .final-rondas-nucleo small{font-size:clamp(.68rem,.95vh,.78rem)}
+#pantalla-final .final-panel-etiqueta{font-size:clamp(.66rem,1.02vh,.8rem);line-height:1.15}
+#pantalla-final .final-panel h3{font-size:clamp(1.22rem,2.05vh,1.65rem);line-height:1.06}
+#pantalla-final .final-panel p:last-child{font-size:clamp(.8rem,1.2vh,.96rem);line-height:1.34}
+#pantalla-final .final-cierre{gap:6px}
+#pantalla-final .coleccion-perfiles{
+  padding:6px 12px;
+  font-size:clamp(.7rem,1.02vh,.84rem);
+  line-height:1.32;
+  opacity:.92;
+  text-align:center;
+  text-wrap:balance;
+}
+#pantalla-final .final-reflexion{
+  margin:0;
+  padding:4px 8px;
+  font-size:clamp(.9rem,1.34vh,1.06rem);
+  line-height:1.36;
+  text-align:center;
+  text-wrap:balance;
+}
+#pantalla-final .boton-final-nexo{min-height:clamp(50px,5.7vh,62px);font-size:clamp(.9rem,1.34vh,1.02rem)}
+
+@media(max-height:820px) and (min-width:981px){
+  #pantalla-final #titulo-final-principal{font-size:clamp(1.65rem,3.7vh,2.5rem)}
+  #pantalla-final .final-planeta-porcentaje{font-size:clamp(2.65rem,6.2vh,4.35rem)}
+  #pantalla-final .final-subtitulo{font-size:clamp(.78rem,1.2vh,.94rem)}
+  #pantalla-final .final-mensaje-planeta{font-size:clamp(.76rem,1.18vh,.92rem)}
+  #pantalla-final .final-evolucion-card{min-height:132px}
+  #pantalla-final .final-evolucion-info h3{font-size:clamp(.64rem,.94vh,.74rem)}
+  #pantalla-final .final-evolucion-info li{font-size:clamp(.68rem,.98vh,.78rem)}
+  #pantalla-final .final-panel{min-height:84px}
+  #pantalla-final .final-panel p:last-child{font-size:clamp(.76rem,1.05vh,.88rem)}
+  #pantalla-final .coleccion-perfiles{font-size:clamp(.64rem,.9vh,.75rem)}
+  #pantalla-final .final-reflexion{font-size:clamp(.82rem,1.08vh,.94rem)}
+}
+
+@media(max-width:980px){
+  #pantalla-final .final-subtitulo{font-size:clamp(.82rem,1.7vh,1rem)}
+  #pantalla-final .final-mensaje-planeta{font-size:clamp(.82rem,1.62vh,.98rem)}
+  #pantalla-final .final-panel h3{font-size:clamp(1.16rem,2.15vh,1.5rem)}
+  #pantalla-final .final-panel p:last-child{font-size:clamp(.82rem,1.34vh,.94rem)}
+}
+
+@media(max-width:620px){
+  #pantalla-final .final-planeta-porcentaje{font-size:clamp(2.8rem,14vw,4rem)}
+  #pantalla-final .final-planeta-etiqueta{font-size:clamp(.9rem,4vw,1.04rem)}
+  #pantalla-final .coleccion-perfiles{font-size:clamp(.72rem,2.7vw,.82rem)}
+  #pantalla-final .final-reflexion{font-size:clamp(.88rem,3.2vw,1rem)}
+}
+
+
+/* =====================================================================
+   PANTALLA FINAL · V23.2 LECTURA ESTRATÉGICA
+   Capa educativa ligera basada en los mismos estados finales existentes.
+   ===================================================================== */
+#pantalla-final .final-lectura-estrategica{
+  width:100%;
+  margin:0 auto;
+  padding:7px 14px 8px;
+  border-top:1px solid color-mix(in srgb,var(--final-acento-2) 34%,transparent);
+  border-bottom:1px solid color-mix(in srgb,var(--final-acento) 28%,transparent);
+  background:linear-gradient(90deg,transparent,rgba(1,17,21,.58) 15%,rgba(1,17,21,.64) 50%,rgba(1,17,21,.58) 85%,transparent);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  text-align:center;
+}
+#pantalla-final .final-lectura-estrategica span{
+  display:block;
+  margin-bottom:3px;
+  color:var(--final-acento-2);
+  font-size:clamp(.66rem,1vh,.78rem);
+  line-height:1.15;
+  font-weight:900;
+  letter-spacing:.13em;
+}
+#pantalla-final .final-lectura-estrategica p{
+  margin:0 auto;
+  max-width:940px;
+  color:#f2fbfb;
+  font-size:clamp(.82rem,1.2vh,.98rem);
+  line-height:1.36;
+  text-wrap:balance;
+}
+#pantalla-final .coleccion-perfiles{
+  color:#d6eceb;
+  font-weight:700;
+  letter-spacing:.045em;
+}
+#pantalla-final .final-reflexion{
+  color:#f6ffff;
+  font-style:italic;
+}
+@media(max-height:820px) and (min-width:981px){
+  #pantalla-final .final-lectura-estrategica{padding:5px 12px 6px}
+  #pantalla-final .final-lectura-estrategica span{font-size:clamp(.6rem,.86vh,.7rem)}
+  #pantalla-final .final-lectura-estrategica p{font-size:clamp(.74rem,1vh,.86rem);line-height:1.28}
+}
+
+
+/* =====================================================================
+   PANTALLA FINAL · AJUSTE V24.3 DE JERARQUÍA
+   Perfil bajo Humano, desenlace bajo IA y mayor protagonismo para la
+   lectura estratégica y la reflexión final, sin desmontar la composición.
+   ===================================================================== */
+#pantalla-final .final-hologramas-principales{
+  align-items:stretch;
+}
+#pantalla-final .final-panel-perfil{
+  grid-column:1;
+  border-radius:17px 5px 17px 5px;
+  border-color:color-mix(in srgb,var(--final-acento) 44%,transparent);
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--final-acento) 10%,transparent),transparent 34%),
+    linear-gradient(180deg,var(--final-panel-fuerte),var(--final-panel));
+}
+#pantalla-final .final-panel-desenlace{
+  grid-column:2;
+  border-radius:5px 17px 5px 17px;
+  border-color:color-mix(in srgb,var(--final-acento-2) 46%,transparent);
+  background:
+    linear-gradient(225deg,color-mix(in srgb,var(--final-acento-2) 10%,transparent),transparent 36%),
+    linear-gradient(180deg,var(--final-panel-fuerte),var(--final-panel));
+}
+#pantalla-final .final-panel-perfil .final-panel-etiqueta{color:var(--final-acento)}
+#pantalla-final .final-panel-desenlace .final-panel-etiqueta{color:var(--final-acento-2)}
+
+#pantalla-final .final-cierre{
+  width:min(100%,1010px);
+  margin:0 auto;
+  gap:8px;
+}
+#pantalla-final .final-lectura-estrategica{
+  position:relative;
+  padding:11px 18px 13px;
+  border:1px solid color-mix(in srgb,var(--final-acento-2) 42%,transparent);
+  border-radius:14px 4px 14px 4px;
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--final-acento) 7%,transparent),transparent 28%),
+    linear-gradient(90deg,rgba(1,18,22,.82),rgba(2,22,28,.72) 50%,rgba(1,18,22,.82));
+  box-shadow:inset 0 0 24px rgba(94,223,218,.06),0 10px 24px rgba(0,0,0,.16);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+  overflow:hidden;
+}
+#pantalla-final .final-lectura-estrategica::before{
+  content:"";
+  position:absolute;
+  left:16px;right:16px;top:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--final-acento),var(--final-acento-2),transparent);
+  opacity:.95;
+}
+#pantalla-final .final-lectura-estrategica span{
+  margin-bottom:6px;
+  color:#c7fbff;
+  font-size:clamp(.78rem,1.16vh,.92rem);
+  line-height:1.18;
+  letter-spacing:.16em;
+  text-shadow:0 0 12px rgba(95,224,217,.18);
+}
+#pantalla-final .final-lectura-estrategica p{
+  max-width:930px;
+  font-size:clamp(.96rem,1.5vh,1.14rem);
+  line-height:1.44;
+  color:#ffffff;
+  text-shadow:0 2px 16px rgba(0,0,0,.58);
+}
+#pantalla-final .coleccion-perfiles{
+  padding:6px 12px;
+  font-size:clamp(.78rem,1.1vh,.9rem);
+  line-height:1.28;
+  font-weight:800;
+  opacity:.95;
+}
+#pantalla-final .final-reflexion{
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:12px 18px 13px;
+  border:1px solid color-mix(in srgb,var(--final-acento) 34%,transparent);
+  border-radius:12px;
+  background:linear-gradient(90deg,rgba(12,19,14,.18),rgba(20,22,10,.12) 50%,rgba(12,19,14,.18));
+  color:#f8ffff;
+  font-size:clamp(1rem,1.56vh,1.16rem);
+  line-height:1.48;
+  text-align:center;
+  font-style:italic;
+  box-shadow:inset 0 0 18px rgba(255,255,255,.03),0 8px 20px rgba(0,0,0,.12);
+  text-wrap:balance;
+}
+#pantalla-final .final-reflexion::before,
+#pantalla-final .final-reflexion::after{
+  font-size:1.55em;
+  text-shadow:0 0 12px color-mix(in srgb,var(--final-acento) 28%,transparent);
+}
+
+@media(max-height:820px) and (min-width:981px){
+  #pantalla-final .final-cierre{gap:6px}
+  #pantalla-final .final-lectura-estrategica{padding:8px 14px 10px}
+  #pantalla-final .final-lectura-estrategica span{font-size:clamp(.68rem,.96vh,.8rem);margin-bottom:4px}
+  #pantalla-final .final-lectura-estrategica p{font-size:clamp(.84rem,1.16vh,.96rem);line-height:1.34}
+  #pantalla-final .coleccion-perfiles{font-size:clamp(.68rem,.94vh,.79rem);padding:4px 10px}
+  #pantalla-final .final-reflexion{padding:9px 14px 10px;font-size:clamp(.88rem,1.14vh,1rem);line-height:1.36}
+}
+
+@media(max-width:980px){
+  #pantalla-final .final-hologramas-principales{grid-template-columns:1fr}
+  #pantalla-final .final-panel-perfil,
+  #pantalla-final .final-panel-desenlace{grid-column:auto;border-radius:12px}
+  #pantalla-final .final-lectura-estrategica p{font-size:clamp(.94rem,1.72vh,1.08rem)}
+  #pantalla-final .final-reflexion{font-size:clamp(.98rem,1.62vh,1.08rem)}
+}
+
+
+/* =====================================================================
+   PANTALLA FINAL · AJUSTE V24.4 DEL ÁREA DEL LOGO
+   El campo de lectura debe empezar por debajo del logo completo de NEXO,
+   incluyendo “LA CONVERGENCIA” y sus líneas, sin obstaculizar esa unidad.
+   ===================================================================== */
+#pantalla-final .contenido-final.final-campo-lectura{
+  padding-top:clamp(14px,1.6vh,20px);
+}
+#pantalla-final .final-cabecera{
+  position:relative;
+  z-index:2;
+  padding-bottom:clamp(12px,1.5vh,18px);
+}
+#pantalla-final .final-logo-nexo{
+  display:block;
+  position:relative;
+  z-index:2;
+  margin-bottom:2px;
+}
+#pantalla-final .contenido-final.final-campo-lectura::before{
+  inset:clamp(128px,14.5vh,162px) -2.5% 2%;
+}
+#pantalla-final .contenido-final.final-campo-lectura::after{
+  left:2%;right:2%;top:clamp(128px,14.5vh,162px);height:2px;
+}
+@media(max-width:980px){
+  #pantalla-final .final-cabecera{padding-bottom:clamp(10px,1.4vh,16px)}
+  #pantalla-final .contenido-final.final-campo-lectura::before{inset:clamp(118px,13.2vh,148px) -1.5% 1.5% 1.5%}
+  #pantalla-final .contenido-final.final-campo-lectura::after{top:clamp(118px,13.2vh,148px)}
+}
+@media(max-width:760px){
+  #pantalla-final .contenido-final.final-campo-lectura{padding-top:10px}
+  #pantalla-final .final-cabecera{padding-bottom:10px}
+  #pantalla-final .contenido-final.final-campo-lectura::before{inset:108px -1% 0}
+  #pantalla-final .contenido-final.final-campo-lectura::after{top:108px}
+}
+@media(max-height:820px) and (min-width:981px){
+  #pantalla-final .final-cabecera{padding-bottom:10px}
+  #pantalla-final .contenido-final.final-campo-lectura::before{inset:116px -2.2% 2%}
+  #pantalla-final .contenido-final.final-campo-lectura::after{top:116px}
+}
+
+
+/* =====================================================================
+   SISTEMA DE BOTONES NEXO · V24.5 · CAPAS NO JUGABLES
+   JUGAR y CONTINUAR mantienen su identidad de portada/intro. El resto
+   comparte tipografía, foco y comportamiento de interacción.
+   ===================================================================== */
+#pantalla-configuracion button,
+#pantalla-final button,
+.superposicion-ajustes button,
+.superposicion-manual button{box-sizing:border-box;font-family:Inter,"Segoe UI",Arial,sans-serif}
+#pantalla-final .boton-final-nexo{white-space:nowrap;letter-spacing:.055em}
+
+/* V24.11 · El WebP de acción conserva una placa oscura en su lienzo.
+   Screen mantiene marco, luces y texto, pero integra el negro con el fondo. */
+#pantalla-configuracion .boton-iniciar-nexo,
+#pantalla-final .boton-final-nexo{
+  background-color:transparent!important;
+  mix-blend-mode:screen;
+}
+
+/* V24.12 · Rondas: preselección cian al apuntar y selección verde persistente. */
+#pantalla-configuracion .boton-opcion:hover,
+#pantalla-configuracion .boton-opcion:focus-visible{
+  transform:translateY(-4px) scale(1.06)!important;
+  border-color:#79f4ff!important;
+  color:#fff!important;
+  background:linear-gradient(180deg,rgba(15,91,105,.94),rgba(3,34,45,.98))!important;
+  box-shadow:
+    inset 0 0 28px rgba(99,235,255,.24),
+    0 0 0 2px rgba(92,231,247,.15),
+    0 0 28px rgba(69,225,244,.58),
+    0 12px 24px rgba(0,0,0,.36)!important;
+  filter:brightness(1.18);
+}
+#pantalla-configuracion .boton-opcion.boton-opcion-activa,
+#pantalla-configuracion .boton-opcion[aria-pressed="true"]{
+  transform:translateY(-3px) scale(1.045)!important;
+  border-color:#c5ff78!important;
+  color:#fff!important;
+  background:linear-gradient(180deg,rgba(78,145,49,.94),rgba(7,50,29,.98))!important;
+  box-shadow:
+    inset 0 0 32px rgba(184,255,113,.28),
+    0 0 0 2px rgba(184,255,105,.17),
+    0 0 32px rgba(145,229,66,.62),
+    0 12px 24px rgba(0,0,0,.36)!important;
+  filter:brightness(1.16);
+}
+#pantalla-configuracion .boton-opcion.boton-opcion-activa:hover,
+#pantalla-configuracion .boton-opcion[aria-pressed="true"]:hover,
+#pantalla-configuracion .boton-opcion.boton-opcion-activa:focus-visible,
+#pantalla-configuracion .boton-opcion[aria-pressed="true"]:focus-visible{
+  border-color:#d8ff9a!important;
+  background:linear-gradient(180deg,rgba(91,165,57,.98),rgba(8,60,34,.99))!important;
+  box-shadow:
+    inset 0 0 36px rgba(194,255,126,.34),
+    0 0 0 2px rgba(194,255,122,.22),
+    0 0 38px rgba(145,229,66,.72),
+    0 13px 25px rgba(0,0,0,.38)!important;
+}
+.boton-abandonar-juego,.boton-manual-ajustes,#pantalla-introduccion .btn-como-jugar{letter-spacing:.055em}
+.boton-cerrar-ajustes,.boton-cerrar-manual,.boton-icono-ajustes{transition:transform .18s ease,border-color .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease}
+
+
+/* =====================================================================
+   PORTADA · V24.14 · LEGIBILIDAD DEL LEMA SIN CAPA DE FONDO
+   El contraste se aplica exclusivamente a la tipografía para conservar la
+   escena intacta y evitar halos, óvalos o cajas perceptibles.
+   ===================================================================== */
+#pantalla-inicio .lema-juego{
+  position:relative;
+  z-index:3;
+  color:rgba(239,249,250,.96);
+  text-shadow:
+    0 1px 1px rgba(0,0,0,1),
+    0 2px 5px rgba(0,0,0,.98),
+    0 0 13px rgba(0,0,0,.88);
+}
+#pantalla-inicio .lema-juego::before{
+  content:none;
+}
+#pantalla-inicio .lema-decision{
+  color:#c9fff1!important;
+  text-shadow:0 2px 10px rgba(0,0,0,1),0 0 15px rgba(84,224,199,.28)!important;
+}
+#pantalla-inicio .lema-cierre{
+  color:#fff!important;
+  text-shadow:0 2px 10px rgba(0,0,0,1),0 0 16px rgba(238,255,252,.25)!important;
+}
+
+
+/* =====================================================================
+   V24.27 · LECTURA FINAL Y SONIDO DISPONIBLE EN TODAS LAS PANTALLAS
+   El paisaje final se conserva intacto. Un degradado localizado protege
+   el logo y los textos únicamente donde el cielo puede ser muy claro.
+   ===================================================================== */
+#pantalla-final .final-cabecera{
+  isolation:isolate;
+}
+#pantalla-final .final-cabecera::before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:-14px;
+  right:-8vw;
+  bottom:-18px;
+  left:-8vw;
+  pointer-events:none;
+  background:radial-gradient(
+    ellipse at 50% 30%,
+    rgba(0,10,15,.84) 0%,
+    rgba(0,10,15,.68) 42%,
+    rgba(0,10,15,.30) 68%,
+    transparent 88%
+  );
+}
+#pantalla-final .final-cabecera > *{
+  position:relative;
+  z-index:1;
+}
+#pantalla-final .final-logo-nexo{
+  filter:
+    drop-shadow(0 2px 3px rgba(0,0,0,.96))
+    drop-shadow(0 0 15px rgba(92,231,222,.34));
+}
+#pantalla-final .final-sobrelinea,
+#pantalla-final .final-subtitulo,
+#pantalla-final .final-mensaje-planeta{
+  text-shadow:0 2px 5px rgba(0,0,0,1),0 0 14px rgba(0,0,0,.92);
+}
+#pantalla-final #titulo-final-principal{
+  text-shadow:
+    0 2px 4px rgba(0,0,0,1),
+    0 0 8px rgba(0,0,0,.96),
+    0 0 18px color-mix(in srgb,var(--final-acento) 66%,transparent),
+    0 0 38px color-mix(in srgb,var(--final-acento) 34%,transparent);
+}
+
+.boton-ajustes-global{
+  position:fixed;
+  z-index:900;
+  top:max(14px,env(safe-area-inset-top));
+  right:max(16px,env(safe-area-inset-right));
+  padding:0;
+  box-shadow:0 8px 22px rgba(0,0,0,.42),0 0 16px rgba(71,189,224,.12);
+}
+.boton-ajustes-global.oculta{display:none!important}
+
+/* El cuadro de sonido se abre en el centro. Así continúa accesible en todas
+   las pantallas y, durante la partida, no tapa los paneles de personajes. */
+.superposicion-ajustes{
+  z-index:1000;
+  align-items:center;
+  justify-content:center;
+  padding:1rem;
+}
+
+@media(max-width:620px){
+  .boton-ajustes-global{
+    top:max(10px,env(safe-area-inset-top));
+    right:max(10px,env(safe-area-inset-right));
+  }
+}
+
+/* =====================================================================
+   V24.28 · DESENLACE COMPLETO SIN DESPLAZAMIENTO VERTICAL
+   Entre 821 y 980 px de alto pueden coincidir cuatro capacidades por
+   jugador. Se ordenan en dos columnas y se compacta solo el cierre para
+   que VOLVER A JUGAR permanezca siempre dentro de la pantalla.
+   ===================================================================== */
+@media(min-width:981px) and (min-height:821px) and (max-height:980px){
+  #pantalla-final{
+    height:100svh;
+    min-height:100svh;
+    overflow:hidden;
+    padding:6px 16px;
+  }
+  #pantalla-final .contenido-final.final-campo-lectura{
+    height:calc(100svh - 12px);
+    min-height:0;
+    padding:4px clamp(14px,2vw,26px);
+    gap:5px;
+    align-content:start;
+  }
+  #pantalla-final .final-cabecera{padding-bottom:3px}
+  #pantalla-final .final-logo-nexo{
+    width:clamp(215px,17vw,285px);
+    max-height:66px;
+  }
+  #pantalla-final #titulo-final-principal{font-size:clamp(1.7rem,3.5vh,2.55rem)}
+  #pantalla-final .final-planeta-dominante{min-height:48px}
+  #pantalla-final .final-planeta-porcentaje{font-size:clamp(2.7rem,5.9vh,4rem)}
+  #pantalla-final .final-evolucion-card{
+    height:clamp(142px,16.2vh,154px);
+    min-height:0;
+  }
+  #pantalla-final .final-evolucion-info{
+    padding:8px 12px;
+  }
+  #pantalla-final .final-evolucion-info ul{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:2px 8px;
+    max-height:none;
+  }
+  #pantalla-final .final-evolucion-info li{
+    padding-top:1px;
+    padding-bottom:1px;
+    font-size:clamp(.66rem,1vh,.75rem);
+    line-height:1.12;
+  }
+  #pantalla-final .final-panel{
+    min-height:92px;
+    padding:6px 14px;
+  }
+  #pantalla-final .final-panel h3{margin:.12rem 0 .22rem}
+  #pantalla-final .final-panel p:last-child{line-height:1.25}
+  #pantalla-final .final-cierre{gap:4px}
+  #pantalla-final .final-lectura-estrategica{
+    padding:5px 14px 6px;
+  }
+  #pantalla-final .final-lectura-estrategica span{margin-bottom:3px}
+  #pantalla-final .final-lectura-estrategica p{line-height:1.3}
+  #pantalla-final .coleccion-perfiles{padding:2px 10px}
+  #pantalla-final .final-reflexion{
+    padding:5px 14px 6px;
+    font-size:clamp(.86rem,1.12vh,.96rem);
+    line-height:1.24;
+  }
+  #pantalla-final .boton-final-nexo{
+    min-height:46px;
+    max-height:50px;
+  }
+}
