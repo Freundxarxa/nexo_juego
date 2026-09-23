@@ -5,20 +5,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NEXO — La Convergencia</title>
+  <!-- Protección del primer fotograma en dispositivos lentos. El documento
+       permanece negro y sin texto sin estilos hasta que las cuatro hojas
+       locales están listas. El temporizador evita bloquear la página si una
+       petición falla. -->
+  <style>
+    html, body { margin: 0; min-height: 100%; background: #020609; }
+    body { visibility: hidden; }
+    html.nexo-estilos-listos body { visibility: visible; }
+  </style>
+  <script>
+    (function () {
+      var pendientes = 4;
+      var mostrar = function () {
+        document.documentElement.classList.add("nexo-estilos-listos");
+      };
+      window.nexoEstiloCargado = function () {
+        pendientes -= 1;
+        if (pendientes <= 0) mostrar();
+      };
+      window.setTimeout(mostrar, 4000);
+    }());
+  </script>
   <link rel="icon" type="image/webp" href="./assets/images/portada/logo/nexo_x_estatica_centrada_sin_limite.webp">
-  <link rel="stylesheet" href="./css/style.css?v=ui-v24-39-sincronizacion-final">
+    <link rel="stylesheet" href="./css/style.css?v=portada-pulso-sincrono-v29j" onload="nexoEstiloCargado()" onerror="nexoEstiloCargado()">
   <!-- Pantalla de partida aislada para que su diseño sea fácil de estudiar/modificar -->
-  <link rel="stylesheet" href="./css/partida.css?v=flow-v24-27c">
+  <link rel="stylesheet" href="./css/partida.css?v=eventos-centrados-v25u" onload="nexoEstiloCargado()" onerror="nexoEstiloCargado()">
   <!-- Pantalla de suspense previa a INICIO: pulso interactivo + desbloqueo de audio -->
-  <link rel="stylesheet" href="./css/suspense.css?v=suspense-v1">
+  <link rel="stylesheet" href="./css/suspense.css?v=esquinas-iphone-v29a" onload="nexoEstiloCargado()" onerror="nexoEstiloCargado()">
   <!-- Adaptacion a movil: se carga la ultima para poder corregir las anteriores. -->
-  <link rel="stylesheet" href="./css/movil.css?v=movil-v1">
+    <link rel="stylesheet" href="./css/movil.css?v=movil-vertical-iniciar-v44" onload="nexoEstiloCargado()" onerror="nexoEstiloCargado()">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-0-24-equilibrio-saludable.webp">
-  <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-25-49-equilibrio-fragil.webp">
-  <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-50-74-equilibrio-critico.webp">
-  <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-75-99-colapso-inminente.webp">
-  <link rel="preload" as="image" href="./assets/images/partida/fondos-planeta/partida-planeta-100-crisis-catastrofica.webp">
+  <link rel="preload" as="image" href="./assets/images/portada/fondos/fondo-inicio-nexo.webp">
+  <link rel="preload" as="image" href="./assets/images/portada/logo/nexo_logo_base_tipografia_original_hd.webp">
+  <link rel="preload" as="image" href="./assets/images/portada/logo/nexo_x_estatica_centrada_sin_limite.webp">
+  <link rel="preload" as="image" href="./assets/images/portada/botones/boton-jugar-prismatico-transparente.webp">
 </head>
 <body>
 
@@ -28,7 +50,7 @@
        El clic desbloquea el audio y abre la portada existente.
   ============================================================ -->
   <section id="pantalla-suspense" class="pantalla activa" aria-label="Acceso a NEXO">
-    <svg id="svg-suspense" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg id="svg-suspense" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <radialGradient id="masaGrad" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
@@ -56,146 +78,12 @@
     <div class="fondo-inicio"></div>
 
     <div class="contenido-inicio">
-      <!-- =========================================================
-           LOGO NEXO ANIMADO
-           Está construido en capas para poder animar solo la X.
-           Las letras y "LA CONVERGENCIA" permanecen quietas.
-           Las dos pequeñas luces viajan por las líneas hacia el centro.
-      ========================================================== -->
-      <!-- =========================================================
-           LOGO NEXO ANIMADO — SVG INTEGRADO EN EL HTML
-           ---------------------------------------------------------
-           IMPORTANTE:
-           - No carga ninguna imagen externa para el logo.
-           - Así evitamos errores de rutas o imágenes rotas.
-           - N, E, O y "LA CONVERGENCIA" permanecen quietos.
-           - Solo pulsa la X y se mueven los dos pequeños nodos.
-      ========================================================== -->
+      <!-- El logo visible y su animación se construyen desde CSS. -->
       <div
         class="logo-inicio logo-nexo-animado"
         role="img"
         aria-label="NEXO — La Convergencia"
-      >
-        <svg
-          class="logo-nexo-svg"
-          viewBox="0 0 1600 520"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <defs>
-            <!-- Degradado de la X: verde humano -> cian -> azul IA -->
-            <linearGradient id="gradiente-x-nexo" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#7CC242"/>
-              <stop offset="46%" stop-color="#69e5ac"/>
-              <stop offset="54%" stop-color="#4eddea"/>
-              <stop offset="100%" stop-color="#009FE3"/>
-            </linearGradient>
-
-            <!-- Brillo suave del estado normal -->
-            <filter id="brillo-x-base" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="8" result="desenfoque"/>
-              <feMerge>
-                <feMergeNode in="desenfoque"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-
-            <!-- Brillo de los nodos -->
-            <filter id="brillo-nodo" x="-150%" y="-150%" width="400%" height="400%">
-              <feGaussianBlur stdDeviation="4" result="desenfoque"/>
-              <feMerge>
-                <feMergeNode in="desenfoque"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-
-          <!-- =====================================================
-               CAPA FIJA DEL LOGO
-               Estas letras NO se animan.
-          ====================================================== -->
-          <g
-            class="logo-nexo-letras"
-            fill="#ffffff"
-            font-family="Montserrat, Arial, sans-serif"
-            font-weight="500"
-          >
-            <text x="220" y="300" font-size="245">N</text>
-            <text x="500" y="300" font-size="245">E</text>
-            <text x="1055" y="300" font-size="245">O</text>
-          </g>
-
-          <!-- =====================================================
-               X ANIMADA
-               Es UNA sola X. El estado de expansión se consigue
-               mediante CSS: no existe una segunda imagen.
-          ====================================================== -->
-          <g class="logo-x-pulso" filter="url(#brillo-x-base)">
-            <!-- Brazos verdes: humanidad / naturaleza -->
-            <polygon points="706,82 744,82 820,193 796,217" fill="#7CC242"/>
-            <polygon points="706,348 744,348 820,237 796,213" fill="#6fd153"/>
-
-            <!-- Brazos azules: IA / tecnología -->
-            <polygon points="894,82 856,82 780,193 804,217" fill="#009FE3"/>
-            <polygon points="894,348 856,348 780,237 804,213" fill="#1A7BFF"/>
-
-            <!-- Punto de convergencia -->
-            <circle class="centro-x-nexo" cx="800" cy="215" r="17" fill="#ffffff"/>
-          </g>
-
-          <!-- =====================================================
-               SUBTÍTULO FIJO
-               No tiene animación ni glow fuerte.
-          ====================================================== -->
-          <text
-            x="800"
-            y="395"
-            text-anchor="middle"
-            fill="#ffffff"
-            font-family="Montserrat, Arial, sans-serif"
-            font-size="46"
-            font-weight="400"
-            letter-spacing="15"
-          >
-            LA CONVERGENCIA
-          </text>
-
-          <!-- =====================================================
-               LÍNEAS FIJAS
-               Permanecen discretas. Solo los nodos viajan.
-          ====================================================== -->
-          <line
-            x1="185"
-            y1="383"
-            x2="465"
-            y2="383"
-            stroke="#7CC242"
-            stroke-width="3"
-            opacity="0.58"
-          />
-          <line
-            x1="1135"
-            y1="383"
-            x2="1415"
-            y2="383"
-            stroke="#009FE3"
-            stroke-width="3"
-            opacity="0.58"
-          />
-
-          <!-- =====================================================
-               NODOS ANIMADOS
-               Comienzan en los extremos y avanzan hacia el texto.
-          ====================================================== -->
-          <g class="nodo-logo-svg nodo-logo-svg-verde" filter="url(#brillo-nodo)">
-            <circle cx="185" cy="383" r="8" fill="#a4ff55"/>
-          </g>
-
-          <g class="nodo-logo-svg nodo-logo-svg-azul" filter="url(#brillo-nodo)">
-            <circle cx="1415" cy="383" r="8" fill="#59d7ff"/>
-          </g>
-        </svg>
-      </div>
+      ></div>
 
       <p
         class="lema-juego"
@@ -445,9 +333,9 @@
 
       <div class="configuracion-inferior">
         <section class="grupo-jugador" aria-labelledby="titulo-jugador">
-          <label id="titulo-jugador" for="nombre-jugador">JUGADOR HUMANO</label>
+          <label id="titulo-jugador" for="nombre-jugador">NOMBRE DEL JUGADOR HUMANO</label>
           <div class="control-jugador">
-            <input id="nombre-jugador" name="nombre-jugador" type="text" maxlength="20" autocomplete="off" placeholder="Escribe un nombre" required>
+            <input id="nombre-jugador" name="nombre-jugador" type="text" maxlength="20" autocomplete="off" placeholder="Escribe el nombre del jugador" required>
             <select id="selector-jugadores" aria-label="Jugadores guardados" title="Jugadores guardados">
               <option value=""> </option>
             </select>
@@ -505,7 +393,10 @@
     <!-- CABECERA V17 · información distribuida en una franja cinematográfica. -->
     <header id="marcadores" class="cabecera-juego cabecera-partida-cinematica">
       <section class="hud-ronda hud-segmento" aria-label="Ronda actual">
-        <p id="contador-ronda" class="contador-ronda">RONDA 1 DE 12</p>
+        <p class="contador-ronda">
+          <span class="contador-ronda-etiqueta">RONDA</span>
+          <span id="contador-ronda" class="contador-ronda-valor">1 / 12</span>
+        </p>
       </section>
 
       <section id="tarjeta-crisis" class="hud-crisis hud-segmento tarjeta-crisis">
@@ -711,7 +602,7 @@
         </div>
 
         <!-- RESOLUCIÓN. Sustituye a la decisión; nunca se superpone con PAR/IMPAR. -->
-        <div id="zona-resolucion" class="zona-resolucion zona-resultado-cinematica oculta" aria-live="polite">
+        <div id="zona-resolucion" class="zona-resolucion zona-resultado-cinematica oculta" aria-live="polite" hidden inert>
           <div class="cartas-reveladas">
             <div class="carta-revelada"><p>Tu carta</p><span id="valor-carta-jugador">?</span><small id="apuesta-jugador">—</small></div>
             <span class="signo-suma">+</span>
@@ -945,7 +836,7 @@
   </div>
 
   <!-- EVENTO ESPECIAL V17 · carta visual realista integrada, sin gráficos vectoriales. -->
-  <div id="superposicion-evento" class="superposicion superposicion-evento-nexo oculta" role="dialog" aria-modal="true" aria-labelledby="nombre-evento">
+  <div id="superposicion-evento" class="superposicion superposicion-evento-nexo oculta" role="dialog" aria-modal="true" aria-labelledby="nombre-evento" aria-describedby="descripcion-evento" aria-hidden="true" hidden>
     <article class="tarjeta-evento tarjeta-evento-nexo">
       <div class="marco-imagen-evento">
         <img id="imagen-evento" class="imagen-evento" src="./assets/images/partida/eventos/evento-punto-sin-retorno.webp" alt="">
@@ -1061,6 +952,6 @@
 
   <!-- NEXO V5 · efecto visual aislado de la lógica del juego -->
   <script type="module" src="./src/efecto-energia-esfera.js?v=config-v10-esfera-alineada"></script>
-  <script type="module" src="./dist/main.js?v=audio-transiciones-v24-44"></script>
+  <script type="module" src="./dist/main.js?v=audio-final-v46"></script>
 </body>
 </html>

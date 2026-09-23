@@ -1,8 +1,8 @@
 import { Partida } from "./Partida.js";
 import { guardarMejorMarca, guardarPerfil, importarProgresoAnteriorSiExiste, listarJugadores, seleccionarJugador } from "./almacenamiento.js";
 import { elemento, escribir, habilitarCartasTrasApuesta, mostrar, mostrarEvento, mostrarPantalla, ocultar, ocultarEvento, ocultarResolucion, pintarApuestaElegida, pintarCabeceraRonda, pintarCapacidades, pintarCartasIA, pintarDeclaracionIA, pintarEvolucionVisual, pintarFinal, pintarMano, pintarMarcadores, pintarMejorMarca, pintarMemoria, pintarPistas, pintarResolucion, pintarSeleccionCartas } from "./interfaz.js";
-import { audioInicio, actualizarVolumenAudioInicio, apagarAudioInicioSuavemente, pausarAudioInicio, reproducirAudioInicio } from "./suspense.js";
-import { actualizarVolumenEfectos, actualizarVolumenMusicaEquilibrioRestablecido, actualizarVolumenMusicaIntroduccionConfiguracion, actualizarVolumenMusicaPartida, actualizarVolumenMusicaPlanetaColapso, actualizarVolumenMusicaPlanetaRestaurado, actualizarVolumenMusicaRivalidadFinal, apagarMusicaIntroduccionConfiguracionSuavemente, cancelarEfectosProgramados, conectarSonidosInterfaz, correspondeMusicaPlanetaRestaurado, detenerEfectos, pausarMusicaEquilibrioRestablecido, pausarMusicaIntroduccionConfiguracion, pausarMusicaPartida, pausarMusicaPlanetaColapso, pausarMusicaPlanetaRestaurado, pausarMusicaRivalidadFinal, precargarEfectos, reproducirCartaCrisis, reproducirDesenlace, reproducirEvento, reproducirFeedbackDeRonda, reproducirMusicaEquilibrioRestablecido, reproducirMusicaIntroduccionConfiguracion, reproducirMusicaPartida, reproducirMusicaPlanetaColapso, reproducirMusicaPlanetaRestaurado, reproducirMusicaRivalidadFinal, reproducirSonido } from "./sonidos.js";
+import { audioInicio, actualizarVolumenAudioInicio, pausarAudioInicio, reproducirAudioInicio } from "./suspense.js";
+import { actualizarVolumenEfectos, actualizarVolumenMusicaEquilibrioRestablecido, actualizarVolumenMusicaIntroduccionConfiguracion, actualizarVolumenMusicaPartida, actualizarVolumenMusicaPlanetaColapso, actualizarVolumenMusicaPlanetaRestaurado, actualizarVolumenMusicaRivalidadFinal, cancelarEfectosProgramados, conectarSonidosInterfaz, desbloquearAudioMovil, detenerEfectos, pausarMusicaEquilibrioRestablecido, pausarMusicaIntroduccionConfiguracion, pausarMusicaPartida, pausarMusicaPlanetaColapso, pausarMusicaPlanetaRestaurado, pausarMusicaRivalidadFinal, precargarEfectos, reproducirCartaCrisis, reproducirDesenlace, reproducirEvento, reproducirFeedbackDeRonda, reproducirMusicaEquilibrioRestablecido, reproducirMusicaIntroduccionConfiguracion, reproducirMusicaPartida, reproducirMusicaPlanetaColapso, reproducirMusicaPlanetaRestaurado, reproducirMusicaRivalidadFinal, reproducirSonido } from "./sonidos.js";
 let partida = null;
 let fase = "apuesta";
 let apuestaElegida = null;
@@ -15,36 +15,22 @@ let nombreJugadorElegido = "";
 // Bloque narrativo visible en la introducción (0 = primero, 3 = último).
 let bloqueIntroActual = 0;
 let cartaCrisisPendienteDeSonido = false;
-let finalConMusicaRivalidad = false;
 // Ajustes de sonido. Se guardan para respetar la preferencia del usuario.
 let sonidoActivo = localStorage.getItem("nexo-sonido") !== "off";
 let volumenSonido = Number(localStorage.getItem("nexo-volumen") || "28");
-// El MP3 contiene once latidos dobles dentro de cada ciclo de descargas.
-// Usamos las duraciones medidas de ambos ciclos para que la X y los nodos
-// mantengan su fase incluso después de varias repeticiones de la pista.
-const DURACION_PULSO_PORTADA = 1.009272;
-const DURACION_DESCARGAS_PORTADA = 11.101995;
-/**
- * Ajusta el punto de inicio de la animación al tiempo que lleva sonando el MP3.
- * La clase temporal detiene la animación durante un fotograma; al retirarla,
- * CSS vuelve a empezar desde la fase exacta indicada por las dos variables.
- */
-function sincronizarPulsoPortada() {
-    const logo = document.querySelector("#pantalla-inicio .logo-nexo-animado");
-    if (logo === null)
-        return;
-    const faseAudio = audioInicio.currentTime % DURACION_PULSO_PORTADA;
-    const faseDescargas = audioInicio.currentTime % DURACION_DESCARGAS_PORTADA;
-    logo.classList.add("reiniciar-animacion-audio");
-    logo.style.setProperty("--desfase-pulso-audio", `-${faseAudio.toFixed(6)}s`);
-    logo.style.setProperty("--desfase-descarga-audio", `-${faseDescargas.toFixed(6)}s`);
-    window.requestAnimationFrame(function () {
-        logo.classList.remove("reiniciar-animacion-audio");
-    });
-}
 // ---- Arranque ------------------------------------------------------------
 /** Conecta todos los botones de la página. Se ejecuta una sola vez. */
 function iniciar() {
+    // El primer toque de la pantalla negra prepara solo dos canales estables:
+    // música y efectos. Después Safari de iPhone reutiliza esos mismos Audio
+    // al cambiar de pantalla o de archivo, sin crear reproductores nuevos.
+    const pantallaAcceso = elemento("pantalla-suspense");
+    pantallaAcceso.addEventListener("pointerdown", function () {
+        desbloquearAudioMovil();
+    }, { capture: true, once: true });
+    pantallaAcceso.addEventListener("touchstart", function () {
+        desbloquearAudioMovil();
+    }, { capture: true, once: true, passive: true });
     // Precargamos la pista desde el archivo principal para evitar que el
     // navegador conserve una versión anterior del módulo de suspense.
     audioInicio.preload = "auto";
@@ -53,13 +39,18 @@ function iniciar() {
     audioInicio.setAttribute("aria-hidden", "true");
     document.body.appendChild(audioInicio);
     audioInicio.load();
-    audioInicio.addEventListener("playing", function () {
-        sincronizarPulsoPortada();
-        // La portada aparece 700 ms después del clic de suspense.
-        window.setTimeout(sincronizarPulsoPortada, 700);
+    const botonJugar = elemento("btn-jugar");
+    botonJugar.addEventListener("pointerdown", function () {
+        // Safari de iPhone autoriza cada Audio durante un gesto directo. La
+        // portada se detiene antes para que la preparación no compita con ella.
+        pausarAudioInicio();
+        desbloquearAudioMovil();
     });
-    elemento("btn-jugar").addEventListener("click", function () {
-        apagarAudioInicioSuavemente();
+    botonJugar.addEventListener("click", function () {
+        // iPhone no siempre entrega el canal a un segundo Audio mientras el
+        // primero continúa haciendo fundido. Lo detenemos dentro del mismo
+        // gesto antes de arrancar la pista de Introducción/Configuración.
+        pausarAudioInicio();
         bloqueIntroActual = 0;
         mostrarBloqueIntro();
         mostrarPantalla("pantalla-introduccion");
@@ -75,12 +66,25 @@ function iniciar() {
     elemento("btn-manual-desde-ajustes").addEventListener("click", abrirManual);
     elemento("btn-cerrar-manual").addEventListener("click", cerrarManual);
     elemento("btn-iniciar-partida").addEventListener("click", empezarPartida);
-    elemento("btn-apuesta-par").addEventListener("click", function () {
-        elegirApuesta("PAR");
-    });
-    elemento("btn-apuesta-impar").addEventListener("click", function () {
-        elegirApuesta("IMPAR");
-    });
+    const conectarBotonApuesta = function (idBoton, apuesta) {
+        const boton = elemento(idBoton);
+        // Safari/iPad puede cancelar el click que sigue a un toque cuando acaba
+        // de cambiar la ronda o de ajustar su barra. El pointerdown táctil llega
+        // antes de esa cancelación y permite declarar desde el primer intento.
+        boton.addEventListener("pointerdown", function (evento) {
+            if (evento.pointerType === "touch" || evento.pointerType === "pen") {
+                elegirApuesta(apuesta);
+            }
+        });
+        // Ratón y teclado conservan el comportamiento normal. En táctil puede
+        // repetirse la misma elección al llegar click, pero la acción es idempotente.
+        boton.addEventListener("click", function () {
+            elegirApuesta(apuesta);
+        });
+    };
+    conectarBotonApuesta("btn-apuesta-par", "PAR");
+    conectarBotonApuesta("btn-apuesta-impar", "IMPAR");
+    prepararRescateControlesIPad();
     // CARTAS · V10
     // Los botones conectan su click directamente al crearse en pintarMano().
     elemento("btn-confirmar-jugada").addEventListener("click", confirmar);
@@ -101,7 +105,6 @@ function iniciar() {
         pausarMusicaEquilibrioRestablecido(true);
         pausarMusicaPlanetaColapso(true);
         pausarMusicaRivalidadFinal(true);
-        finalConMusicaRivalidad = false;
         partida = null;
         pintarMejorMarca();
         mostrarPantalla("pantalla-inicio");
@@ -192,7 +195,25 @@ function abrirConfiguracion() {
     nombreJugadorElegido = "";
     actualizarListaJugadores();
     mostrarPantalla("pantalla-configuracion");
-    input.focus();
+    reiniciarDesplazamientoConfiguracion();
+    // En iPhone/iPad el foco automático abre el teclado y Safari conserva
+    // después ese desplazamiento, dejando avatares y cabecera fuera de vista.
+    // En táctil mostramos primero la composición completa; el jugador abre el
+    // teclado cuando toca expresamente el campo del nombre.
+    if (!window.matchMedia("(pointer: coarse)").matches && window.innerWidth > 640)
+        input.focus();
+}
+/** Devuelve la configuración a su encuadre completo tras cerrar el teclado. */
+function reiniciarDesplazamientoConfiguracion() {
+    const pantallaConfiguracion = elemento("pantalla-configuracion");
+    const llevarAlInicio = function () {
+        pantallaConfiguracion.scrollTop = 0;
+        pantallaConfiguracion.scrollLeft = 0;
+        window.scrollTo(0, 0);
+    };
+    llevarAlInicio();
+    window.requestAnimationFrame(llevarAlInicio);
+    window.setTimeout(llevarAlInicio, 180);
 }
 /** Botones de avatar y de número de rondas de la pantalla de configuración. */
 function prepararOpcionesConfig() {
@@ -245,6 +266,11 @@ function prepararJugadores() {
     nombreJugadorElegido = "";
     input.value = "";
     actualizarListaJugadores();
+    input.addEventListener("blur", function () {
+        if (elemento("pantalla-configuracion").classList.contains("activa")) {
+            reiniciarDesplazamientoConfiguracion();
+        }
+    });
     selector.addEventListener("change", function () {
         if (selector.value !== "") {
             input.value = selector.value;
@@ -270,6 +296,26 @@ function actualizarListaJugadores() {
     lista.disabled = jugadores.length === 0;
 }
 /** Crea la partida con la configuración elegida y lanza la primera ronda. */
+function reiniciarDesplazamientoPartida() {
+    const pantallaJuego = elemento("pantalla-juego");
+    const llevarAlInicio = function () {
+        // En tablet/iPad la pantalla de juego es el contenedor desplazable;
+        // mover solo window no modifica su posición interna.
+        pantallaJuego.scrollTop = 0;
+        pantallaJuego.scrollLeft = 0;
+        const pagina = document.scrollingElement;
+        if (pagina !== null) {
+            pagina.scrollTop = 0;
+            pagina.scrollLeft = 0;
+        }
+        window.scrollTo(0, 0);
+    };
+    llevarAlInicio();
+    // El segundo ajuste ocurre al terminar de pintar la ronda. No se repite
+    // con temporizadores: en Safari/iPad cada scroll programado puede cancelar
+    // el toque que el jugador acaba de hacer sobre PAR o IMPAR.
+    window.requestAnimationFrame(llevarAlInicio);
+}
 function empezarPartida() {
     const inputNombre = elemento("nombre-jugador");
     if (!inputNombre.checkValidity()) {
@@ -297,13 +343,29 @@ function empezarPartida() {
         avatarIAElegido = String(radioIA.value);
     }
     partida = new Partida(nombreJugadorElegido, avatarElegido, rondasElegidas, avatarIAElegido);
-    finalConMusicaRivalidad = false;
     escribir("nombre-humano", "HUMANO");
     escribir("nombre-jugador-partida", nombreJugadorElegido);
-    apagarMusicaIntroduccionConfiguracionSuavemente();
+    // Safari puede terminar de autorizar la pista de portada con retraso. Si
+    // el jugador avanza rápido, el fundido anterior, la introducción y la
+    // música de partida pueden coincidir. La partida comienza con una sola
+    // música de fondo; los efectos breves de la ronda se reproducen después.
+    pausarAudioInicio();
+    pausarMusicaIntroduccionConfiguracion(true);
+    pausarMusicaPartida(true);
+    pausarMusicaPlanetaRestaurado(true);
+    pausarMusicaEquilibrioRestablecido(true);
+    pausarMusicaPlanetaColapso(true);
+    pausarMusicaRivalidadFinal(true);
+    cancelarEfectosProgramados();
+    detenerEfectos();
     mostrarPantalla("pantalla-juego");
+    window.scrollTo(0, 0);
     reproducirMusicaPartidaSiCorresponde();
     nuevaRonda();
+    // Configuración puede necesitar desplazamiento en pantallas pequeñas.
+    // La partida siempre empieza desde su cabecera y no conserva el scroll
+    // interno que Safari mantiene al cambiar entre pantallas.
+    reiniciarDesplazamientoPartida();
 }
 // ---- Ajustes rápidos -------------------------------------------------------
 function prepararAjustes() {
@@ -397,17 +459,21 @@ function reproducirMusicaFinalSiCorresponde() {
     if (!sonidoActivo || !finalActivo || partida === null) {
         return;
     }
-    const saludPlaneta = partida.getSaludPlaneta();
-    if (saludPlaneta >= 100) {
-        reproducirMusicaEquilibrioRestablecido(volumenSonido);
-    }
-    else if (saludPlaneta <= 0) {
-        reproducirMusicaPlanetaColapso(volumenSonido);
-    }
-    else if (correspondeMusicaPlanetaRestaurado(saludPlaneta)) {
+    reproducirMusicaDelDesenlace(partida.getSaludPlaneta());
+}
+/** Aplica en un único punto las prioridades de música de la pantalla final. */
+function reproducirMusicaDelDesenlace(saludPlaneta) {
+    const crisisPlaneta = 100 - saludPlaneta;
+    if (crisisPlaneta <= 0) {
         reproducirMusicaPlanetaRestaurado(volumenSonido);
     }
-    else if (finalConMusicaRivalidad) {
+    else if (crisisPlaneta >= 100) {
+        reproducirMusicaPlanetaColapso(volumenSonido);
+    }
+    else if (crisisPlaneta <= 40) {
+        reproducirMusicaEquilibrioRestablecido(volumenSonido);
+    }
+    else {
         reproducirMusicaRivalidadFinal(volumenSonido);
     }
 }
@@ -420,6 +486,7 @@ function nuevaRonda() {
     cancelarEfectosProgramados();
     partida.prepararRonda();
     fase = "apuesta";
+    elemento("pantalla-juego").classList.remove("resolucion-activa");
     apuestaElegida = null;
     cartasSeleccionadas = [];
     ocultarResolucion();
@@ -533,6 +600,75 @@ function recuperarFaseInteractiva() {
     mostrar("zona-mano");
     mostrar("acciones");
     actualizarBotonConfirmar();
+}
+/**
+ * Safari de iPad puede conservar el mapa táctil de la ronda anterior aunque
+ * los botones ya estén pintados en su nueva posición horizontal. Escuchamos el
+ * gesto en captura y comparamos sus coordenadas con los botones visibles: así
+ * la declaración llega incluso si WebKit atribuye el toque a una capa antigua.
+ */
+function prepararRescateControlesIPad() {
+    document.addEventListener("pointerdown", function (evento) {
+        const esToqueHorizontal = (evento.pointerType === "touch" || evento.pointerType === "pen") &&
+            navigator.maxTouchPoints > 0 && window.innerWidth > window.innerHeight;
+        if (!esToqueHorizontal)
+            return;
+        if (!elemento("pantalla-juego").classList.contains("activa"))
+            return;
+        const tocaControl = function (boton) {
+            // composedPath() identifica el botón aunque el toque caiga sobre uno
+            // de sus hijos. Las coordenadas quedan como respaldo para el fallo de
+            // WebKit que conserva una capa de la ronda anterior sobre el control.
+            if (evento.composedPath().includes(boton))
+                return true;
+            const caja = boton.getBoundingClientRect();
+            if (caja.width === 0 || caja.height === 0)
+                return false;
+            return evento.clientX >= caja.left && evento.clientX <= caja.right &&
+                evento.clientY >= caja.top && evento.clientY <= caja.bottom;
+        };
+        const modalEvento = elemento("superposicion-evento");
+        if (!modalEvento.hidden && !modalEvento.classList.contains("oculta")) {
+            // Con el evento abierto ningún control del tablero debe responder,
+            // pero CONTINUAR necesita la misma ruta táctil fiable del iPad.
+            const botonCerrarEvento = elemento("btn-cerrar-evento");
+            if (!botonCerrarEvento.disabled && tocaControl(botonCerrarEvento)) {
+                evento.preventDefault();
+                evento.stopPropagation();
+                cerrarEventoDeRonda();
+            }
+            return;
+        }
+        // En la resolución solo existe SIGUIENTE RONDA. Debe comprobarse antes
+        // que los controles de decisión para que un botón oculto no interrumpa
+        // el rescate táctil de la siguiente ronda.
+        const botonSiguiente = elemento("btn-siguiente");
+        if (!botonSiguiente.disabled && !botonSiguiente.classList.contains("oculta") && tocaControl(botonSiguiente)) {
+            evento.preventDefault();
+            evento.stopPropagation();
+            siguiente();
+            return;
+        }
+        const opciones = [
+            { id: "btn-apuesta-par", apuesta: "PAR" },
+            { id: "btn-apuesta-impar", apuesta: "IMPAR" }
+        ];
+        for (let i = 0; i < opciones.length; i++) {
+            const boton = elemento(opciones[i].id);
+            if (tocaControl(boton)) {
+                evento.preventDefault();
+                evento.stopPropagation();
+                elegirApuesta(opciones[i].apuesta);
+                return;
+            }
+        }
+        const botonResolver = elemento("btn-confirmar-jugada");
+        if (!botonResolver.disabled && !botonResolver.classList.contains("oculta") && tocaControl(botonResolver)) {
+            evento.preventDefault();
+            evento.stopPropagation();
+            confirmar();
+        }
+    }, { capture: true });
 }
 /**
  * El jugador declara PAR o IMPAR. Esta decisión abre después la selección
@@ -885,17 +1021,44 @@ function resolverConCarta(carta, yaDescartada) {
     if (partida === null || apuestaElegida === null) {
         return;
     }
+    const pantallaJuego = elemento("pantalla-juego");
+    const desplazamientoVentanaX = window.scrollX;
+    const desplazamientoVentanaY = window.scrollY;
+    const desplazamientoJuegoX = pantallaJuego.scrollLeft;
+    const desplazamientoJuegoY = pantallaJuego.scrollTop;
     if (!yaDescartada) {
         partida.getJugador().jugarCarta(carta);
     }
     const resumen = partida.resolverRonda(carta, apuestaElegida);
     fase = "resuelta";
+    // Safari pinta un fotograma justo al activar el modo de resolución. El
+    // panel debe seguir oculto mientras se preparan el resultado y el efecto
+    // de la ronda; si no, llega a verse su contenido anterior en una esquina.
+    const panelResultado = elemento("zona-resolucion");
+    ocultar("zona-resolucion");
+    panelResultado.classList.remove("panel-resultado-entra");
+    pantallaJuego.classList.add("resolucion-activa");
     // La resolución sustituye a TODA la zona de decisión y su acción principal.
     // El carril del botón está fuera de las cartas para garantizar el clic.
     ocultar("acciones");
     ocultar("zona-decision-activa");
     refrescarPantalla();
     pintarResolucionYSiguiente(resumen);
+    // Safari intenta llevar a la vista el nuevo botón SIGUIENTE RONDA y mueve
+    // toda la página. Restauramos el mismo encuadre para que los avatares y el
+    // tablero no salten al alternar entre decisión y resolución.
+    const restaurarEncuadre = function () {
+        pantallaJuego.scrollLeft = desplazamientoJuegoX;
+        pantallaJuego.scrollTop = desplazamientoJuegoY;
+        // En responsive se desplaza #pantalla-juego; la ventana exterior debe
+        // permanecer fija. Safari intenta moverla al enfocar el nuevo botón.
+        const destinoVentanaX = window.innerWidth <= 1050 ? 0 : desplazamientoVentanaX;
+        const destinoVentanaY = window.innerWidth <= 1050 ? 0 : desplazamientoVentanaY;
+        window.scrollTo(destinoVentanaX, destinoVentanaY);
+    };
+    restaurarEncuadre();
+    window.requestAnimationFrame(restaurarEncuadre);
+    window.setTimeout(restaurarEncuadre, 120);
 }
 /** Pinta la resolución y prepara el botón de continuar. */
 function pintarResolucionYSiguiente(resumen) {
@@ -930,6 +1093,7 @@ function siguiente() {
         return;
     }
     nuevaRonda();
+    reiniciarDesplazamientoPartida();
 }
 /** Calcula el final, lo guarda en localStorage y enseña la pantalla final. */
 function terminarPartida(guardarProgreso = true) {
@@ -937,12 +1101,8 @@ function terminarPartida(guardarProgreso = true) {
         return;
     }
     cancelarEfectosProgramados();
+    detenerEfectos();
     const resumen = partida.calcularFinal();
-    finalConMusicaRivalidad = guardarProgreso
-        && resumen.saludPlaneta > 0
-        && resumen.saludPlaneta < 100
-        && (resumen.desenlace === "SUPREMACIA HUMANA"
-            || resumen.desenlace === "SUPREMACIA IA");
     if (guardarProgreso) {
         guardarPerfil(resumen.perfil.nombre);
         guardarMejorMarca(partida.getJugador().getNombre(), resumen);
@@ -954,21 +1114,16 @@ function terminarPartida(guardarProgreso = true) {
     pausarMusicaPlanetaRestaurado(true);
     pausarMusicaEquilibrioRestablecido(true);
     pausarMusicaPlanetaColapso(true);
-    pausarMusicaRivalidadFinal(true);
     mostrarPantalla("pantalla-final");
-    reproducirDesenlace();
-    if (resumen.saludPlaneta >= 100) {
-        reproducirMusicaEquilibrioRestablecido(volumenSonido);
-    }
-    else if (resumen.saludPlaneta <= 0) {
-        reproducirMusicaPlanetaColapso(volumenSonido);
-    }
-    else if (correspondeMusicaPlanetaRestaurado(resumen.saludPlaneta)) {
-        reproducirMusicaPlanetaRestaurado(volumenSonido);
-    }
-    else if (finalConMusicaRivalidad) {
-        reproducirMusicaRivalidadFinal(volumenSonido);
-    }
+    // Todos los finales comparten la misma entrada breve. La música larga
+    // empieza únicamente cuando desenlace.mp3 termina, para que Safari no
+    // solape ni interrumpa los dos canales.
+    reproducirDesenlace(function () {
+        const finalActivo = elemento("pantalla-final").classList.contains("activa");
+        if (sonidoActivo && finalActivo && partida !== null) {
+            reproducirMusicaDelDesenlace(resumen.saludPlaneta);
+        }
+    });
 }
 /** Detiene y rebobina el audio cuando la página deja de estar activa. */
 function detenerAudioAlSalir() {

@@ -414,7 +414,7 @@ export class Partida {
         }
         const resumen = this.repartirPuntos(resultado, ganador, suma, cartaJugador, valorIA, paridad, apuestaJugador, apuestaIA);
         resumen.intuicionIA = usaIntuicion;
-        this.actualizarMemorias(resultado, ganador, cartaJugador, apuestaJugador, apuestaIA);
+        this.actualizarMemorias(ganador, cartaJugador, apuestaJugador, apuestaIA);
         this.comprobarFinal();
         return resumen;
     }
@@ -537,7 +537,7 @@ export class Partida {
      * el historial (Memoria y Análisis), las derrotas seguidas (Creatividad) y
      * la última jugada ganadora de la IA (Adaptación).
      */
-    actualizarMemorias(resultado, ganador, cartaJugador, apuestaJugador, apuestaIA) {
+    actualizarMemorias(ganador, cartaJugador, apuestaJugador, apuestaIA) {
         this.jugador.registrarJugada(cartaJugador, apuestaJugador);
         this.ia.registrarJugada(this.cartaIA, apuestaIA);
         this.cartasIAReveladas.push(this.cartaIA);

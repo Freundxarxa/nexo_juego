@@ -1,5 +1,26 @@
-import { elemento, mostrarPantalla } from "./interfaz.js";
-import { reproducirSonido } from "./sonidos.js";
+import { ajustarFaseAnimacionPortada, elemento, mostrarPantalla } from "./interfaz.js";
+/**
+ * Safari puede pintar antes la X ligera que la base completa del logotipo.
+ * Preparamos los tres recursos visibles de la portada mientras el jugador
+ * permanece en la pantalla de suspense y no iniciamos el fundido hasta que
+ * el navegador los tenga disponibles en memoria.
+ */
+function prepararImagenPortada(ruta) {
+    return new Promise(function (resolver) {
+        const imagen = new Image();
+        imagen.addEventListener("load", function () { resolver(); }, { once: true });
+        imagen.addEventListener("error", function () { resolver(); }, { once: true });
+        imagen.src = ruta;
+        if (imagen.complete)
+            resolver();
+    });
+}
+const preparacionVisualPortada = Promise.all([
+    prepararImagenPortada("./assets/images/portada/fondos/fondo-inicio-nexo.webp"),
+    prepararImagenPortada("./assets/images/portada/logo/nexo_logo_base_tipografia_original_hd.webp"),
+    prepararImagenPortada("./assets/images/portada/logo/nexo_x_estatica_centrada_sin_limite.webp"),
+    prepararImagenPortada("./assets/images/portada/botones/boton-jugar-prismatico-transparente.webp")
+]).then(function () { return undefined; });
 // AUDIO DE PORTADA · PRIMERA CAPA
 // El clic de la pantalla de suspense permite iniciar el sonido sin usar
 // reproducción automática. Esta pista solo acompaña a la portada de NEXO.
@@ -8,23 +29,98 @@ audioInicio.loop = true;
 // La portada no usa los volúmenes internos de la paleta de efectos. Aplicamos
 // un refuerzo propio y limitado para que el antiguo 28% también sea audible.
 const REFUERZO_AUDIO_INICIO = 2.0;
+const DURACION_CICLO_AUDIO_INICIO = 11.101995;
 let temporizadorAudioInicio = null;
+let vigilanteBucleAudioInicio = 0;
+let reintentoAudioInicioPendiente = false;
+let vigilanteSincronizacionPortada = 0;
+/**
+ * Safari puede resolver play() antes de que currentTime empiece a avanzar.
+ * La X ya está animada mientras tanto; en el primer avance real corregimos
+ * únicamente su fase, sin detenerla ni reiniciar la animación.
+ */
+function sincronizarAnimacionPortadaCuandoAvance() {
+    if (vigilanteSincronizacionPortada !== 0) {
+        window.cancelAnimationFrame(vigilanteSincronizacionPortada);
+    }
+    const tiempoInicial = audioInicio.currentTime;
+    function comprobarAvance() {
+        const portadaActiva = elemento("pantalla-inicio").classList.contains("activa");
+        if (!portadaActiva) {
+            vigilanteSincronizacionPortada = 0;
+            return;
+        }
+        if (!audioInicio.paused && audioInicio.currentTime > tiempoInicial + 0.012) {
+            ajustarFaseAnimacionPortada(audioInicio.currentTime);
+            vigilanteSincronizacionPortada = 0;
+            return;
+        }
+        vigilanteSincronizacionPortada = window.requestAnimationFrame(comprobarAvance);
+    }
+    vigilanteSincronizacionPortada = window.requestAnimationFrame(comprobarAvance);
+}
 /** Convierte el porcentaje del control en un volumen válido entre 0 y 1. */
 export function actualizarVolumenAudioInicio(porcentaje) {
     audioInicio.volume = Math.max(0, Math.min(1, (porcentaje / 100) * REFUERZO_AUDIO_INICIO));
 }
-/** Inicia la música de la portada con el volumen elegido por el jugador. */
+function vigilarBucleAudioInicio() {
+    if (audioInicio.paused) {
+        vigilanteBucleAudioInicio = 0;
+        return;
+    }
+    if (audioInicio.currentTime >= DURACION_CICLO_AUDIO_INICIO) {
+        audioInicio.currentTime = 0;
+    }
+    vigilanteBucleAudioInicio = window.requestAnimationFrame(vigilarBucleAudioInicio);
+    sincronizarAnimacionPortadaCuandoAvance();
+}
+function quitarReintentoAudioInicio() {
+    if (!reintentoAudioInicioPendiente)
+        return;
+    reintentoAudioInicioPendiente = false;
+    document.removeEventListener("pointerdown", reintentarAudioInicioDesdeGesto, true);
+    document.removeEventListener("touchend", reintentarAudioInicioDesdeGesto, true);
+}
+function reintentarAudioInicioDesdeGesto() {
+    quitarReintentoAudioInicio();
+    if (localStorage.getItem("nexo-sonido") === "off")
+        return;
+    audioInicio.muted = false;
+    const intento = audioInicio.play();
+    if (intento !== undefined) {
+        intento.then(quitarReintentoAudioInicio).catch(armarReintentoAudioInicio);
+    }
+}
+function armarReintentoAudioInicio() {
+    if (reintentoAudioInicioPendiente)
+        return;
+    reintentoAudioInicioPendiente = true;
+    document.addEventListener("pointerdown", reintentarAudioInicioDesdeGesto, true);
+    document.addEventListener("touchend", reintentarAudioInicioDesdeGesto, true);
+}
+/** Inicia la música dentro del gesto real para que Safari no la bloquee. */
 export function reproducirAudioInicio(porcentaje) {
     if (temporizadorAudioInicio !== null) {
         window.clearInterval(temporizadorAudioInicio);
         temporizadorAudioInicio = null;
     }
+    if (vigilanteBucleAudioInicio !== 0)
+        window.cancelAnimationFrame(vigilanteBucleAudioInicio);
     actualizarVolumenAudioInicio(porcentaje);
-    audioInicio.muted = false;
     audioInicio.currentTime = 0;
-    audioInicio.play().catch(function (error) {
-        console.warn("NEXO: el navegador no ha podido reproducir el audio de portada.", error.message);
-    });
+    audioInicio.muted = false;
+    if (audioInicio.paused) {
+        const intento = audioInicio.play();
+        if (intento !== undefined) {
+            intento.then(quitarReintentoAudioInicio).catch(function (error) {
+                armarReintentoAudioInicio();
+                if (error.name !== "NotAllowedError" && error.name !== "AbortError") {
+                    console.warn("NEXO: el navegador no ha podido reproducir el audio de portada.", error.message);
+                }
+            });
+        }
+    }
+    vigilanteBucleAudioInicio = window.requestAnimationFrame(vigilarBucleAudioInicio);
 }
 /** Detiene inmediatamente la pista cuando el jugador desactiva el sonido. */
 export function pausarAudioInicio() {
@@ -32,33 +128,15 @@ export function pausarAudioInicio() {
         window.clearInterval(temporizadorAudioInicio);
         temporizadorAudioInicio = null;
     }
+    if (vigilanteBucleAudioInicio !== 0)
+        window.cancelAnimationFrame(vigilanteBucleAudioInicio);
+    if (vigilanteSincronizacionPortada !== 0)
+        window.cancelAnimationFrame(vigilanteSincronizacionPortada);
+    vigilanteBucleAudioInicio = 0;
+    vigilanteSincronizacionPortada = 0;
+    quitarReintentoAudioInicio();
     audioInicio.pause();
-}
-/**
- * Reduce el volumen poco a poco antes de abandonar la portada.
- * Utiliza setInterval y operaciones sencillas, sin Web Audio API.
- */
-export function apagarAudioInicioSuavemente() {
-    if (temporizadorAudioInicio !== null) {
-        window.clearInterval(temporizadorAudioInicio);
-    }
-    if (audioInicio.paused)
-        return;
-    const volumenInicial = audioInicio.volume;
-    const numeroPasos = 14;
-    let pasoActual = 0;
-    temporizadorAudioInicio = window.setInterval(function () {
-        pasoActual++;
-        audioInicio.volume = Math.max(0, volumenInicial * (1 - pasoActual / numeroPasos));
-        if (pasoActual >= numeroPasos) {
-            if (temporizadorAudioInicio !== null) {
-                window.clearInterval(temporizadorAudioInicio);
-                temporizadorAudioInicio = null;
-            }
-            audioInicio.pause();
-            audioInicio.currentTime = 0;
-        }
-    }, 50);
+    audioInicio.muted = false;
 }
 const pantallaSuspense = elemento("pantalla-suspense");
 const svg = elemento("svg-suspense");
@@ -167,19 +245,32 @@ function activarJuego() {
     if (activado)
         return;
     activado = true;
-    reproducirSonido("confirmar");
     cancelAnimationFrame(animacionId);
     const sonidoActivo = localStorage.getItem("nexo-sonido") !== "off";
     const volumen = Number(localStorage.getItem("nexo-volumen") || "28");
     if (sonidoActivo) {
+        // Tiene que ejecutarse directamente dentro de touchend/click: si esperamos
+        // a la transición visual, Safari de iPhone pierde el permiso del gesto.
         reproducirAudioInicio(volumen);
     }
-    pantallaSuspense.classList.add("fade-out");
-    window.setTimeout(function () {
-        mostrarPantalla("pantalla-inicio");
-    }, 700);
+    void preparacionVisualPortada.then(function () {
+        pantallaSuspense.classList.add("fade-out");
+        window.setTimeout(function () {
+            // La pista comenzó dentro del gesto unos instantes antes. Pasamos su
+            // posición real para que el primer latido visible coincida con el audio.
+            mostrarPantalla("pantalla-inicio", audioInicio.currentTime);
+            sincronizarAnimacionPortadaCuandoAvance();
+        }, 700);
+    });
 }
 window.addEventListener("resize", ajustarTamano);
+window.visualViewport?.addEventListener("resize", ajustarTamano);
+// Safari en iPad puede resolver 100svh después del primer resize. Observar el
+// propio lienzo evita conservar una geometría calculada con la barra visible.
+const observadorTamanoSuspense = new ResizeObserver(function () {
+    ajustarTamano();
+});
+observadorTamanoSuspense.observe(pantallaSuspense);
 pantallaSuspense.addEventListener("mousemove", function (evento) {
     actualizarPosicion(evento.clientX, evento.clientY);
 });
@@ -200,7 +291,6 @@ pantallaSuspense.addEventListener("touchmove", function (evento) {
 pantallaSuspense.addEventListener("touchend", function () {
     cercania = 0;
     encima = false;
-    activarJuego();
 });
 pantallaSuspense.addEventListener("touchcancel", function () {
     cercania = 0;

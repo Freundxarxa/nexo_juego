@@ -113,16 +113,6 @@ export function listarJugadores() {
         .map((player) => player.displayName)
         .sort((a, b) => a.localeCompare(b, "es"));
 }
-export function leerProgresoJugador(name) {
-    const player = findPlayerByName(readStore(), name);
-    if (player === null)
-        return { existe: false, perfiles: 0, mejorMarca: null };
-    return {
-        existe: true,
-        perfiles: player.unlockedProfiles.length,
-        mejorMarca: player.bestScore
-    };
-}
 export function leerMejorMarca() {
     const store = readStore();
     const player = store.activePlayerId ? store.players[store.activePlayerId] : null;

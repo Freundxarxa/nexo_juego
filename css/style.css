@@ -115,12 +115,6 @@ h1, h2, h3, h4 {
   transform: none;
 }
 
-.boton-principal {
-  background: linear-gradient(90deg, var(--color-humano), var(--color-ia));
-  color: #0b0f14;
-  margin-top: var(--espacio-md);
-}
-
 .boton-apuesta {
   background-color: var(--color-fondo-panel);
   color: var(--color-texto);
@@ -1390,16 +1384,6 @@ h1, h2, h3, h4 {
   flex: 1;
 }
 
-.avatar-lateral img {
-  width: 130px;
-  height: 130px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.avatar-humano-lateral img { border: 3px solid var(--color-humano); }
-.avatar-ia-lateral img { border: 3px solid var(--color-ia); }
-
 .zona-central {
   text-align: center;
   flex: 1;
@@ -1528,11 +1512,6 @@ h1, h2, h3, h4 {
     gap: var(--espacio-md);
   }
 
-  .avatar-lateral img {
-    width: 90px;
-    height: 90px;
-  }
-
   .cabecera-juego {
     flex-direction: column;
     gap: 0.8rem;
@@ -1589,22 +1568,6 @@ h1, h2, h3, h4 {
   color: var(--color-texto);
   font-size: 0.78rem;
   font-weight: 700;
-}
-
-.tablero-integrado {
-  align-items: flex-start;
-  max-width: 1200px;
-  gap: clamp(1rem, 2.2vw, 2rem);
-}
-
-.lado {
-  flex: 1 1 170px;
-  max-width: 220px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  text-align: center;
 }
 
 .zona-central {
@@ -1789,36 +1752,6 @@ h1, h2, h3, h4 {
 .planeta-estable { background-color: #07131a; }
 .planeta-recuperado { background-color: #071811; }
 
-@media (max-width: 900px) {
-  .tablero-integrado {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .lado {
-    max-width: 420px;
-    width: 100%;
-  }
-}
-
-@media (max-width: 760px) {
-  .boton-protocolo-integrado {
-    position: relative;
-    left: auto;
-    bottom: auto;
-    width: min(100%, 360px);
-    min-width: 0;
-    margin-top: auto;
-    transform: none;
-  }
-
-  .boton-protocolo-integrado:hover,
-  .boton-protocolo-integrado:focus-visible,
-  .boton-protocolo-integrado:active {
-    transform: translateY(-2px);
-  }
-}
-
 /* =====================================================================
    AJUSTE UX — PANTALLA DE JUEGO SIN SCROLL EN ESCRITORIO + AJUSTES
    ===================================================================== */
@@ -1850,13 +1783,6 @@ h1, h2, h3, h4 {
     max-width: 590px;
     padding: clamp(0.55rem, 1vh, 0.8rem);
     overflow: hidden;
-  }
-
-  #pantalla-juego .lado {
-    min-height: 0;
-    max-width: 190px;
-    gap: 0.35rem;
-    justify-content: flex-start;
   }
 
   #pantalla-juego .avatar {
@@ -2971,13 +2897,6 @@ h1, h2, h3, h4 {
 }
 
 
-/* El SVG antiguo queda fuera de la composición visual. */
-#pantalla-inicio .logo-nexo-svg {
-  opacity: 0;
-  pointer-events: none;
-}
-
-
 /* ---------------------------------------------------------------------
    2. X BASE
    ---------------------------------------------------------------------
@@ -3705,7 +3624,7 @@ h1, h2, h3, h4 {
 
 #pantalla-configuracion .cabecera-configuracion h2 {
   margin-top: .12rem;
-  font-size: clamp(1.75rem, 2.25vw, 2.62rem);
+  font-size: clamp(1.55rem, 1.95vw, 2.3rem);
 }
 
 /* ---------- PANELES LATERALES ---------- */
@@ -3771,19 +3690,34 @@ h1, h2, h3, h4 {
 }
 
 #pantalla-configuracion .tarjeta-avatar::after {
-  content: "✓";
+  content: "";
   position: absolute;
   z-index: 8;
-  top: -10px;
-  right: -8px;
+  top: 0;
+  right: 0;
+  display: block;
+  width: 46px;
+  height: 44px;
+  clip-path: polygon(0 0, 55% 0, 100% 45%, 100% 100%, 45% 100%, 0 55%);
+  opacity: 0;
+  transform: scale(.62);
+  transform-origin: top right;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+#pantalla-configuracion .tarjeta-avatar::before {
+  content: "✓";
+  position: absolute;
+  z-index: 9;
+  top: 13px;
+  right: 9px;
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  font-size: 17px;
+  width: 16px;
+  height: 16px;
+  font-size: 15px;
   font-weight: 1000;
-  color: #061014;
+  color: #07150b;
   opacity: 0;
   transform: scale(.62);
   transition: opacity .18s ease, transform .18s ease;
@@ -3793,14 +3727,26 @@ h1, h2, h3, h4 {
   opacity: 1;
   transform: scale(1);
   background: #b7ff45;
-  box-shadow: 0 0 15px rgba(161,255,61,.92);
 }
 
 #pantalla-configuracion .tarjeta-ia:has(input:checked)::after {
   opacity: 1;
   transform: scale(1);
   background: #59dfff;
-  box-shadow: 0 0 15px rgba(73,218,255,.92);
+}
+
+#pantalla-configuracion .tarjeta-humano:has(input:checked)::before,
+#pantalla-configuracion .tarjeta-ia:has(input:checked)::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#pantalla-configuracion .tarjeta-humano:has(input:checked)::before {
+  color: #173600;
+}
+
+#pantalla-configuracion .tarjeta-ia:has(input:checked)::before {
+  color: #00394a;
 }
 
 /* ---------- SVG ENERGÍA: MISMO RECORTE QUE EL FONDO ---------- */
@@ -3968,9 +3914,9 @@ h1, h2, h3, h4 {
   gap: clamp(.36rem, .65vh, .56rem);
 }
 
-@media (max-height: 760px) and (min-width: 761px) {
+@media (max-height: 800px) and (min-width: 1051px) {
   #pantalla-configuracion .panel-identidad {
-    top: 50%;
+    top: 38.5%;
     width: min(24.5vw, 395px);
   }
 
@@ -3979,7 +3925,7 @@ h1, h2, h3, h4 {
   }
 
   #pantalla-configuracion .cabecera-configuracion h2 {
-    font-size: clamp(1.5rem, 2vw, 2.15rem);
+    font-size: clamp(1.35rem, 1.7vw, 1.85rem);
   }
 }
 
@@ -4265,9 +4211,9 @@ h1, h2, h3, h4 {
   }
 }
 
-@media (min-width: 1101px) and (max-height: 760px) {
+@media (min-width: 1101px) and (max-height: 800px) {
   #pantalla-configuracion .panel-identidad {
-    top: 40%;
+    top: 38.5%;
   }
 
   #pantalla-configuracion .configuracion-inferior {
@@ -4278,11 +4224,12 @@ h1, h2, h3, h4 {
 /* V22.12 · Controles simétricos, compactos y legibles sobre el fondo. */
 @media (min-width:1101px) {
   #pantalla-configuracion .configuracion-inferior{
-    grid-template-columns:440px minmax(300px,1fr) 440px;
-    column-gap:clamp(2rem,4vw,5rem);
+    width:min(96vw,1180px)!important;
+    grid-template-columns:minmax(260px,440px) minmax(220px,1fr) minmax(260px,440px)!important;
+    column-gap:clamp(1rem,2.5vw,3rem)!important;
   }
   #pantalla-configuracion .grupo-jugador,
-  #pantalla-configuracion .grupo-rondas{width:440px!important}
+  #pantalla-configuracion .grupo-rondas{width:100%!important;max-width:440px!important;min-width:0!important}
   #pantalla-configuracion .grupo-jugador label,
   #pantalla-configuracion .grupo-rondas h3{
     width:max-content;max-width:100%;margin:0 auto 7px!important;padding:7px 18px!important;
@@ -4292,9 +4239,9 @@ h1, h2, h3, h4 {
     text-shadow:0 2px 5px #000,0 0 12px currentColor;
   }
   #pantalla-configuracion .grupo-jugador label{border-color:rgba(157,239,72,.30);box-shadow:inset 0 -2px 0 rgba(150,238,68,.36),0 0 20px rgba(126,226,66,.15)}
-  #pantalla-configuracion .control-jugador{width:440px!important}
-  #pantalla-configuracion .opciones-rondas{width:440px!important;justify-content:center!important;gap:10px!important}
-  #pantalla-configuracion .boton-opcion{width:102px!important;min-width:102px!important}
+  #pantalla-configuracion .control-jugador{width:100%!important;max-width:440px!important;min-width:0!important}
+  #pantalla-configuracion .opciones-rondas{width:100%!important;min-width:0!important;justify-content:center!important;gap:clamp(6px,1vw,14px)!important}
+  #pantalla-configuracion .opciones-rondas .boton-opcion{flex:1 1 0!important;width:auto!important;min-width:0!important;max-width:102px!important}
 }
 
 /* V22.3 · La navegación de la introducción permanece anclada. */
@@ -4587,7 +4534,9 @@ h1, h2, h3, h4 {
 .superposicion-manual{
   position:fixed;
   inset:0;
-  z-index:220;
+  /* Debe cubrir también el acceso global a ajustes (z-index: 900).
+     Así la rueda no se superpone al botón de cierre del manual. */
+  z-index:950;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -4970,6 +4919,22 @@ h1, h2, h3, h4 {
   #pantalla-introduccion .btn-como-jugar{min-width:128px}
 }
 
+/* En tableta y escritorio el encabezado conserva su altura y el resto del
+   panel se dedica al contenido desplazable, sin quedar oculto por el borde. */
+@media(min-width:641px){
+  .panel-manual{
+    display:flex;
+    flex-direction:column;
+    height:94vh;
+    max-height:94vh;
+  }
+  .contenido-manual{
+    flex:1;
+    min-height:0;
+    max-height:none;
+  }
+}
+
 /* =====================================================================
    PANTALLA FINAL · NEXO · REDISEÑO HOLOGRÁFICO
    El estado del planeta es el titular principal. El desenlace y el perfil
@@ -5138,7 +5103,7 @@ h1, h2, h3, h4 {
 #pantalla-inicio .logo-nexo-animado {
   --desfase-pulso-audio: 0s;
   --desfase-descarga-audio: 0s;
-  animation-name: nexo-nodos-descarga-tecnologica-v14;
+  animation-name: none;
   animation-duration: 11.101995s;
   animation-timing-function: linear;
   animation-delay: var(--desfase-descarga-audio);
@@ -5146,7 +5111,7 @@ h1, h2, h3, h4 {
 }
 
 #pantalla-inicio .logo-nexo-animado::before {
-  animation-name: nexo-x-base-latido-humano-v14;
+  animation-name: none;
   animation-duration: 1.009272s;
   animation-timing-function: linear;
   animation-delay: var(--desfase-pulso-audio);
@@ -5154,16 +5119,28 @@ h1, h2, h3, h4 {
 }
 
 #pantalla-inicio .logo-nexo-animado::after {
-  animation-name: nexo-x-expansion-latido-humano-v14;
+  animation-name: none;
   animation-duration: 1.009272s;
   animation-timing-function: linear;
   animation-delay: var(--desfase-pulso-audio);
   animation-iteration-count: infinite;
 }
 
-/* Cambiar una variable no reinicia por sí solo una animación CSS. Esta clase
-   se mantiene un único fotograma para que el siguiente arranque quede fijado
-   al tiempo real del audio, también después de volver a jugar. */
+/* La clase se añade de forma síncrona al activar la portada. De esta manera
+   WebKit inicia las tres animaciones desde cero aunque el audio siga cargando. */
+#pantalla-inicio .logo-nexo-animado.animacion-portada-activa {
+  animation-name: nexo-nodos-descarga-tecnologica-v14;
+}
+
+#pantalla-inicio .logo-nexo-animado.animacion-portada-activa::before {
+  animation-name: nexo-x-base-latido-humano-v14;
+}
+
+#pantalla-inicio .logo-nexo-animado.animacion-portada-activa::after {
+  animation-name: nexo-x-expansion-latido-humano-v14;
+}
+
+/* Salvaguarda para versiones anteriores. */
 #pantalla-inicio .logo-nexo-animado.reiniciar-animacion-audio,
 #pantalla-inicio .logo-nexo-animado.reiniciar-animacion-audio::before,
 #pantalla-inicio .logo-nexo-animado.reiniciar-animacion-audio::after {
@@ -5959,4 +5936,32 @@ h1, h2, h3, h4 {
     min-height:46px;
     max-height:50px;
   }
+}
+
+/* =====================================================================
+   V24.63 - TEXTO DE LA INTRODUCCION: UNA SOLA CAJA, JUSTIFICADO
+   ---------------------------------------------------------------------
+   Habia tres reglas pisandose: la base justificaba, dos posteriores lo
+   pasaban a izquierda y otra dejaba el primer parrafo centrado. Ademas la
+   anchura se fijaba por parrafo en unidades 'ch', asi que la negrita de
+   apertura, al tener mayor cuerpo, ocupaba un ancho distinto y sobresalia
+   por los dos lados. Aqui la medida se fija en el bloque y todos los
+   parrafos comparten margen izquierdo y derecho.
+   ===================================================================== */
+#pantalla-introduccion .bloque-intro {
+  max-width: 64ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#pantalla-introduccion .bloque-intro p,
+#pantalla-introduccion .bloque-intro p:first-child,
+#pantalla-introduccion .bloque-intro p:last-child {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
 }

@@ -1,5 +1,5 @@
-import { PERFILES, SALUD_MAXIMA, buscarCapacidad } from "./datos.js";
-import { leerMejorMarca, leerPerfiles } from "./almacenamiento.js";
+import { EVENTOS, PERFILES, SALUD_MAXIMA, buscarCapacidad } from "./datos.js";
+import { leerJugadorActivo, leerMejorMarca, leerPerfiles } from "./almacenamiento.js";
 /**
  * La interfaz: todo lo que toca el HTML está en este archivo.
  *
@@ -26,6 +26,15 @@ const RUTA_PLANETA_RECUPERADO = "./assets/images/partida/fondos-planeta/partida-
 // Así, al cruzar 25/50/75/100 no aparece un hueco negro mientras llega el nuevo fondo.
 const FONDOS_PLANETA_PRECARGADOS = [];
 function precargarFondosPlaneta() {
+    // Safari puede reconstruir una pestaña cuando un teléfono con poca memoria
+    // conserva decodificados todos los fondos grandes a la vez. En teléfonos
+    // táctiles dejamos que pintarEvolucionVisual cargue únicamente el tramo que
+    // haga falta; mantiene el fondo anterior hasta recibir el nuevo, sin flashes.
+    const esTelefonoTactil = navigator.maxTouchPoints > 0 &&
+        Math.min(window.screen.width, window.screen.height) <= 640;
+    if (esTelefonoTactil) {
+        return;
+    }
     const recuperado = new Image();
     recuperado.src = RUTA_PLANETA_RECUPERADO;
     FONDOS_PLANETA_PRECARGADOS.push(recuperado);
@@ -64,8 +73,19 @@ export function mostrar(id) {
 export function ocultar(id) {
     elemento(id).classList.add("oculta");
 }
+/** Ajusta el ciclo visible de la X al segundo real de la pista de portada. */
+export function ajustarFaseAnimacionPortada(tiempoAudioPortada) {
+    const logoPortada = document.querySelector("#pantalla-inicio .logo-nexo-animado");
+    if (logoPortada === null)
+        return;
+    const tiempoValido = Number.isFinite(tiempoAudioPortada) ? Math.max(0, tiempoAudioPortada) : 0;
+    const fasePulso = tiempoValido % 1.009272;
+    const faseDescargas = tiempoValido % 11.101995;
+    logoPortada.style.setProperty("--desfase-pulso-audio", `-${fasePulso.toFixed(6)}s`);
+    logoPortada.style.setProperty("--desfase-descarga-audio", `-${faseDescargas.toFixed(6)}s`);
+}
 /** Enseña una pantalla y esconde todas las demás. */
-export function mostrarPantalla(idPantalla) {
+export function mostrarPantalla(idPantalla, tiempoAudioPortada = 0) {
     const pantallas = [
         "pantalla-suspense",
         "pantalla-inicio",
@@ -79,6 +99,22 @@ export function mostrarPantalla(idPantalla) {
         const esActiva = pantallas[i] === idPantalla;
         pantalla.classList.toggle("activa", esActiva);
         pantalla.classList.toggle("oculta", !esActiva);
+    }
+    // La portada inicia su animación exactamente cuando se vuelve visible.
+    // Es síncrono y no depende del audio ni de requestAnimationFrame: Safari
+    // de iPad no puede aplazar el latido hasta el ciclo siguiente de la pista.
+    if (idPantalla === "pantalla-inicio") {
+        const logoPortada = document.querySelector("#pantalla-inicio .logo-nexo-animado");
+        if (logoPortada !== null) {
+            // El audio se inicia durante el gesto y la portada aparece tras el
+            // fundido. Aplicamos ese tiempo ya transcurrido como fase negativa:
+            // la X empieza a moverse al instante, pero en el mismo latido que
+            // realmente está sonando en Safari de iPad.
+            ajustarFaseAnimacionPortada(tiempoAudioPortada);
+            logoPortada.classList.remove("animacion-portada-activa");
+            void logoPortada.offsetWidth;
+            logoPortada.classList.add("animacion-portada-activa");
+        }
     }
     // Fuera de la partida siempre existe acceso al sonido. En la partida se
     // mantiene el botón integrado en su cabecera para no duplicar controles.
@@ -312,7 +348,7 @@ export function pintarCapacidades(idLista, capacidades) {
 // ---- La zona de la ronda --------------------------------------------------
 /** Escribe la ronda, la crisis y, si la hay, la carta de crisis. */
 export function pintarCabeceraRonda(partida) {
-    let texto = "RONDA " + partida.getRonda();
+    let texto = String(partida.getRonda());
     if (partida.getTotalRondas() > 0) {
         texto = texto + " / " + partida.getTotalRondas();
     }
@@ -702,6 +738,12 @@ export function pintarApuestaElegida(apuesta) {
 export function pintarResolucion(resumen) {
     const panelResultado = elemento("zona-resolucion");
     ocultar("zona-resolucion");
+    // Safari/iPad puede conservar durante unos segundos la zona táctil de una
+    // capa fixed que acaba de ocultarse. hidden + inert la retiran también del
+    // mapa de interacción, no solo de la pintura de la página.
+    panelResultado.hidden = true;
+    panelResultado.setAttribute("inert", "");
+    panelResultado.style.setProperty("pointer-events", "none", "important");
     panelResultado.classList.remove("panel-resultado-entra");
     if (temporizadorPanelResultado !== null) {
         window.clearTimeout(temporizadorPanelResultado);
@@ -758,6 +800,9 @@ export function pintarResolucion(resumen) {
     const duracionHito = mostrarHitosDeEvolucion(resumen);
     const retraso = duracionHito > 0 ? duracionHito : 820;
     temporizadorPanelResultado = window.setTimeout(function () {
+        panelResultado.hidden = false;
+        panelResultado.removeAttribute("inert");
+        panelResultado.style.removeProperty("pointer-events");
         mostrar("zona-resolucion");
         panelResultado.classList.remove("panel-resultado-entra");
         void panelResultado.offsetWidth;
@@ -995,7 +1040,12 @@ function activarRivalidadVisual(ganador) {
         nucleo.classList.add("rivalidad-ia-activa");
 }
 export function ocultarResolucion() {
+    const panelResultado = elemento("zona-resolucion");
     ocultar("zona-resolucion");
+    panelResultado.hidden = true;
+    panelResultado.setAttribute("inert", "");
+    panelResultado.style.setProperty("pointer-events", "none", "important");
+    panelResultado.classList.remove("panel-resultado-entra");
     if (temporizadorPanelResultado !== null) {
         window.clearTimeout(temporizadorPanelResultado);
         temporizadorPanelResultado = null;
@@ -1020,14 +1070,46 @@ export function ocultarResolucion() {
     escribir("apuesta-jugador", "—");
     escribir("apuesta-ia", "—");
 }
-/** Muestra la tarjeta superpuesta de un evento especial. */
+/** Devuelve true cuando el texto no está vacío ni conserva el guion inicial. */
+function esTextoEventoValido(texto) {
+    return texto !== "" && texto !== "—";
+}
+/**
+ * Muestra la tarjeta superpuesta de un evento especial.
+ * Si el llamador entrega texto incompleto, recupera el contenido directamente
+ * del catálogo. De este modo ningún evento conocido puede abrirse con guiones.
+ */
 export function mostrarEvento(idEvento, nombre, descripcion) {
-    escribir("nombre-evento", nombre);
-    escribir("descripcion-evento", descripcion);
+    let nombreSeguro = nombre.trim();
+    let descripcionSegura = descripcion.trim();
+    // Si falta algún texto, lo buscamos con un bucle sencillo en la lista
+    // de eventos que ya utiliza el resto del juego.
+    if (!esTextoEventoValido(nombreSeguro) || !esTextoEventoValido(descripcionSegura)) {
+        for (let i = 0; i < EVENTOS.length; i++) {
+            if (EVENTOS[i].id === idEvento) {
+                nombreSeguro = EVENTOS[i].nombre;
+                descripcionSegura = EVENTOS[i].descripcion;
+            }
+        }
+    }
+    if (!esTextoEventoValido(nombreSeguro) || !esTextoEventoValido(descripcionSegura)) {
+        console.error("NEXO: se intentó abrir un evento sin nombre o explicación.", idEvento);
+        ocultarEvento();
+        return;
+    }
+    escribir("nombre-evento", nombreSeguro);
+    escribir("descripcion-evento", descripcionSegura);
     const imagen = elemento("imagen-evento");
     imagen.src = rutaImagenEvento(idEvento);
-    imagen.alt = "Ilustración del evento " + nombre;
-    mostrar("superposicion-evento");
+    imagen.alt = "Ilustración del evento " + nombreSeguro;
+    const superposicion = elemento("superposicion-evento");
+    superposicion.hidden = false;
+    superposicion.removeAttribute("inert");
+    superposicion.style.removeProperty("display");
+    superposicion.style.removeProperty("pointer-events");
+    superposicion.setAttribute("aria-hidden", "false");
+    superposicion.classList.remove("oculta");
+    elemento("btn-cerrar-evento").focus();
 }
 /** Cada evento especial usa una imagen raster WebP cinematográfica propia. */
 function rutaImagenEvento(idEvento) {
@@ -1042,7 +1124,20 @@ function rutaImagenEvento(idEvento) {
     return "./assets/images/partida/eventos/evento-punto-sin-retorno.webp";
 }
 export function ocultarEvento() {
-    ocultar("superposicion-evento");
+    const superposicion = elemento("superposicion-evento");
+    const elementoActivo = document.activeElement;
+    if (elementoActivo instanceof HTMLElement && superposicion.contains(elementoActivo)) {
+        elementoActivo.blur();
+    }
+    superposicion.classList.add("oculta");
+    superposicion.hidden = true;
+    superposicion.setAttribute("inert", "");
+    superposicion.style.setProperty("display", "none", "important");
+    superposicion.style.setProperty("pointer-events", "none", "important");
+    superposicion.setAttribute("aria-hidden", "true");
+    // Safari/iPad conserva a veces el plano táctil de un modal ya oculto. La
+    // lectura de layout fuerza a descartarlo antes de volver a PAR/IMPAR.
+    void superposicion.offsetWidth;
 }
 // ---- Pantallas de inicio y final --------------------------------------------
 /** Enseña en la pantalla de inicio la mejor marca guardada, si existe. */
@@ -1052,7 +1147,8 @@ export function pintarMejorMarca() {
         escribir("mejor-marca", "Todavía no has jugado ninguna partida en este navegador.");
         return;
     }
-    escribir("mejor-marca", "Mejor marca · " + marca.nombre + " — " + marca.perfil + " (evolución " +
+    const nombre = marca.displayName || marca.nombre || leerJugadorActivo() || "Jugador";
+    escribir("mejor-marca", "Mejor marca · " + nombre + " — " + marca.perfil + " (evolución " +
         marca.evolucion + ", crisis " + (SALUD_MAXIMA - marca.planeta) + "%)");
 }
 /**
